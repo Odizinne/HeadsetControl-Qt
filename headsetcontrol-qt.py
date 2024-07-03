@@ -28,6 +28,7 @@ class HeadsetControlApp(QMainWindow):
         ui_path = os.path.join("design.ui")
         uic.loadUi(ui_path, self)
         self.led_state = None
+        self.light_battery_threshold = 50
         self.init_ui()
         self.read_settings()
         self.update_headset_info()
@@ -46,23 +47,20 @@ class HeadsetControlApp(QMainWindow):
         self.setWindowIcon(icon)
         self.tray_icon = QSystemTrayIcon(self)
         self.tray_icon.setIcon(icon)
-
         tray_menu = QMenu(self)
         show_action = QAction("Show", self)
         show_action.triggered.connect(self.show_window)
         tray_menu.addAction(show_action)
-
         exit_action = QAction("Exit", self)
         exit_action.triggered.connect(self.exit_app)
         tray_menu.addAction(exit_action)
-
         self.tray_icon.setContextMenu(tray_menu)
         self.tray_icon.show()
-
         self.batteryBar.setTextVisible(False)
         self.ledBox.stateChanged.connect(self.on_ledbox_state_changed)
-
+        self.lightBatterySpinbox.setRange(0, 100)
         self.installEventFilter(self)
+        self.lightBatterySpinbox.valueChanged.connect(self.save_settings)
 
     def init_timer(self):
         self.timer = QTimer(self)
@@ -74,14 +72,24 @@ class HeadsetControlApp(QMainWindow):
             with open(SETTINGS_FILE, 'r') as f:
                 settings = json.load(f)
                 self.led_state = settings.get("led_state", True)
+                if self.led_state is True:
+                    self.lightBatterySpib.box.setEnabled(True)
+                    self.lightBatteryLabel.setEnabled(True)
+                else:
+                    self.lightBatterySpinbox.setEnabled(False)
+                    self.lightBatteryLabel.setEnabled(False)
+
+                self.light_battery_threshold = settings.get("light_battery_threshold", 50)
         else:
             self.save_settings()
-        
+
         self.ledBox.setChecked(self.led_state)
+        self.lightBatterySpinbox.setValue(self.light_battery_threshold)
 
     def save_settings(self):
         settings = {
-            "led_state": self.ledBox.isChecked()
+            "led_state": self.ledBox.isChecked(),
+            "light_battery_threshold": self.lightBatterySpinbox.value()
         }
         try:
             with open(SETTINGS_FILE, 'w') as f:
@@ -91,10 +99,10 @@ class HeadsetControlApp(QMainWindow):
 
     def update_headset_info(self):
         try:
-            result = subprocess.Popen([HEADSETCONTROL_EXECUTABLE, '-o', 'json'], 
-                                      stdout=subprocess.PIPE, 
-                                      stderr=subprocess.PIPE, 
-                                      text=True, 
+            result = subprocess.Popen([HEADSETCONTROL_EXECUTABLE, '-o', 'json'],
+                                      stdout=subprocess.PIPE,
+                                      stderr=subprocess.PIPE,
+                                      text=True,
                                       creationflags=subprocess.CREATE_NO_WINDOW if platform.system() == "Windows" else 0)
             stdout, stderr = result.communicate(timeout=10)
             if result.returncode == 0:
@@ -102,6 +110,7 @@ class HeadsetControlApp(QMainWindow):
                 if 'devices' in data and len(data['devices']) > 0:
                     headset_info = data['devices'][0]
                     self.update_ui_with_headset_info(headset_info)
+                    self.manage_led_based_on_battery(headset_info)
                 else:
                     self.no_device_found()
             else:
@@ -110,6 +119,35 @@ class HeadsetControlApp(QMainWindow):
         except Exception as e:
             print("Exception occurred:", str(e))
             self.no_device_found()
+
+    def manage_led_based_on_battery(self, headset_info):
+        if not self.ledBox.isChecked():
+            return
+        
+        self.lightBatterySpinbox.setEnabled(True)
+        self.lightBatteryLabel.setEnabled(True)
+        battery_info = headset_info.get("battery", {})
+        battery_level = battery_info.get("level", 0)
+
+        if battery_level < self.lightBatterySpinbox.value() and self.led_state:
+            self.toggle_led(False)
+            self.led_state = False
+            self.save_settings()
+        elif battery_level >= self.lightBatterySpinbox.value() and not self.led_state:
+            self.toggle_led(True)
+            self.led_state = True
+            self.save_settings()
+
+    def toggle_led(self, state):
+        try:
+            subprocess.Popen([HEADSETCONTROL_EXECUTABLE, '-l', '1' if state else '0'],
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE,
+                             text=True,
+                             creationflags=subprocess.CREATE_NO_WINDOW if platform.system() == "Windows" else 0)
+        except Exception as e:
+            print(f"Error running headsetcontrol: {e}")
+            QMessageBox.warning(self, "Error", "Failed to change LED settings.")
 
     def update_ui_with_headset_info(self, headset_info):
         device_name = headset_info.get("device", "Unknown Device")
@@ -152,17 +190,21 @@ class HeadsetControlApp(QMainWindow):
 
         try:
             if state == 2:
-                subprocess.Popen([HEADSETCONTROL_EXECUTABLE, '-l', '1'], 
-                                 stdout=subprocess.PIPE, 
-                                 stderr=subprocess.PIPE, 
-                                 text=True, 
+                subprocess.Popen([HEADSETCONTROL_EXECUTABLE, '-l', '1'],
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE,
+                                 text=True,
                                  creationflags=subprocess.CREATE_NO_WINDOW if platform.system() == "Windows" else 0)
+                self.lightBatterySpinbox.setEnabled(True)
+                self.lightBatteryLabel.setEnabled(True)
             else:
-                subprocess.Popen([HEADSETCONTROL_EXECUTABLE, '-l', '0'], 
-                                 stdout=subprocess.PIPE, 
-                                 stderr=subprocess.PIPE, 
-                                 text=True, 
+                subprocess.Popen([HEADSETCONTROL_EXECUTABLE, '-l', '0'],
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE,
+                                 text=True,
                                  creationflags=subprocess.CREATE_NO_WINDOW if platform.system() == "Windows" else 0)
+                self.lightBatterySpinbox.setEnabled(False)
+                self.lightBatteryLabel.setEnabled(False)
         except Exception as e:
             print(f"Error running headsetcontrol: {e}")
             QMessageBox.warning(self, "Error", "Failed to change LED settings.")
@@ -199,7 +241,7 @@ class HeadsetControlApp(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = HeadsetControlApp()
-    
+
     signal.signal(signal.SIGINT, signal.SIG_DFL)
-    
+
     sys.exit(app.exec())
