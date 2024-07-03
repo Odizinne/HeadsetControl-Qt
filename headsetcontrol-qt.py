@@ -214,6 +214,8 @@ class HeadsetControlApp(QMainWindow):
         self.statusLabel.show()
         self.ledLabel.show()
         self.batteryLabel.show()
+        self.lightBatterySpinbox.show()
+        self.lightBatteryLabel.show()
         self.notFoundLabel.hide()
 
     def hide_ui_elements(self):
@@ -223,6 +225,8 @@ class HeadsetControlApp(QMainWindow):
         self.statusLabel.hide()
         self.ledLabel.hide()
         self.batteryLabel.hide()
+        self.lightBatterySpinbox.hide()
+        self.lightBatteryLabel.hide()
         self.notFoundLabel.show()
 
     def show_window(self):
