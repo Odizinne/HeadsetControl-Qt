@@ -4,7 +4,6 @@ import json
 import signal
 import os
 import platform
-import darkdetect
 from PyQt6.QtWidgets import QApplication, QMainWindow, QSystemTrayIcon, QMenu, QMessageBox
 from PyQt6.QtGui import QIcon, QAction
 from PyQt6.QtCore import QTimer
@@ -13,9 +12,13 @@ from PyQt6 import uic
 if platform.system() == "Linux":
     SETTINGS_DIR = os.path.join(os.path.expanduser("~"), ".config", "headsetcontrol-qt")
     HEADSETCONTROL_EXECUTABLE = "headsetcontrol"
+    DESKTOP_FILE_PATH = os.path.join(os.path.expanduser("~"), ".config", "autostart", "headsetcontrol-qt.desktop")
 elif platform.system() == "Windows":
     SETTINGS_DIR = os.path.join(os.getenv("APPDATA"), "headsetcontrol-qt")
     HEADSETCONTROL_EXECUTABLE = os.path.join("dependencies", "headsetcontrol.exe")
+    import winshell
+    import darkdetect
+    STARTUP_FOLDER = winshell.startup()
 
 SETTINGS_FILE = os.path.join(SETTINGS_DIR, "settings.json")
 
@@ -33,6 +36,7 @@ class HeadsetControlApp(QMainWindow):
         self.read_settings()
         self.update_headset_info()
         self.init_timer()
+        self.check_startup_checkbox()
 
     def init_ui(self):
         self.setWindowTitle("HeadsetControl-Qt")
@@ -61,6 +65,7 @@ class HeadsetControlApp(QMainWindow):
         self.lightBatterySpinbox.setRange(0, 100)
         self.installEventFilter(self)
         self.lightBatterySpinbox.valueChanged.connect(self.save_settings)
+        self.startupCheckbox.stateChanged.connect(self.on_startupCheckbox_state_changed)
 
     def init_timer(self):
         self.timer = QTimer(self)
@@ -177,10 +182,10 @@ class HeadsetControlApp(QMainWindow):
         else:
             self.ledBox.setEnabled(False)
 
-        self.show_ui_elements()
+        self.toggle_ui_elements(True)
 
     def no_device_found(self):
-        self.hide_ui_elements()
+        self.toggle_ui_elements(False)
         self.tray_icon.setToolTip("No Device Found")
 
     def on_ledbox_state_changed(self, state):
@@ -207,27 +212,18 @@ class HeadsetControlApp(QMainWindow):
             print(f"Error running headsetcontrol: {e}")
             QMessageBox.warning(self, "Error", "Failed to change LED settings.")
 
-    def show_ui_elements(self):
-        self.deviceLabel.show()
-        self.batteryBar.show()
-        self.ledBox.show()
-        self.statusLabel.show()
-        self.ledLabel.show()
-        self.batteryLabel.show()
-        self.lightBatterySpinbox.show()
-        self.lightBatteryLabel.show()
-        self.notFoundLabel.hide()
-
-    def hide_ui_elements(self):
-        self.deviceLabel.hide()
-        self.batteryBar.hide()
-        self.ledBox.hide()
-        self.statusLabel.hide()
-        self.ledLabel.hide()
-        self.batteryLabel.hide()
-        self.lightBatterySpinbox.hide()
-        self.lightBatteryLabel.hide()
-        self.notFoundLabel.show()
+    def toggle_ui_elements(self, show: bool):
+        self.deviceLabel.setVisible(show)
+        self.batteryBar.setVisible(show)
+        self.ledBox.setVisible(show)
+        self.statusLabel.setVisible(show)
+        self.ledLabel.setVisible(show)
+        self.batteryLabel.setVisible(show)
+        self.lightBatterySpinbox.setVisible(show)
+        self.lightBatteryLabel.setVisible(show)
+        self.startupLabel.setVisible(show)
+        self.startupCheckbox.setVisible(show)
+        self.notFoundLabel.setVisible(not show)
 
     def show_window(self):
         self.show()
@@ -239,6 +235,66 @@ class HeadsetControlApp(QMainWindow):
     def closeEvent(self, event):
         event.ignore()
         self.hide()
+
+    def on_startupCheckbox_state_changed(self, state):
+        if platform.system() == "Windows":
+            self.set_windows_startup(state)
+        elif platform.system() == "Linux":
+            self.set_linux_startup(state)
+
+    def set_windows_startup(self, state):
+        try:
+            startup_folder = winshell.startup()
+            shortcut_path = os.path.join(startup_folder, "HeadsetControl-Qt.lnk")
+            target_path = sys.executable
+            working_directory = os.path.dirname(target_path)
+
+            if state == 2:  # Checked
+                winshell.CreateShortcut(
+                    Path=shortcut_path,
+                    Target=target_path,
+                    Icon=(target_path, 0),
+                    Description="Launch HeadsetControl-Qt",
+                    StartIn=working_directory
+                )
+            else:  # Unchecked
+                if os.path.exists(shortcut_path):
+                    os.remove(shortcut_path)
+        except Exception as e:
+            print(f"Error managing startup shortcut on Windows: {e}")
+
+    def set_linux_startup(self, state):
+        try:
+            if state == 2:  # Checked
+                if not os.path.exists(os.path.dirname(DESKTOP_FILE_PATH)):
+                    os.makedirs(os.path.dirname(DESKTOP_FILE_PATH))
+                with open(DESKTOP_FILE_PATH, 'w') as f:
+                    f.write(f"""
+                    [Desktop Entry]
+                    Type=Application
+                    Exec={sys.executable} {__file__}
+                    Hidden=false
+                    NoDisplay=false
+                    X-GNOME-Autostart-enabled=true
+                    Name=HeadsetControl-Qt
+                    Comment=HeadsetControl-Qt
+                    """)
+            else:  # Unchecked
+                if os.path.exists(DESKTOP_FILE_PATH):
+                    os.remove(DESKTOP_FILE_PATH)
+        except Exception as e:
+            print(f"Error managing startup file on Linux: {e}")
+
+    def check_startup_checkbox(self):
+        if platform.system() == "Windows":
+            startup_folder = winshell.startup()
+            shortcut_path = os.path.join(startup_folder, "HeadsetControl-Qt.lnk")
+            self.startupCheckbox.setChecked(os.path.exists(shortcut_path))
+        elif platform.system() == "Linux":
+            if os.path.exists(DESKTOP_FILE_PATH):
+                self.startupCheckbox.setChecked(True)
+            else:
+                self.startupCheckbox.setChecked(False)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
