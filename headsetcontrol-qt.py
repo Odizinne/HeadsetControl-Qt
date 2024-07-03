@@ -28,7 +28,7 @@ class HeadsetControlApp(QMainWindow):
         ui_path = os.path.join("design.ui")
         uic.loadUi(ui_path, self)
         self.led_state = None
-        self.light_battery_threshold = 50
+        self.light_battery_threshold = None
         self.init_ui()
         self.read_settings()
         self.update_headset_info()
@@ -68,20 +68,18 @@ class HeadsetControlApp(QMainWindow):
         self.timer.start(10000)
 
     def read_settings(self):
-        if os.path.exists(SETTINGS_FILE):
-            with open(SETTINGS_FILE, 'r') as f:
-                settings = json.load(f)
-                self.led_state = settings.get("led_state", True)
-                if self.led_state is True:
-                    self.lightBatterySpib.box.setEnabled(True)
-                    self.lightBatteryLabel.setEnabled(True)
-                else:
-                    self.lightBatterySpinbox.setEnabled(False)
-                    self.lightBatteryLabel.setEnabled(False)
-
-                self.light_battery_threshold = settings.get("light_battery_threshold", 50)
-        else:
+        if not os.path.exists(SETTINGS_FILE):
             self.save_settings()
+        with open(SETTINGS_FILE, 'r') as f:
+            settings = json.load(f)
+            self.led_state = settings.get("led_state", True)
+            if self.led_state is True:
+                self.lightBatterySpinbox.setEnabled(True)
+                self.lightBatteryLabel.setEnabled(True)
+            else:
+                self.lightBatterySpinbox.setEnabled(False)
+                self.lightBatteryLabel.setEnabled(False)
+            self.light_battery_threshold = settings.get("light_battery_threshold", 50)
 
         self.ledBox.setChecked(self.led_state)
         self.lightBatterySpinbox.setValue(self.light_battery_threshold)

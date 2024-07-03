@@ -97,6 +97,9 @@
       <property name="text">
        <string/>
       </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
       <property name="tristate">
        <bool>false</bool>
       </property>
