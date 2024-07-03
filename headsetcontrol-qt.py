@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import sys
 import subprocess
 import json
@@ -14,8 +12,10 @@ from PyQt6 import uic
 
 if platform.system() == "Linux":
     SETTINGS_DIR = os.path.join(os.path.expanduser("~"), ".config", "headsetcontrol-qt")
+    HEADSETCONTROL_EXECUTABLE = "headsetcontrol"
 elif platform.system() == "Windows":
     SETTINGS_DIR = os.path.join(os.getenv("APPDATA"), "headsetcontrol-qt")
+    HEADSETCONTROL_EXECUTABLE = os.path.join("dependencies", "headsetcontrol.exe")
 
 SETTINGS_FILE = os.path.join(SETTINGS_DIR, "settings.json")
 
@@ -25,28 +25,27 @@ if not os.path.exists(SETTINGS_DIR):
 class HeadsetControlApp(QMainWindow):
     def __init__(self):
         super().__init__()
-        ui_path = os.path.join(os.path.dirname(__file__), "design.ui")
+        ui_path = os.path.join("design.ui")
         uic.loadUi(ui_path, self)
         self.led_state = None
-        
         self.init_ui()
         self.read_settings()
-        # self.apply_led_setting_at_startup()
-
         self.update_headset_info()
         self.init_timer()
 
     def init_ui(self):
-        self.setWindowTitle("Headset Control")
-        self.tray_icon = QSystemTrayIcon(self)
+        self.setWindowTitle("HeadsetControl-Qt")
+
         if platform.system() == "Linux":
-            self.tray_icon.setIcon(QIcon.fromTheme("audio-headset-symbolic"))
-        else:
+            icon = QIcon.fromTheme("audio-headset-symbolic")
+        elif platform.system() == "Windows":
             dark_mode = darkdetect.isDark()
-            if not dark_mode:
-                self.tray_icon.setIcon(QIcon(os.path.join("icons", "icon_dark.png")))
-            else:
-                self.tray_icon.setIcon(QIcon(os.path.join("icons", "icon_light.png")))
+            icon_path = os.path.join("icons", "icon_dark.png") if not dark_mode else os.path.join("icons", "icon_light.png")
+            icon = QIcon(icon_path)
+
+        self.setWindowIcon(icon)
+        self.tray_icon = QSystemTrayIcon(self)
+        self.tray_icon.setIcon(icon)
 
         tray_menu = QMenu(self)
         show_action = QAction("Show", self)
@@ -63,7 +62,6 @@ class HeadsetControlApp(QMainWindow):
         self.batteryBar.setTextVisible(False)
         self.ledBox.stateChanged.connect(self.on_ledbox_state_changed)
 
-        # Ensure the close event is handled to hide the window instead of closing
         self.installEventFilter(self)
 
     def init_timer(self):
@@ -91,35 +89,34 @@ class HeadsetControlApp(QMainWindow):
         except Exception as e:
             print(f"Error saving settings: {e}")
 
-    def apply_led_setting_at_startup(self):
-        if self.ledBox.isChecked():
-            subprocess.run(['headsetcontrol', '-l', '1'])
-        else:
-            subprocess.run(['headsetcontrol', '-l', '0'])
-
     def update_headset_info(self):
         try:
-            result = subprocess.run(['headsetcontrol', '-o', 'json'], capture_output=True, text=True)
+            result = subprocess.Popen([HEADSETCONTROL_EXECUTABLE, '-o', 'json'], 
+                                      stdout=subprocess.PIPE, 
+                                      stderr=subprocess.PIPE, 
+                                      text=True, 
+                                      creationflags=subprocess.CREATE_NO_WINDOW if platform.system() == "Windows" else 0)
+            stdout, stderr = result.communicate(timeout=10)
             if result.returncode == 0:
-                data = json.loads(result.stdout)
+                data = json.loads(stdout)
                 if 'devices' in data and len(data['devices']) > 0:
                     headset_info = data['devices'][0]
                     self.update_ui_with_headset_info(headset_info)
                 else:
                     self.no_device_found()
             else:
-                print("Error running headsetcontrol:", result.stderr)
+                print("Error running headsetcontrol:", stderr)
                 self.no_device_found()
         except Exception as e:
             print("Exception occurred:", str(e))
             self.no_device_found()
 
     def update_ui_with_headset_info(self, headset_info):
-        product_name = headset_info.get("product", "Unknown Device")
+        device_name = headset_info.get("device", "Unknown Device")
         capabilities = headset_info.get("capabilities_str", [])
         battery_info = headset_info.get("battery", {})
 
-        self.deviceLabel.setText(f"{product_name}")
+        self.deviceLabel.setText(f"{device_name}")
 
         battery_status = battery_info.get("status", "UNKNOWN")
         if battery_status == "BATTERY_AVAILABLE":
@@ -155,9 +152,17 @@ class HeadsetControlApp(QMainWindow):
 
         try:
             if state == 2:
-                subprocess.run(['headsetcontrol', '-l', '1'])
+                subprocess.Popen([HEADSETCONTROL_EXECUTABLE, '-l', '1'], 
+                                 stdout=subprocess.PIPE, 
+                                 stderr=subprocess.PIPE, 
+                                 text=True, 
+                                 creationflags=subprocess.CREATE_NO_WINDOW if platform.system() == "Windows" else 0)
             else:
-                subprocess.run(['headsetcontrol', '-l', '0'])
+                subprocess.Popen([HEADSETCONTROL_EXECUTABLE, '-l', '0'], 
+                                 stdout=subprocess.PIPE, 
+                                 stderr=subprocess.PIPE, 
+                                 text=True, 
+                                 creationflags=subprocess.CREATE_NO_WINDOW if platform.system() == "Windows" else 0)
         except Exception as e:
             print(f"Error running headsetcontrol: {e}")
             QMessageBox.warning(self, "Error", "Failed to change LED settings.")
