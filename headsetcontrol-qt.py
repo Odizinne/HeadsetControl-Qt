@@ -298,6 +298,8 @@ class HeadsetControlApp(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    if platform.system() == "Windows":
+        app.setStyle("Fusion")
     window = HeadsetControlApp()
 
     signal.signal(signal.SIGINT, signal.SIG_DFL)
