@@ -7,7 +7,7 @@ import platform
 from PyQt6.QtWidgets import QApplication, QMainWindow, QSystemTrayIcon, QMenu, QMessageBox
 from PyQt6.QtGui import QIcon, QAction
 from PyQt6.QtCore import QTimer
-from PyQt6 import uic
+from design import Ui_MainWindow
 
 if platform.system() == "Linux":
     SETTINGS_DIR = os.path.join(os.path.expanduser("~"), ".config", "headsetcontrol-qt")
@@ -25,11 +25,10 @@ SETTINGS_FILE = os.path.join(SETTINGS_DIR, "settings.json")
 if not os.path.exists(SETTINGS_DIR):
     os.makedirs(SETTINGS_DIR)
 
-class HeadsetControlApp(QMainWindow):
+class HeadsetControlApp(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
-        ui_path = os.path.join("design.ui")
-        uic.loadUi(ui_path, self)
+        self.setupUi(self)
         self.led_state = None
         self.light_battery_threshold = None
         self.init_ui()
@@ -249,7 +248,7 @@ class HeadsetControlApp(QMainWindow):
             target_path = sys.executable
             working_directory = os.path.dirname(target_path)
 
-            if state == 2:  # Checked
+            if state == 2:
                 winshell.CreateShortcut(
                     Path=shortcut_path,
                     Target=target_path,
@@ -257,7 +256,7 @@ class HeadsetControlApp(QMainWindow):
                     Description="Launch HeadsetControl-Qt",
                     StartIn=working_directory
                 )
-            else:  # Unchecked
+            else:
                 if os.path.exists(shortcut_path):
                     os.remove(shortcut_path)
         except Exception as e:
@@ -265,7 +264,7 @@ class HeadsetControlApp(QMainWindow):
 
     def set_linux_startup(self, state):
         try:
-            if state == 2:  # Checked
+            if state == 2:
                 if not os.path.exists(os.path.dirname(DESKTOP_FILE_PATH)):
                     os.makedirs(os.path.dirname(DESKTOP_FILE_PATH))
                 with open(DESKTOP_FILE_PATH, 'w') as f:
@@ -279,7 +278,7 @@ class HeadsetControlApp(QMainWindow):
                     Name=HeadsetControl-Qt
                     Comment=HeadsetControl-Qt
                     """)
-            else:  # Unchecked
+            else:
                 if os.path.exists(DESKTOP_FILE_PATH):
                     os.remove(DESKTOP_FILE_PATH)
         except Exception as e:
