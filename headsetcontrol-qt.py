@@ -4,7 +4,7 @@ import json
 import signal
 import os
 import platform
-from PyQt6.QtWidgets import QApplication, QMainWindow, QSystemTrayIcon, QMenu, QMessageBox
+from PyQt6.QtWidgets import QApplication, QMainWindow, QSystemTrayIcon, QMenu
 from PyQt6.QtGui import QIcon, QAction
 from PyQt6.QtCore import QTimer
 from design import Ui_MainWindow
