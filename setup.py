@@ -6,8 +6,8 @@ build_dir = "build/HeadsetControl-Qt"
 
 if sys.platform == "win32":
     base = "Win32GUI"
-    include_files = ["icons/", "dependencies/"]
-    zip_include_packages = ["PyQt6", "winshell"]
+    include_files = ["icons/", "dependencies/", "battery_icons"]
+    zip_include_packages = ["PyQt6", "winshell", "pywin32", "darkdetect"]
 elif sys.platform == "linux":
     include_files = []
     zip_include_packages = ["PyQt6"]
