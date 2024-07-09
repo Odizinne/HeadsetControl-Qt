@@ -48,6 +48,7 @@ class HeadsetControlApp(QMainWindow, Ui_MainWindow):
             icon = QIcon(icon_path)
 
         self.setWindowIcon(icon)
+        self.setFixedSize(self.size())
         self.tray_icon = QSystemTrayIcon(self)
         self.tray_icon.setIcon(icon)
         tray_menu = QMenu(self)
@@ -236,15 +237,8 @@ class HeadsetControlApp(QMainWindow, Ui_MainWindow):
 
     def toggle_ui_elements(self, show: bool):
         self.deviceLabel.setVisible(show)
-        self.batteryBar.setVisible(show)
-        self.ledBox.setVisible(show)
         self.statusLabel.setVisible(show)
-        self.ledLabel.setVisible(show)
-        self.batteryLabel.setVisible(show)
-        self.lightBatterySpinbox.setVisible(show)
-        self.lightBatteryLabel.setVisible(show)
-        self.startupLabel.setVisible(show)
-        self.startupCheckbox.setVisible(show)
+        self.frame.setVisible(show)
         self.notFoundLabel.setVisible(not show)
 
     def show_window(self):
@@ -314,8 +308,6 @@ class HeadsetControlApp(QMainWindow, Ui_MainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    if platform.system() == "Windows":
-        app.setStyle("Fusion")
     window = HeadsetControlApp()
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     sys.exit(app.exec())
