@@ -25,6 +25,7 @@ ICONS_DIR = os.path.join("battery_icons")
 APP_ICON = os.path.join(ICONS_DIR, "100_light.png")
 SETTINGS_FILE = os.path.join(SETTINGS_DIR, "settings.json")
 
+
 class HeadsetControlApp(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -80,7 +81,8 @@ class HeadsetControlApp(QMainWindow):
 
     def read_settings(self):
         if not os.path.exists(SETTINGS_FILE):
-            self.save_settings()
+            os.makedirs(SETTINGS_DIR, exist_ok=True)
+            self.create_default_settings()
         with open(SETTINGS_FILE, 'r') as f:
             settings = json.load(f)
             self.led_state = settings.get("led_state", True)
@@ -96,6 +98,15 @@ class HeadsetControlApp(QMainWindow):
             "led_state": self.ui.ledBox.isChecked(),
             "light_battery_threshold": self.ui.lightBatterySpinbox.value(),
             "sidetone": self.ui.sidetoneSlider.value()
+        }
+        with open(SETTINGS_FILE, 'w') as f:
+            json.dump(settings, f, indent=4)
+
+    def create_default_settings(self):
+        settings = {
+            "led_state": True,
+            "light_battery_threshold": 50,
+            "sidetone": 0
         }
         with open(SETTINGS_FILE, 'w') as f:
             json.dump(settings, f, indent=4)
