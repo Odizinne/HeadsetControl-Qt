@@ -3,55 +3,56 @@ import subprocess
 import json
 import signal
 import os
-import platform
 from PyQt6.QtWidgets import QApplication, QMainWindow, QSystemTrayIcon, QMenu
 from PyQt6.QtGui import QIcon, QAction
 from PyQt6.QtCore import QTimer
 from design import Ui_MainWindow
 
-if platform.system() == "Linux":
+# Linux does not follow system theme. I'll implement it using symbolic icons later
+
+if sys.platform == "linux":
     SETTINGS_DIR = os.path.join(os.path.expanduser("~"), ".config", "headsetcontrol-qt")
     HEADSETCONTROL_EXECUTABLE = "headsetcontrol"
     DESKTOP_FILE_PATH = os.path.join(os.path.expanduser("~"), ".config", "autostart", "headsetcontrol-qt.desktop")
-elif platform.system() == "Windows":
-    SETTINGS_DIR = os.path.join(os.getenv("APPDATA"), "headsetcontrol-qt")
-    HEADSETCONTROL_EXECUTABLE = os.path.join("dependencies", "headsetcontrol.exe")
+elif sys.platform == "win32":
     import winshell
     import darkdetect
+    SETTINGS_DIR = os.path.join(os.getenv("APPDATA"), "headsetcontrol-qt")
+    HEADSETCONTROL_EXECUTABLE = os.path.join("dependencies", "headsetcontrol.exe")
     STARTUP_FOLDER = winshell.startup()
-
-SETTINGS_FILE = os.path.join(SETTINGS_DIR, "settings.json")
+    
 ICONS_DIR = os.path.join("battery_icons")
-if not os.path.exists(SETTINGS_DIR):
-    os.makedirs(SETTINGS_DIR)
+APP_ICON = os.path.join(ICONS_DIR, "100_light.png")
+SETTINGS_FILE = os.path.join(SETTINGS_DIR, "settings.json")
 
-class HeadsetControlApp(QMainWindow, Ui_MainWindow):
+class HeadsetControlApp(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setupUi(self)
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
+        self.setWindowTitle("HeadsetControl-Qt")
+        self.setWindowIcon(QIcon(APP_ICON))
+        self.setFixedSize(self.size())
         self.led_state = None
         self.light_battery_threshold = None
         self.init_ui()
+        self.create_tray_icon()
         self.read_settings()
         self.update_headset_info()
         self.init_timer()
         self.check_startup_checkbox()
+        self.set_sidetone()
+        self.on_ledBox_state_changed()
 
     def init_ui(self):
-        self.setWindowTitle("HeadsetControl-Qt")
+        self.ui.ledBox.stateChanged.connect(self.on_ledBox_state_changed)
+        self.ui.lightBatterySpinbox.valueChanged.connect(self.save_settings)
+        self.ui.startupCheckbox.stateChanged.connect(self.on_startupCheckbox_state_changed)
+        self.ui.sidetoneSlider.sliderReleased.connect(self.set_sidetone)
 
-        if platform.system() == "Linux":
-            icon = QIcon.fromTheme("audio-headset-symbolic")
-        elif platform.system() == "Windows":
-            dark_mode = darkdetect.isDark()
-            theme = "light" if dark_mode else "dark"
-            icon_path = os.path.join(ICONS_DIR, f"missing_{theme}.png")
-            icon = QIcon(icon_path)
-
-        self.setWindowIcon(icon)
-        self.setFixedSize(self.size())
+    def create_tray_icon(self):
         self.tray_icon = QSystemTrayIcon(self)
-        self.tray_icon.setIcon(icon)
+        self.tray_icon.setIcon(QIcon(APP_ICON))
         tray_menu = QMenu(self)
         show_action = QAction("Show", self)
         show_action.triggered.connect(self.show_window)
@@ -61,12 +62,16 @@ class HeadsetControlApp(QMainWindow, Ui_MainWindow):
         tray_menu.addAction(exit_action)
         self.tray_icon.setContextMenu(tray_menu)
         self.tray_icon.show()
-        self.batteryBar.setTextVisible(False)
-        self.ledBox.stateChanged.connect(self.on_ledbox_state_changed)
-        self.lightBatterySpinbox.setRange(0, 100)
-        self.installEventFilter(self)
-        self.lightBatterySpinbox.valueChanged.connect(self.save_settings)
-        self.startupCheckbox.stateChanged.connect(self.on_startupCheckbox_state_changed)
+        self.tray_icon.activated.connect(self.tray_icon_activated)
+
+    def tray_icon_activated(self, reason):
+        if reason == QSystemTrayIcon.ActivationReason.Trigger:
+            if self.isVisible():
+                self.hide()
+                self.tray_icon.contextMenu().actions()[0].setText("Show")
+            else:
+                self.show()
+                self.tray_icon.contextMenu().actions()[0].setText("Hide")
 
     def init_timer(self):
         self.timer = QTimer(self)
@@ -79,21 +84,18 @@ class HeadsetControlApp(QMainWindow, Ui_MainWindow):
         with open(SETTINGS_FILE, 'r') as f:
             settings = json.load(f)
             self.led_state = settings.get("led_state", True)
-            if self.led_state is True:
-                self.lightBatterySpinbox.setEnabled(True)
-                self.lightBatteryLabel.setEnabled(True)
-            else:
-                self.lightBatterySpinbox.setEnabled(False)
-                self.lightBatteryLabel.setEnabled(False)
             self.light_battery_threshold = settings.get("light_battery_threshold", 50)
-
-        self.ledBox.setChecked(self.led_state)
-        self.lightBatterySpinbox.setValue(self.light_battery_threshold)
+            self.ui.ledBox.setChecked(self.led_state)
+            self.ui.lightBatterySpinbox.setEnabled(self.led_state)
+            self.ui.lightBatteryLabel.setEnabled(self.led_state)
+            self.ui.lightBatterySpinbox.setValue(self.light_battery_threshold)
+            self.ui.sidetoneSlider.setValue(settings.get("sidetone", 0))
 
     def save_settings(self):
         settings = {
-            "led_state": self.ledBox.isChecked(),
-            "light_battery_threshold": self.lightBatterySpinbox.value()
+            "led_state": self.ui.ledBox.isChecked(),
+            "light_battery_threshold": self.ui.lightBatterySpinbox.value(),
+            "sidetone": self.ui.sidetoneSlider.value()
         }
         with open(SETTINGS_FILE, 'w') as f:
             json.dump(settings, f, indent=4)
@@ -103,8 +105,9 @@ class HeadsetControlApp(QMainWindow, Ui_MainWindow):
                                   stdout=subprocess.PIPE,
                                   stderr=subprocess.PIPE,
                                   text=True,
-                                  creationflags=subprocess.CREATE_NO_WINDOW if platform.system() == "Windows" else 0)
+                                  creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0)
         stdout, stderr = result.communicate(timeout=10)
+
         if result.returncode == 0:
             data = json.loads(stdout)
             if 'devices' in data and len(data['devices']) > 0:
@@ -118,19 +121,19 @@ class HeadsetControlApp(QMainWindow, Ui_MainWindow):
             self.no_device_found()
 
     def manage_led_based_on_battery(self, headset_info):
-        if not self.ledBox.isChecked():
+        if not self.ui.ledBox.isChecked():
             return
         
-        self.lightBatterySpinbox.setEnabled(True)
-        self.lightBatteryLabel.setEnabled(True)
+        self.ui.lightBatterySpinbox.setEnabled(True)
+        self.ui.lightBatteryLabel.setEnabled(True)
         battery_info = headset_info.get("battery", {})
         battery_level = battery_info.get("level", 0)
 
-        if battery_level < self.lightBatterySpinbox.value() and self.led_state:
+        if battery_level < self.ui.lightBatterySpinbox.value() and self.led_state:
             self.toggle_led(False)
             self.led_state = False
             self.save_settings()
-        elif battery_level >= self.lightBatterySpinbox.value() and not self.led_state:
+        elif battery_level >= self.ui.lightBatterySpinbox.value() and not self.led_state:
             self.toggle_led(True)
             self.led_state = True
             self.save_settings()
@@ -140,35 +143,35 @@ class HeadsetControlApp(QMainWindow, Ui_MainWindow):
                          stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE,
                          text=True,
-                         creationflags=subprocess.CREATE_NO_WINDOW if platform.system() == "Windows" else 0)
+                         creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0)
 
     def update_ui_with_headset_info(self, headset_info):
         device_name = headset_info.get("device", "Unknown Device")
         capabilities = headset_info.get("capabilities_str", [])
         battery_info = headset_info.get("battery", {})
 
-        self.deviceLabel.setText(f"{device_name}")
+        self.ui.deviceLabel.setText(f"{device_name}")
 
         battery_status = battery_info.get("status", "UNKNOWN")
         if battery_status == "BATTERY_AVAILABLE":
             battery_level = battery_info.get("level", 0)
-            self.batteryBar.setEnabled(True)
-            self.batteryBar.setValue(battery_level)
-            self.statusLabel.setText(f"{battery_level}%")
+            self.ui.batteryBar.setEnabled(True)
+            self.ui.batteryBar.setValue(battery_level)
+            self.ui.statusLabel.setText(f"{battery_level}%")
             self.tray_icon.setToolTip(f"Battery Level: {battery_level}%")
 
             icon_path = self.get_battery_icon(battery_level, charging=False)
         elif battery_status == "BATTERY_CHARGING":
-            self.batteryBar.setEnabled(True)
-            self.batteryBar.setValue(0)
-            self.statusLabel.setText("Charging")
+            self.ui.batteryBar.setEnabled(True)
+            self.ui.batteryBar.setValue(0)
+            self.ui.statusLabel.setText("Charging")
             self.tray_icon.setToolTip("Battery Charging")
 
             icon_path = self.get_battery_icon(battery_level=None, charging=True)
         else:
-            self.batteryBar.setEnabled(False)
-            self.batteryBar.setValue(0)
-            self.statusLabel.setText("Off")
+            self.ui.batteryBar.setEnabled(False)
+            self.ui.batteryBar.setValue(0)
+            self.ui.statusLabel.setText("Off")
             self.tray_icon.setToolTip("Battery Unavailable")
 
             icon_path = self.get_battery_icon(battery_level=None, missing=True)
@@ -176,16 +179,26 @@ class HeadsetControlApp(QMainWindow, Ui_MainWindow):
         self.tray_icon.setIcon(QIcon(icon_path))
 
         if "lights" in capabilities:
-            self.ledBox.setEnabled(True)
+            self.ui.ledBox.setEnabled(True)
+            self.ui.ledLabel.setEnabled(True)
         else:
-            self.ledBox.setEnabled(False)
+            self.ui.ledBox.setEnabled(False)
+            self.ui.ledLabel.setEnabled(False)
+
+        if "sidetone" in capabilities:
+            self.ui.sidetoneSlider.setEnabled(True)
+            self.ui.sidetoneLabel.setEnabled(True)
+        else:
+            self.ui.sidetoneSlider.setEnabled(False)
+            self.ui.sidetoneLabel.setEnabled(False)
 
         self.toggle_ui_elements(True)
 
     def get_battery_icon(self, battery_level, charging=False, missing=False):
-        if platform.system() == "Windows":
+        if sys.platform == "win32":
             dark_mode = darkdetect.isDark()
-        else:
+        elif sys.platform == "linux":
+            # I will implement using system icons for linux later 
             dark_mode = False
 
         theme = "light" if dark_mode else "dark"
@@ -223,31 +236,28 @@ class HeadsetControlApp(QMainWindow, Ui_MainWindow):
         self.toggle_ui_elements(False)
         self.tray_icon.setToolTip("No Device Found")
 
-    def on_ledbox_state_changed(self, state):
+    def on_ledBox_state_changed(self):
+        lights = True if self.ui.ledBox.isChecked() else False
+        self.toggle_led(lights)
+
+        self.ui.lightBatterySpinbox.setEnabled(True if self.ui.ledBox.isChecked() else False)
+        self.ui.lightBatteryLabel.setEnabled(True if self.ui.ledBox.isChecked() else False)
         self.save_settings()
 
-        if state == 2:
-            subprocess.Popen([HEADSETCONTROL_EXECUTABLE, '-l', '1'],
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE,
-                             text=True,
-                             creationflags=subprocess.CREATE_NO_WINDOW if platform.system() == "Windows" else 0)
-            self.lightBatterySpinbox.setEnabled(True)
-            self.lightBatteryLabel.setEnabled(True)
-        else:
-            subprocess.Popen([HEADSETCONTROL_EXECUTABLE, '-l', '0'],
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE,
-                             text=True,
-                             creationflags=subprocess.CREATE_NO_WINDOW if platform.system() == "Windows" else 0)
-            self.lightBatterySpinbox.setEnabled(False)
-            self.lightBatteryLabel.setEnabled(False)
+    def set_sidetone(self):
+        sidetone_value = self.ui.sidetoneSlider.value()
+        subprocess.Popen([HEADSETCONTROL_EXECUTABLE, '-s', str(sidetone_value)],
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.PIPE,
+                         text=True,
+                         creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0)
+        self.save_settings()
 
-    def toggle_ui_elements(self, show: bool):
-        self.deviceLabel.setVisible(show)
-        self.statusLabel.setVisible(show)
-        self.frame.setVisible(show)
-        self.notFoundLabel.setVisible(not show)
+    def toggle_ui_elements(self, show):
+        self.ui.deviceLabel.setVisible(show)
+        self.ui.statusLabel.setVisible(show)
+        self.ui.frame.setVisible(show)
+        self.ui.notFoundLabel.setVisible(not show)
 
     def show_window(self):
         self.show()
@@ -260,59 +270,47 @@ class HeadsetControlApp(QMainWindow, Ui_MainWindow):
         event.ignore()
         self.hide()
 
-    def on_startupCheckbox_state_changed(self, state):
-        if platform.system() == "Windows":
-            self.set_windows_startup(state)
-        elif platform.system() == "Linux":
-            self.set_linux_startup(state)
+    def on_startupCheckbox_state_changed(self):
+        checked = self.ui.startupCheckbox.isChecked()
 
-    def set_windows_startup(self, state):
-        startup_folder = winshell.startup()
-        shortcut_path = os.path.join(startup_folder, "HeadsetControl-Qt.lnk")
-        target_path = sys.executable
-        working_directory = os.path.dirname(target_path)
+        if sys.platform == "win32":
+            shortcut_path = os.path.join(winshell.startup(), "HeadsetControl-Qt.lnk")
+            target_path = sys.executable
+            working_directory = os.path.dirname(target_path)
 
-        if state == 2:
-            winshell.CreateShortcut(
-                Path=shortcut_path,
-                Target=target_path,
-                Icon=(target_path, 0),
-                Description="Launch HeadsetControl-Qt",
-                StartIn=working_directory
-            )
-        else:
-            if os.path.exists(shortcut_path):
-                os.remove(shortcut_path)
+            if checked:
+                winshell.CreateShortcut(
+                    Path=shortcut_path,
+                    Target=target_path,
+                    Icon=(target_path, 0),
+                    Description="Launch HeadsetControl-Qt",
+                    StartIn=working_directory
+                )
+            else:
+                if os.path.exists(shortcut_path):
+                    os.remove(shortcut_path)
 
-    def set_linux_startup(self, state):
-        if state == 2:
-            if not os.path.exists(os.path.dirname(DESKTOP_FILE_PATH)):
-                os.makedirs(os.path.dirname(DESKTOP_FILE_PATH))
-            with open(DESKTOP_FILE_PATH, 'w') as f:
-                f.write(f"""
-                [Desktop Entry]
-                Type=Application
-                Exec={sys.executable} {__file__}
-                Hidden=false
-                NoDisplay=false
-                X-GNOME-Autostart-enabled=true
-                Name=HeadsetControl-Qt
-                Comment=HeadsetControl-Qt
-                """)
-        else:
-            if os.path.exists(DESKTOP_FILE_PATH):
-                os.remove(DESKTOP_FILE_PATH)
+        elif sys.platform == "Linux":
+            if checked:
+                if not os.path.exists(os.path.dirname(DESKTOP_FILE_PATH)):
+                    os.makedirs(os.path.dirname(DESKTOP_FILE_PATH))
+                with open(DESKTOP_FILE_PATH, 'w') as f:
+                    f.write(f"""
+                    [Desktop Entry]
+                    Type=Application
+                    Exec={sys.executable} {__file__}
+                    Name=HeadsetControl-Qt
+                    """)
+            else:
+                if os.path.exists(DESKTOP_FILE_PATH):
+                    os.remove(DESKTOP_FILE_PATH)
 
     def check_startup_checkbox(self):
-        if platform.system() == "Windows":
-            startup_folder = winshell.startup()
-            shortcut_path = os.path.join(startup_folder, "HeadsetControl-Qt.lnk")
-            self.startupCheckbox.setChecked(os.path.exists(shortcut_path))
-        elif platform.system() == "Linux":
-            if os.path.exists(DESKTOP_FILE_PATH):
-                self.startupCheckbox.setChecked(True)
-            else:
-                self.startupCheckbox.setChecked(False)
+        if sys.platform == "win32":
+            shortcut_path = os.path.join(winshell.startup(), "HeadsetControl-Qt.lnk")
+            self.ui.startupCheckbox.setChecked(os.path.exists(shortcut_path))
+        elif sys.platform == "linux":
+            self.ui.startupCheckbox.setChecked(os.path.exists(DESKTOP_FILE_PATH))
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
