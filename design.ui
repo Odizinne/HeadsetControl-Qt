@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>463</width>
-    <height>226</height>
+    <height>260</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -146,8 +146,53 @@
        <property name="spacing">
         <number>9</number>
        </property>
+       <item row="4" column="0">
+        <widget class="QLabel" name="ledLabel">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Lights</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="2">
+        <widget class="QCheckBox" name="startupCheckbox">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LayoutDirection::RightToLeft</enum>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="lightBatteryLabel">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Disable lights when battery goes below:</string>
+         </property>
+        </widget>
+       </item>
        <item row="2" column="0" colspan="3">
         <layout class="QGridLayout" name="gridLayout_7">
+         <property name="spacing">
+          <number>9</number>
+         </property>
          <item row="0" column="0">
           <widget class="QLabel" name="batteryLabel">
            <property name="minimumSize">
@@ -172,40 +217,43 @@
            <property name="value">
             <number>50</number>
            </property>
+           <property name="textVisible">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="sidetoneLabel">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Sidetone</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QSlider" name="sidetoneSlider">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximum">
+            <number>128</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
           </widget>
          </item>
         </layout>
        </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="startupLabel">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Run at startup</string>
-         </property>
-        </widget>
-       </item>
        <item row="5" column="2">
-        <widget class="QCheckBox" name="startupCheckbox">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LayoutDirection::RightToLeft</enum>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="2">
         <widget class="QSpinBox" name="lightBatterySpinbox">
          <property name="minimumSize">
           <size>
@@ -224,7 +272,7 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="1">
+       <item row="5" column="1">
         <spacer name="horizontalSpacer">
          <property name="orientation">
           <enum>Qt::Orientation::Horizontal</enum>
@@ -240,20 +288,7 @@
          </property>
         </spacer>
        </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="lightBatteryLabel">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Disable lights when battery goes below:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1" colspan="2">
+       <item row="4" column="1" colspan="2">
         <widget class="QCheckBox" name="ledBox">
          <property name="minimumSize">
           <size>
@@ -275,8 +310,8 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="ledLabel">
+       <item row="6" column="0">
+        <widget class="QLabel" name="startupLabel">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -284,7 +319,7 @@
           </size>
          </property>
          <property name="text">
-          <string>Lights</string>
+          <string>Run at startup</string>
          </property>
         </widget>
        </item>
