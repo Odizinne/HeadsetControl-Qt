@@ -21,7 +21,7 @@ elif platform.system() == "Windows":
     STARTUP_FOLDER = winshell.startup()
 
 SETTINGS_FILE = os.path.join(SETTINGS_DIR, "settings.json")
-
+ICONS_DIR = os.path.join("battery_icons")
 if not os.path.exists(SETTINGS_DIR):
     os.makedirs(SETTINGS_DIR)
 
@@ -44,7 +44,8 @@ class HeadsetControlApp(QMainWindow, Ui_MainWindow):
             icon = QIcon.fromTheme("audio-headset-symbolic")
         elif platform.system() == "Windows":
             dark_mode = darkdetect.isDark()
-            icon_path = os.path.join("icons", "icon_dark.png") if not dark_mode else os.path.join("icons", "icon_light.png")
+            theme = "light" if dark_mode else "dark"
+            icon_path = os.path.join(ICONS_DIR, f"missing_{theme}.png")
             icon = QIcon(icon_path)
 
         self.setWindowIcon(icon)
@@ -188,27 +189,34 @@ class HeadsetControlApp(QMainWindow, Ui_MainWindow):
             dark_mode = False
 
         theme = "light" if dark_mode else "dark"
-        icons_dir = os.path.join("battery_icons")
 
         if missing:
-            icon_path = os.path.join(icons_dir, f"missing_{theme}.png")
+            icon_name = f"missing_{theme}.png"
         elif charging:
-            icon_path = os.path.join(icons_dir, f"charging_{theme}.png")
+            icon_name = f"charging_{theme}.png"
         else:
             if battery_level is not None:
-                if battery_level >= 75:
-                    icon_path = os.path.join(icons_dir, f"100_{theme}.png")
-                elif battery_level >= 50:
-                    icon_path = os.path.join(icons_dir, f"75_{theme}.png")
-                elif battery_level >= 25:
-                    icon_path = os.path.join(icons_dir, f"50_{theme}.png")
-                elif battery_level >= 10:
-                    icon_path = os.path.join(icons_dir, f"25_{theme}.png")
-                else:
-                    icon_path = os.path.join(icons_dir, f"10_{theme}.png")
+                battery_levels = {
+                    90: "100",
+                    80: "90",
+                    70: "80",
+                    60: "70",
+                    50: "60",
+                    40: "50",
+                    30: "40",
+                    20: "30",
+                    10: "20",
+                    0: "10"
+                }
+                icon_name = None
+                for level, name in battery_levels.items():
+                    if battery_level >= level:
+                        icon_name = f"{name}_{theme}.png"
+                        break
             else:
-                icon_path = os.path.join(icons_dir, f"missing_{theme}.png")
+                icon_name = f"missing_{theme}.png"
 
+        icon_path = os.path.join(ICONS_DIR, icon_name)
         return icon_path
 
     def no_device_found(self):

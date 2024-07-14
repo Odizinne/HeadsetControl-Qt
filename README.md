@@ -24,3 +24,4 @@ Precompiled windows binaries can be found in [release](https://github.com/Odizin
 ## To-do
 - Build info in readme
 - Add other headsetcontrol supported settings
+- Use system symbolic icons for linux
