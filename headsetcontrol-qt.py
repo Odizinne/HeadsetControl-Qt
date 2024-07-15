@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import sys
 import subprocess
 import json
@@ -306,17 +308,23 @@ class HeadsetControlApp(QMainWindow):
                 if os.path.exists(shortcut_path):
                     os.remove(shortcut_path)
 
-        elif sys.platform == "Linux":
+        elif sys.platform == "linux":
             if checked:
                 if not os.path.exists(os.path.dirname(DESKTOP_FILE_PATH)):
+                    print("os.path.exists(os.path.dirname(DESKTOP_FILE_PATH))")
+                    print(DESKTOP_FILE_PATH)
                     os.makedirs(os.path.dirname(DESKTOP_FILE_PATH))
+                
+                script_folder = os.path.dirname(__file__)
+                desktop_entry_content = (
+                    "[Desktop Entry]\n"
+                    f"Path={script_folder}\n"
+                    "Type=Application\n"
+                    f"Exec={sys.executable} {__file__}\n"
+                    "Name=HeadsetControl-Qt\n"
+)
                 with open(DESKTOP_FILE_PATH, 'w') as f:
-                    f.write(f"""
-                    [Desktop Entry]
-                    Type=Application
-                    Exec={sys.executable} {__file__}
-                    Name=HeadsetControl-Qt
-                    """)
+                    f.write(desktop_entry_content)
             else:
                 if os.path.exists(DESKTOP_FILE_PATH):
                     os.remove(DESKTOP_FILE_PATH)
