@@ -3,16 +3,10 @@ from cx_Freeze import setup, Executable
 
 build_dir = "build/HeadsetControl-Qt"
 
-if sys.platform == "win32":
-    base = "Win32GUI"
-    include_files = ["dependencies/", "icons"]
-    zip_include_packages = ["PyQt6", "winshell", "pywin32", "darkdetect"]
-    icon = "icons/icon.ico"
-elif sys.platform == "linux":
-    base = None
-    include_files = ["icons"]
-    zip_include_packages = ["PyQt6"]
-    icon = None
+base = "Win32GUI"
+include_files = ["dependencies/", "icons"]
+zip_include_packages = ["PyQt6", "winshell", "pywin32", "darkdetect"]
+icon = "icons/icon.ico"
 
 build_exe_options = {
     "build_exe": build_dir,
