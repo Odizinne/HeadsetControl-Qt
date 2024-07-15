@@ -1,16 +1,18 @@
 import sys
 from cx_Freeze import setup, Executable
 
-base = None
 build_dir = "build/HeadsetControl-Qt"
 
 if sys.platform == "win32":
     base = "Win32GUI"
-    include_files = ["dependencies/", "battery_icons"]
+    include_files = ["dependencies/", "icons"]
     zip_include_packages = ["PyQt6", "winshell", "pywin32", "darkdetect"]
+    icon = "icons/icon.ico"
 elif sys.platform == "linux":
-    include_files = ["battery_icons"]
+    base = None
+    include_files = ["icons"]
     zip_include_packages = ["PyQt6"]
+    icon = None
 
 build_exe_options = {
     "build_exe": build_dir,
@@ -23,7 +25,7 @@ executables = [
     Executable(
         script="headsetcontrol-qt.py",
         base=base,
-        icon=None,
+        icon=icon,
         target_name="HeadsetControl-Qt",
     )
 ]

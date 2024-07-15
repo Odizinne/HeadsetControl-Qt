@@ -21,10 +21,9 @@ elif sys.platform == "win32":
     HEADSETCONTROL_EXECUTABLE = os.path.join("dependencies", "headsetcontrol.exe")
     STARTUP_FOLDER = winshell.startup()
     
-ICONS_DIR = os.path.join("battery_icons")
-APP_ICON = os.path.join(ICONS_DIR, "100_light.png")
+ICONS_DIR = os.path.join("icons")
+APP_ICON = os.path.join(ICONS_DIR, "icon.png")
 SETTINGS_FILE = os.path.join(SETTINGS_DIR, "settings.json")
-
 
 class HeadsetControlApp(QMainWindow):
     def __init__(self):
@@ -38,7 +37,7 @@ class HeadsetControlApp(QMainWindow):
         self.light_battery_threshold = None
         self.init_ui()
         self.create_tray_icon()
-        self.read_settings()
+        self.load_settings()
         self.update_headset_info()
         self.init_timer()
         self.check_startup_checkbox()
@@ -79,7 +78,7 @@ class HeadsetControlApp(QMainWindow):
         self.timer.timeout.connect(self.update_headset_info)
         self.timer.start(10000)
 
-    def read_settings(self):
+    def load_settings(self):
         if not os.path.exists(SETTINGS_FILE):
             os.makedirs(SETTINGS_DIR, exist_ok=True)
             self.create_default_settings()
