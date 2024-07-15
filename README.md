@@ -2,7 +2,7 @@
 PyQt6 Gui for headsetcontrol.<br/>
 Windows / linux compatible.
 
-![image](https://github.com/Odizinne/HeadsetControl-Qt/assets/102679854/adb0076a-acfb-4701-bb94-a4f0fc177952)
+![image](assets/screenshot.png)
 
 Features a tray icon with battery status in tooltip.<br/>
 Lights state will be restored on next start.
