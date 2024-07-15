@@ -8,8 +8,6 @@ from PyQt6.QtGui import QIcon, QAction
 from PyQt6.QtCore import QTimer
 from design import Ui_MainWindow
 
-# Linux does not follow system theme. I'll implement it using symbolic icons later
-
 if sys.platform == "linux":
     SETTINGS_DIR = os.path.join(os.path.expanduser("~"), ".config", "headsetcontrol-qt")
     HEADSETCONTROL_EXECUTABLE = "headsetcontrol"
@@ -186,7 +184,10 @@ class HeadsetControlApp(QMainWindow):
 
             icon_path = self.get_battery_icon(battery_level=None, missing=True)
 
-        self.tray_icon.setIcon(QIcon(icon_path))
+        if sys.platform == "win32":
+            self.tray_icon.setIcon(QIcon(icon_path))
+        elif sys.platform == "linux":
+            self.tray_icon.setIcon(QIcon.fromTheme(icon_path))
 
         if "lights" in capabilities:
             self.ui.ledBox.setEnabled(True)
@@ -207,40 +208,45 @@ class HeadsetControlApp(QMainWindow):
     def get_battery_icon(self, battery_level, charging=False, missing=False):
         if sys.platform == "win32":
             dark_mode = darkdetect.isDark()
+            theme = "light" if dark_mode else "dark"
         elif sys.platform == "linux":
             # I will implement using system icons for linux later 
             dark_mode = False
-
-        theme = "light" if dark_mode else "dark"
+            theme = "symbolic"
 
         if missing:
-            icon_name = f"missing_{theme}.png"
+            icon_name = f"battery-missing-{theme}"
         elif charging:
-            icon_name = f"charging_{theme}.png"
+            icon_name = f"battery-charging-{theme}"
         else:
             if battery_level is not None:
                 battery_levels = {
                     90: "100",
-                    80: "90",
-                    70: "80",
-                    60: "70",
-                    50: "60",
-                    40: "50",
-                    30: "40",
-                    20: "30",
-                    10: "20",
-                    0: "10"
+                    80: "090",
+                    70: "080",
+                    60: "070",
+                    50: "060",
+                    40: "050",
+                    30: "040",
+                    20: "030",
+                    10: "020",
+                    0:  "010"
                 }
                 icon_name = None
-                for level, name in battery_levels.items():
+                for level, percentage in battery_levels.items():
                     if battery_level >= level:
-                        icon_name = f"{name}_{theme}.png"
+                        icon_name = f"battery-{percentage}-{theme}"
                         break
             else:
-                icon_name = f"missing_{theme}.png"
+                icon_name = f"battery-missing-{theme}"
 
-        icon_path = os.path.join(ICONS_DIR, icon_name)
-        return icon_path
+        if sys.platform == "win32":
+            icon_name += ".png"
+            icon_path = os.path.join(ICONS_DIR, icon_name)
+            return icon_path
+        elif sys.platform == "linux":
+            icon_path = icon_name
+            return icon_path
 
     def no_device_found(self):
         self.toggle_ui_elements(False)
