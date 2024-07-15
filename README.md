@@ -10,18 +10,31 @@ Lights state will be restored on next start.
 ## Download
 Precompiled windows binaries can be found in [release](https://github.com/Odizinne/HeadsetControl-Qt/releases) section
 
-## Build dependencies
-**Linux**
-- PyQt6
-- [HeadsetControl](https://github.com/Sapd/HeadsetControl)
+## Build and run
 
-**Windows**
+Clone this repository: `git clone https://github.com/Odizinne/HeadsetControl-Qt.git`  
+CD to the cloned repo: `cd HeadsetControl-Qt`
+
+**Windows**  
+Dependencies:
 - PyQt6
 - darkdetect
 - winshell
+
+Install dependencies: `pip install PyQt6 darkdetect winshell`
+Build exe: `python .\setup.py build`
+
+Binaries will be located in `Build` dir.
+
+**Linux**  
+Dependencies:
+- PyQt6 (from package manager is recommended, else use pip)
 - [HeadsetControl](https://github.com/Sapd/HeadsetControl)
 
+There is nothing to build.
+
+Make sure `headsetcontrol-qt.py` is executable: `chmod +x ./headsetcontrol-qt.py`  
+Then run it: `headsetcontrol-qt.py`
+
 ## To-do
-- Build info in readme
-- Add other headsetcontrol supported settings
-- Use system symbolic icons for linux
+- Add other headsetcontrol supported settings (My headset does not support them so i cannot test)
