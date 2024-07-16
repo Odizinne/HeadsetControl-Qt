@@ -21,7 +21,7 @@ Dependencies:
 - darkdetect
 - winshell
 
-Install dependencies: `pip install PyQt6 darkdetect winshell`
+Install dependencies: `pip install PyQt6 darkdetect winshell pywin32`
 
 Build exe:  
 `python .\src\setup.py build`
