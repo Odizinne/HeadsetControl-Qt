@@ -6,7 +6,7 @@
             "type": "shell",
             "command": "${command:python.interpreterPath}",
             "args": [
-                "setup.py",
+                "src/setup.py",
                 "build"
             ],
             "group": {
