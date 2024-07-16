@@ -18,7 +18,7 @@ CD to the cloned repo: `cd HeadsetControl-Qt`
 **Windows**  
 
 Install dependencies:  
-`pip install -r requierements.txt`
+`pip install -r requirements.txt`
 
 Build exe:  
 `python .\src\setup.py build`
