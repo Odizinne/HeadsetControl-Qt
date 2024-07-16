@@ -16,12 +16,9 @@ Clone this repository: `git clone https://github.com/Odizinne/HeadsetControl-Qt.
 CD to the cloned repo: `cd HeadsetControl-Qt`
 
 **Windows**  
-Dependencies:
-- PyQt6
-- darkdetect
-- winshell
 
-Install dependencies: `pip install PyQt6 darkdetect winshell pywin32`
+Install dependencies:  
+`pip install -r requierements.txt`
 
 Build exe:  
 `python .\src\setup.py build`
