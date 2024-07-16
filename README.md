@@ -22,9 +22,12 @@ Dependencies:
 - winshell
 
 Install dependencies: `pip install PyQt6 darkdetect winshell`
-Build exe: `python .\setup.py build`
 
-Binaries will be located in `Build` dir.
+Build exe:  
+`python .\src\setup.py build`
+
+Install directory and create startup shortcut:  
+`python .\src\setup.py install`
 
 **Linux**  
 Dependencies:
