@@ -212,14 +212,12 @@ class HeadsetControlApp(QMainWindow):
             dark_mode = darkdetect.isDark()
             theme = "light" if dark_mode else "dark"
         elif sys.platform == "linux":
-            # I will implement using system icons for linux later 
-            dark_mode = False
             theme = "symbolic"
 
         if missing:
             icon_name = f"battery-missing-{theme}"
         elif charging:
-            icon_name = f"battery-charging-{theme}"
+            icon_name = f"battery-100-charging-{theme}"
         else:
             if battery_level is not None:
                 battery_levels = {
