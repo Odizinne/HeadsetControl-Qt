@@ -8,7 +8,7 @@ Features a tray icon with battery status in tooltip.<br/>
 Lights state will be restored on next start.
 
 ## Download
-Precompiled windows binaries can be found in [release](https://github.com/Odizinne/HeadsetControl-Qt/releases) section
+Precompiled windows binaries can be found in [release](https://odizinne.net/Projects/HeadsetControl-Qt/releases) section
 
 ## Build and run
 
