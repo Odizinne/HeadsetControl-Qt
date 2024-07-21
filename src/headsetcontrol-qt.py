@@ -212,7 +212,11 @@ class HeadsetControlApp(QMainWindow):
             dark_mode = darkdetect.isDark()
             theme = "light" if dark_mode else "dark"
         elif sys.platform == "linux":
-            theme = "symbolic"
+            if os.getenv("XDG_CURRENT_DESKTOP") == "KDE":
+                theme = "symbolic"
+            else:
+                # I cannot detect every desktop and settings, so assume user is using dark theme and use light icons
+                theme = "light"
 
         if missing:
             icon_name = f"battery-missing-{theme}"
