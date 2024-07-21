@@ -49,6 +49,8 @@ class HeadsetControlApp(QMainWindow):
         self.ui.lightBatterySpinbox.valueChanged.connect(self.save_settings)
         self.ui.startupCheckbox.stateChanged.connect(self.on_startupCheckbox_state_changed)
         self.ui.sidetoneSlider.sliderReleased.connect(self.set_sidetone)
+        self.ui.themeComboBox.addItems(["System", "Light", "Dark"])
+        self.ui.themeComboBox.currentIndexChanged.connect(self.on_themeComboBox_index_changed)
 
     def create_tray_icon(self):
         self.tray_icon = QSystemTrayIcon(self)
@@ -91,12 +93,14 @@ class HeadsetControlApp(QMainWindow):
             self.ui.lightBatteryLabel.setEnabled(self.led_state)
             self.ui.lightBatterySpinbox.setValue(self.light_battery_threshold)
             self.ui.sidetoneSlider.setValue(settings.get("sidetone", 0))
+            self.ui.themeComboBox.setCurrentText(settings.get("theme", "System"))
 
     def save_settings(self):
         settings = {
             "led_state": self.ui.ledBox.isChecked(),
             "light_battery_threshold": self.ui.lightBatterySpinbox.value(),
-            "sidetone": self.ui.sidetoneSlider.value()
+            "sidetone": self.ui.sidetoneSlider.value(),
+            "theme": self.ui.themeComboBox.currentText()
         }
         with open(SETTINGS_FILE, 'w') as f:
             json.dump(settings, f, indent=4)
@@ -105,17 +109,14 @@ class HeadsetControlApp(QMainWindow):
         settings = {
             "led_state": True,
             "light_battery_threshold": 50,
-            "sidetone": 0
+            "sidetone": 0,
+            "theme": "System"
         }
         with open(SETTINGS_FILE, 'w') as f:
             json.dump(settings, f, indent=4)
 
     def update_headset_info(self):
-        result = subprocess.Popen([HEADSETCONTROL_EXECUTABLE, '-o', 'json'],
-                                  stdout=subprocess.PIPE,
-                                  stderr=subprocess.PIPE,
-                                  text=True,
-                                  creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0)
+        result = subprocess.Popen([HEADSETCONTROL_EXECUTABLE, '-o', 'json'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0)
         stdout, stderr = result.communicate(timeout=10)
 
         if result.returncode == 0:
@@ -149,11 +150,7 @@ class HeadsetControlApp(QMainWindow):
             self.save_settings()
 
     def toggle_led(self, state):
-        subprocess.Popen([HEADSETCONTROL_EXECUTABLE, '-l', '1' if state else '0'],
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE,
-                         text=True,
-                         creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0)
+        subprocess.Popen([HEADSETCONTROL_EXECUTABLE, '-l', '1' if state else '0'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0)
 
     def update_ui_with_headset_info(self, headset_info):
         device_name = headset_info.get("device", "Unknown Device")
@@ -208,15 +205,20 @@ class HeadsetControlApp(QMainWindow):
         self.toggle_ui_elements(True)
 
     def get_battery_icon(self, battery_level, charging=False, missing=False):
-        if sys.platform == "win32":
-            dark_mode = darkdetect.isDark()
-            theme = "light" if dark_mode else "dark"
-        elif sys.platform == "linux":
-            if os.getenv("XDG_CURRENT_DESKTOP") == "KDE":
-                theme = "symbolic"
-            else:
-                # I cannot detect every desktop and settings, so assume user is using dark theme and use light icons
-                theme = "light"
+        if self.ui.themeComboBox.currentText() == "System":
+            if sys.platform == "win32":
+                dark_mode = darkdetect.isDark()
+                theme = "light" if dark_mode else "dark"
+            elif sys.platform == "linux":
+                if os.getenv("XDG_CURRENT_DESKTOP") == "KDE":
+                    theme = "symbolic"
+                else:
+                    # I cannot detect every desktop and settings, so assume user is using dark theme and use light icons
+                    theme = "light"
+        elif self.ui.themeComboBox.currentText() == "Light":
+            theme = "light"
+        elif self.ui.themeComboBox.currentText() == "Dark":
+            theme = "dark"
 
         if missing:
             icon_name = f"battery-missing-{theme}"
@@ -264,19 +266,21 @@ class HeadsetControlApp(QMainWindow):
         self.ui.lightBatteryLabel.setEnabled(True if self.ui.ledBox.isChecked() else False)
         self.save_settings()
 
+    def on_themeComboBox_index_changed(self):
+        self.update_headset_info()
+        self.save_settings()
+
     def set_sidetone(self):
         sidetone_value = self.ui.sidetoneSlider.value()
-        subprocess.Popen([HEADSETCONTROL_EXECUTABLE, '-s', str(sidetone_value)],
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE,
-                         text=True,
-                         creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0)
+        subprocess.Popen([HEADSETCONTROL_EXECUTABLE, '-s', str(sidetone_value)], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0)
         self.save_settings()
 
     def toggle_ui_elements(self, show):
         self.ui.deviceLabel.setVisible(show)
         self.ui.statusLabel.setVisible(show)
         self.ui.frame.setVisible(show)
+        self.ui.settingsFrame.setVisible(show)
+        self.ui.settingsLabel.setVisible(show)
         self.ui.notFoundLabel.setVisible(not show)
 
     def show_window(self):
