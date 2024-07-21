@@ -2,14 +2,15 @@
 PyQt6 Gui for headsetcontrol.<br/>
 Windows / linux compatible.
 
-For linux this was designed for use with plasma icons.  
-Gnome users should have a look at [headsetcontrol-indicator](https://github.com/Odizinne/headsetcontrol-indicator) instead.  
-For any other environment, light custom icon will be used by default.
-
 ![image](assets/screenshot.png)
 
 Features a tray icon with battery status in tooltip.<br/>
 Lights state will be restored on next start.
+
+Linux compatibility was designed with plasma system icons in mind.  
+Gnome users should have a look at [headsetcontrol-indicator](https://github.com/Odizinne/headsetcontrol-indicator) instead.  
+For any other environment, light custom icons will be used by default.  
+You can change it in application settings.
 
 ## Download
 Precompiled windows binaries can be found in [release](https://odizinne.net/Odizinne/HeadsetControl-Qt/releases/latest) section
