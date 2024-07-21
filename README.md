@@ -3,7 +3,8 @@ PyQt6 Gui for headsetcontrol.<br/>
 Windows / linux compatible.
 
 For linux this was designed for use with plasma icons.  
-Gnome users should have a look at [headsetcontrol-indicator](https://github.com/Odizinne/headsetcontrol-indicator) instead.
+Gnome users should have a look at [headsetcontrol-indicator](https://github.com/Odizinne/headsetcontrol-indicator) instead.  
+For any other environment, light custom icon will be used by default.
 
 ![image](assets/screenshot.png)
 
