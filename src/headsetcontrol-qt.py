@@ -57,7 +57,7 @@ class HeadsetControlApp(QMainWindow):
         self.tray_icon.setIcon(QIcon(APP_ICON))
         tray_menu = QMenu(self)
         show_action = QAction("Show", self)
-        show_action.triggered.connect(self.show_window)
+        show_action.triggered.connect(self.toggle_window)
         tray_menu.addAction(show_action)
         exit_action = QAction("Exit", self)
         exit_action.triggered.connect(self.exit_app)
@@ -68,12 +68,15 @@ class HeadsetControlApp(QMainWindow):
 
     def tray_icon_activated(self, reason):
         if reason == QSystemTrayIcon.ActivationReason.Trigger:
-            if self.isVisible():
-                self.hide()
-                self.tray_icon.contextMenu().actions()[0].setText("Show")
-            else:
-                self.show()
-                self.tray_icon.contextMenu().actions()[0].setText("Hide")
+            self.toggle_window()
+
+    def toggle_window(self):
+        if self.isVisible():
+            self.hide()
+            self.tray_icon.contextMenu().actions()[0].setText("Show")
+        else:
+            self.show()
+            self.tray_icon.contextMenu().actions()[0].setText("Hide")
 
     def init_timer(self):
         self.timer = QTimer(self)
@@ -317,8 +320,6 @@ class HeadsetControlApp(QMainWindow):
         elif sys.platform == "linux":
             if checked:
                 if not os.path.exists(os.path.dirname(DESKTOP_FILE_PATH)):
-                    print("os.path.exists(os.path.dirname(DESKTOP_FILE_PATH))")
-                    print(DESKTOP_FILE_PATH)
                     os.makedirs(os.path.dirname(DESKTOP_FILE_PATH))
                 
                 script_folder = os.path.dirname(__file__)
