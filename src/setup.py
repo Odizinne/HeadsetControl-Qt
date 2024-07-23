@@ -46,7 +46,7 @@ class InstallCommand(_install):
 
         shortcut_path = os.path.join(winshell.programs(), "HeadsetControl-Qt.lnk")
         target = os.path.join(install_dir, "HeadsetControl-Qt.exe")
-        icon = os.path.join(src_dir, "icons/icon.ico")
+        icon = os.path.join(install_dir, "icons/icon.ico")
 
         winshell.CreateShortcut(
             Path=shortcut_path,

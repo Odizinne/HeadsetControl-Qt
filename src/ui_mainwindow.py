@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file '.\src\ui\design.ui'
+# Form implementation generated from reading ui file '.\ui\design.ui'
 #
 # Created by: PyQt6 UI code generator 6.7.0
 #
@@ -9,16 +9,16 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(487, 344)
+class Ui_HeadsetControlQt(object):
+    def setupUi(self, HeadsetControlQt):
+        HeadsetControlQt.setObjectName("HeadsetControlQt")
+        HeadsetControlQt.resize(487, 344)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
-        MainWindow.setSizePolicy(sizePolicy)
-        self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
+        sizePolicy.setHeightForWidth(HeadsetControlQt.sizePolicy().hasHeightForWidth())
+        HeadsetControlQt.setSizePolicy(sizePolicy)
+        self.centralwidget = QtWidgets.QWidget(parent=HeadsetControlQt)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout_2.setContentsMargins(9, 9, 9, 9)
@@ -158,21 +158,21 @@ class Ui_MainWindow(object):
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.gridLayout_5.addItem(spacerItem1, 2, 1, 1, 1)
         self.gridLayout_2.addWidget(self.frame, 1, 0, 1, 2)
-        MainWindow.setCentralWidget(self.centralwidget)
+        HeadsetControlQt.setCentralWidget(self.centralwidget)
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.retranslateUi(HeadsetControlQt)
+        QtCore.QMetaObject.connectSlotsByName(HeadsetControlQt)
 
-    def retranslateUi(self, MainWindow):
+    def retranslateUi(self, HeadsetControlQt):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.statusLabel.setText(_translate("MainWindow", "TextLabel"))
-        self.deviceLabel.setText(_translate("MainWindow", "TextLabel"))
-        self.notFoundLabel.setText(_translate("MainWindow", "No supported headset found."))
-        self.settingsLabel.setText(_translate("MainWindow", "General settings"))
-        self.label.setText(_translate("MainWindow", "Icon theme"))
-        self.startupLabel.setText(_translate("MainWindow", "Run at startup"))
-        self.lightBatteryLabel.setText(_translate("MainWindow", "Disable lights when battery goes below:"))
-        self.ledLabel.setText(_translate("MainWindow", "Lights"))
-        self.batteryLabel.setText(_translate("MainWindow", "Battery"))
-        self.sidetoneLabel.setText(_translate("MainWindow", "Sidetone"))
+        HeadsetControlQt.setWindowTitle(_translate("HeadsetControlQt", "MainWindow"))
+        self.statusLabel.setText(_translate("HeadsetControlQt", "TextLabel"))
+        self.deviceLabel.setText(_translate("HeadsetControlQt", "TextLabel"))
+        self.notFoundLabel.setText(_translate("HeadsetControlQt", "No supported headset found."))
+        self.settingsLabel.setText(_translate("HeadsetControlQt", "General settings"))
+        self.label.setText(_translate("HeadsetControlQt", "Icon theme"))
+        self.startupLabel.setText(_translate("HeadsetControlQt", "Run at startup"))
+        self.lightBatteryLabel.setText(_translate("HeadsetControlQt", "Disable lights when battery goes below:"))
+        self.ledLabel.setText(_translate("HeadsetControlQt", "Lights"))
+        self.batteryLabel.setText(_translate("HeadsetControlQt", "Battery"))
+        self.sidetoneLabel.setText(_translate("HeadsetControlQt", "Sidetone"))

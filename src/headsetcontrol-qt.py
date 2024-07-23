@@ -8,7 +8,7 @@ import os
 from PyQt6.QtWidgets import QApplication, QMainWindow, QSystemTrayIcon, QMenu
 from PyQt6.QtGui import QIcon, QAction
 from PyQt6.QtCore import QTimer
-from design import Ui_MainWindow
+from ui_mainwindow import Ui_HeadsetControlQt
 
 if sys.platform == "linux":
     SETTINGS_DIR = os.path.join(os.path.expanduser("~"), ".config", "headsetcontrol-qt")
@@ -28,7 +28,7 @@ SETTINGS_FILE = os.path.join(SETTINGS_DIR, "settings.json")
 class HeadsetControlApp(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.ui = Ui_MainWindow()
+        self.ui = Ui_HeadsetControlQt()
         self.ui.setupUi(self)
         self.setWindowTitle("HeadsetControl-Qt")
         self.setWindowIcon(QIcon(APP_ICON))
