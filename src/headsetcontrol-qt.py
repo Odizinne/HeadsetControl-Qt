@@ -9,6 +9,7 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QSystemTrayIcon, QMenu
 from PyQt6.QtGui import QIcon, QAction
 from PyQt6.QtCore import QTimer
 from ui_mainwindow import Ui_HeadsetControlQt
+from color_utils import set_frame_color_based_on_window
 
 if sys.platform == "linux":
     SETTINGS_DIR = os.path.join(os.path.expanduser("~"), ".config", "headsetcontrol-qt")
@@ -45,6 +46,8 @@ class HeadsetControlApp(QMainWindow):
         self.on_ledBox_state_changed()
 
     def init_ui(self):
+        set_frame_color_based_on_window(self, self.ui.frame)
+        set_frame_color_based_on_window(self, self.ui.settingsFrame)
         self.ui.ledBox.stateChanged.connect(self.on_ledBox_state_changed)
         self.ui.lightBatterySpinbox.valueChanged.connect(self.save_settings)
         self.ui.startupCheckbox.stateChanged.connect(self.on_startupCheckbox_state_changed)
@@ -345,6 +348,7 @@ class HeadsetControlApp(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    app.setStyle("Fusion")
     window = HeadsetControlApp()
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     sys.exit(app.exec())
