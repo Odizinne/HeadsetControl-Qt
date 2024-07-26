@@ -43,3 +43,4 @@ Then run it: `headsetcontrol-qt.py`
 
 ## To-do
 - Add other headsetcontrol supported settings (My headset does not support them so i cannot test)
+- Build linux appimage
