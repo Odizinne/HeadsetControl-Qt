@@ -30,6 +30,7 @@ executables = [
     )
 ]
 
+
 class InstallCommand(_install):
     def run(self):
         if not os.path.exists(install_dir):

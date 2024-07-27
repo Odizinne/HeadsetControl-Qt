@@ -1,5 +1,6 @@
 from PyQt6.QtGui import QColor, QPalette, QBrush
 
+
 def set_frame_color_based_on_window(window, frame):
     def adjust_color(color, factor):
         r, g, b, a = color.red(), color.green(), color.blue(), color.alpha()

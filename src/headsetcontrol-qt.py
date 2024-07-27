@@ -3,7 +3,6 @@
 import sys
 import subprocess
 import json
-import signal
 import os
 from PyQt6.QtWidgets import QApplication, QMainWindow, QSystemTrayIcon, QMenu
 from PyQt6.QtGui import QIcon, QAction
@@ -11,24 +10,28 @@ from PyQt6.QtCore import QTimer
 from ui_mainwindow import Ui_HeadsetControlQt
 from color_utils import set_frame_color_based_on_window
 
-if sys.platform == "linux":
-    SETTINGS_DIR = os.path.join(os.path.expanduser("~"), ".config", "headsetcontrol-qt")
-    HEADSETCONTROL_EXECUTABLE = "headsetcontrol"
-    DESKTOP_FILE_PATH = os.path.join(os.path.expanduser("~"), ".config", "autostart", "headsetcontrol-qt.desktop")
-elif sys.platform == "win32":
+if sys.platform == "win32":
     import winshell
     import darkdetect
+
     SETTINGS_DIR = os.path.join(os.getenv("APPDATA"), "headsetcontrol-qt")
     HEADSETCONTROL_EXECUTABLE = os.path.join("dependencies", "headsetcontrol.exe")
     STARTUP_FOLDER = winshell.startup()
-    
+else:
+    SETTINGS_DIR = os.path.join(os.path.expanduser("~"), ".config", "headsetcontrol-qt")
+    HEADSETCONTROL_EXECUTABLE = "headsetcontrol"
+    DESKTOP_FILE_PATH = os.path.join(os.path.expanduser("~"), ".config", "autostart", "headsetcontrol-qt.desktop")
+
 ICONS_DIR = os.path.join("icons")
 APP_ICON = os.path.join(ICONS_DIR, "icon.png")
 SETTINGS_FILE = os.path.join(SETTINGS_DIR, "settings.json")
 
+
 class HeadsetControlApp(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.timer = None
+        self.tray_icon = None
         self.ui = Ui_HeadsetControlQt()
         self.ui.setupUi(self)
         self.setWindowTitle("HeadsetControl-Qt")
@@ -50,7 +53,7 @@ class HeadsetControlApp(QMainWindow):
         set_frame_color_based_on_window(self, self.ui.settingsFrame)
         self.ui.ledBox.stateChanged.connect(self.on_ledBox_state_changed)
         self.ui.lightBatterySpinbox.valueChanged.connect(self.save_settings)
-        self.ui.startupCheckbox.stateChanged.connect(self.on_startupCheckbox_state_changed)
+        self.ui.startupCheckbox.stateChanged.connect(self.on_startup_checkbox_state_changed)
         self.ui.sidetoneSlider.sliderReleased.connect(self.set_sidetone)
         self.ui.themeComboBox.addItems(["System", "Light", "Dark"])
         self.ui.themeComboBox.currentIndexChanged.connect(self.on_themeComboBox_index_changed)
@@ -122,7 +125,15 @@ class HeadsetControlApp(QMainWindow):
             json.dump(settings, f, indent=4)
 
     def update_headset_info(self):
-        result = subprocess.Popen([HEADSETCONTROL_EXECUTABLE, '-o', 'json'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0)
+        command = [HEADSETCONTROL_EXECUTABLE, '-o', 'json']
+        creation_flags = subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0
+        result = subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            creationflags=creation_flags
+        )
         stdout, stderr = result.communicate(timeout=10)
 
         if result.returncode == 0:
@@ -140,7 +151,7 @@ class HeadsetControlApp(QMainWindow):
     def manage_led_based_on_battery(self, headset_info):
         if not self.ui.ledBox.isChecked():
             return
-        
+
         self.ui.lightBatterySpinbox.setEnabled(True)
         self.ui.lightBatteryLabel.setEnabled(True)
         battery_info = headset_info.get("battery", {})
@@ -156,7 +167,15 @@ class HeadsetControlApp(QMainWindow):
             self.save_settings()
 
     def toggle_led(self, state):
-        subprocess.Popen([HEADSETCONTROL_EXECUTABLE, '-l', '1' if state else '0'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0)
+        command = [HEADSETCONTROL_EXECUTABLE, '-l', '1' if state else '0']
+        creation_flags = subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0
+        subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            creationflags=creation_flags
+        )
 
     def update_ui_with_headset_info(self, headset_info):
         device_name = headset_info.get("device", "Unknown Device")
@@ -211,6 +230,7 @@ class HeadsetControlApp(QMainWindow):
         self.toggle_ui_elements(True)
 
     def get_battery_icon(self, battery_level, charging=False, missing=False):
+        theme = None
         if self.ui.themeComboBox.currentText() == "System":
             if sys.platform == "win32":
                 dark_mode = darkdetect.isDark()
@@ -242,7 +262,7 @@ class HeadsetControlApp(QMainWindow):
                     30: "040",
                     20: "030",
                     10: "020",
-                    0:  "010"
+                    0: "010"
                 }
                 icon_name = None
                 for level, percentage in battery_levels.items():
@@ -278,7 +298,15 @@ class HeadsetControlApp(QMainWindow):
 
     def set_sidetone(self):
         sidetone_value = self.ui.sidetoneSlider.value()
-        subprocess.Popen([HEADSETCONTROL_EXECUTABLE, '-s', str(sidetone_value)], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0)
+        command = [HEADSETCONTROL_EXECUTABLE, '-s', str(sidetone_value)]
+        creation_flags = subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0
+        subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            creationflags=creation_flags
+        )
         self.save_settings()
 
     def toggle_ui_elements(self, show):
@@ -300,7 +328,7 @@ class HeadsetControlApp(QMainWindow):
         event.ignore()
         self.hide()
 
-    def on_startupCheckbox_state_changed(self):
+    def on_startup_checkbox_state_changed(self):
         checked = self.ui.startupCheckbox.isChecked()
 
         if sys.platform == "win32":
@@ -324,7 +352,7 @@ class HeadsetControlApp(QMainWindow):
             if checked:
                 if not os.path.exists(os.path.dirname(DESKTOP_FILE_PATH)):
                     os.makedirs(os.path.dirname(DESKTOP_FILE_PATH))
-                
+
                 script_folder = os.path.dirname(__file__)
                 desktop_entry_content = (
                     "[Desktop Entry]\n"
@@ -332,7 +360,7 @@ class HeadsetControlApp(QMainWindow):
                     "Type=Application\n"
                     f"Exec={sys.executable} {__file__}\n"
                     "Name=HeadsetControl-Qt\n"
-)
+                )
                 with open(DESKTOP_FILE_PATH, 'w') as f:
                     f.write(desktop_entry_content)
             else:
@@ -346,9 +374,9 @@ class HeadsetControlApp(QMainWindow):
         elif sys.platform == "linux":
             self.ui.startupCheckbox.setChecked(os.path.exists(DESKTOP_FILE_PATH))
 
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
     window = HeadsetControlApp()
-    signal.signal(signal.SIGINT, signal.SIG_DFL)
     sys.exit(app.exec())
