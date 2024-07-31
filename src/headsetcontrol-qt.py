@@ -55,8 +55,6 @@ class HeadsetControlApp(QMainWindow):
             self.ui.lightBatterySpinbox.setFrame(True)
             self.ui.notificationBatterySpinbox.setFrame(True)
             self.ui.themeComboBox.setFrame(True)
-            self.ui.notification_label.setEnabled(False)
-            self.ui.notificationBatterySpinbox.setEnabled(False)
 
         self.ui.ledBox.stateChanged.connect(self.on_ledBox_state_changed)
         self.ui.lightBatterySpinbox.valueChanged.connect(self.save_settings)
@@ -147,6 +145,7 @@ class HeadsetControlApp(QMainWindow):
                 headset_info = data["devices"][0]
                 self.update_ui_with_headset_info(headset_info)
                 self.manage_led_based_on_battery(headset_info)
+                self.send_notification_based_on_battery(headset_info)
             else:
                 self.no_device_found()
         else:
@@ -185,10 +184,9 @@ class HeadsetControlApp(QMainWindow):
             and not self.notification_sent
             and not is_charging
         ):
-            if sys.platform == "win32":
-                self.send_notification(
-                    "Low battery", f"{headset_name} has {battery_level}% battery left.", QIcon("icons/icon.png"), 3000
-                )
+            self.send_notification(
+                "Low battery", f"{headset_name} has {battery_level}% battery left.", QIcon("icons/icon.png"), 3000
+            )
             self.notification_sent = True
         elif (
             battery_level >= self.ui.notificationBatterySpinbox.value() + 5
@@ -197,8 +195,8 @@ class HeadsetControlApp(QMainWindow):
         ):
             self.notification_sent = False
 
-    def send_notification(self, title, message):
-        self.tray_icon.showMessage("Low battery", "Headset has .", QIcon("icons/icon.png"), 3000)
+    def send_notification(self, title, message, icon, duration):
+        self.tray_icon.showMessage(title, message, icon, duration)
 
     def toggle_led(self, state):
         command = [HEADSETCONTROL_EXECUTABLE, "-l", "1" if state else "0"]
