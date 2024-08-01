@@ -49,12 +49,13 @@ class HeadsetControlApp(QMainWindow):
         self.on_ledBox_state_changed()
 
     def init_ui(self):
-        if not sys.platform == "win32":
-            set_frame_color_based_on_window(self, self.ui.frame)
-            set_frame_color_based_on_window(self, self.ui.settingsFrame)
+        if app.style().objectName() != "windows11":
             self.ui.lightBatterySpinbox.setFrame(True)
             self.ui.notificationBatterySpinbox.setFrame(True)
             self.ui.themeComboBox.setFrame(True)
+            if app.style().objectName() == "fusion":
+                set_frame_color_based_on_window(self, self.ui.frame)
+                set_frame_color_based_on_window(self, self.ui.settingsFrame)
 
         self.ui.ledBox.stateChanged.connect(self.on_ledBox_state_changed)
         self.ui.lightBatterySpinbox.valueChanged.connect(self.save_settings)
