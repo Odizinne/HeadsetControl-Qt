@@ -161,13 +161,13 @@ class HeadsetControlApp(QMainWindow):
         battery_info = headset_info.get("battery", {})
         battery_level = battery_info.get("level", 0)
         battery_status = battery_info.get("status", "UNKNOWN")
-        is_charging = battery_status == "BATTERY_CHARGING"
+        available = battery_status == "BATTERY_AVAILABLE"
 
-        if battery_level < self.ui.lightBatterySpinbox.value() and self.led_state and not is_charging:
+        if battery_level < self.ui.lightBatterySpinbox.value() and self.led_state and available:
             self.toggle_led(False)
             self.led_state = False
             self.save_settings()
-        elif battery_level >= self.ui.lightBatterySpinbox.value() + 5 and not self.led_state and not is_charging:
+        elif battery_level >= self.ui.lightBatterySpinbox.value() + 5 and not self.led_state and available:
             self.toggle_led(True)
             self.led_state = True
             self.save_settings()
@@ -177,22 +177,14 @@ class HeadsetControlApp(QMainWindow):
         headset_name = headset_info.get("device", "Unknown Device")
         battery_level = battery_info.get("level", 0)
         battery_status = battery_info.get("status", "UNKNOWN")
-        is_charging = battery_status == "BATTERY_CHARGING"
+        available = battery_status == "BATTERY_AVAILABLE"
 
-        if (
-            battery_level < self.ui.notificationBatterySpinbox.value()
-            and not self.notification_sent
-            and not is_charging
-        ):
+        if battery_level < self.ui.notificationBatterySpinbox.value() and not self.notification_sent and available:
             self.send_notification(
                 "Low battery", f"{headset_name} has {battery_level}% battery left.", QIcon("icons/icon.png"), 3000
             )
             self.notification_sent = True
-        elif (
-            battery_level >= self.ui.notificationBatterySpinbox.value() + 5
-            and self.notification_sent
-            and not is_charging
-        ):
+        elif battery_level >= self.ui.notificationBatterySpinbox.value() + 5 and self.notification_sent and available:
             self.notification_sent = False
 
     def send_notification(self, title, message, icon, duration):
