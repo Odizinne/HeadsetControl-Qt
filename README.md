@@ -1,4 +1,7 @@
 # HeadsetControl-Qt
+[![Github All Releases](https://img.shields.io/github/downloads/odizinne/headsetcontrol-qt/total.svg)]()
+[![license](https://img.shields.io/github/license/odizinne/headsetcontrol-qt)]()
+
 PyQt6 Gui for headsetcontrol.<br/>
 Windows / linux compatible.
 
