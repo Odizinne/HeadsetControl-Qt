@@ -15,6 +15,10 @@ Gnome users should have a look at [headsetcontrol-indicator](https://github.com/
 For any other environment, light custom icons will be used by default.  
 You can change it in application settings.
 
+## Supported devices
+
+Supported devices list can be found [here](https://github.com/Sapd/HeadsetControl?tab=readme-ov-file#supported-headsets).
+
 ## Download
 Precompiled windows binaries can be found in [release](https://odizinne.net/Odizinne/HeadsetControl-Qt/releases/latest) section
 
