@@ -9,6 +9,7 @@ from PyQt6.QtGui import QIcon, QAction
 from PyQt6.QtCore import QTimer
 from ui_mainwindow import Ui_HeadsetControlQt
 from color_utils import set_frame_color_based_on_window
+from utils import is_windows_10
 
 if sys.platform == "win32":
     import winshell
@@ -394,5 +395,7 @@ class HeadsetControlApp(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    if is_windows_10():
+        app.setStyle("fusion")
     window = HeadsetControlApp()
     sys.exit(app.exec())
