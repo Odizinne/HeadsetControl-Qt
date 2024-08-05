@@ -1,0 +1,40 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12.4'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Build executable
+        run: python src/setup.py build
+
+      - name: Zip HeadsetControl-Qt folder
+        run: |
+          $zipFile = "build/HeadsetControl-Qt_win64.zip"
+          $folder = "build/HeadsetControl-Qt"
+          Compress-Archive -Path $folder -DestinationPath $zipFile
+        shell: pwsh
+
+      - name: Upload HeadsetControl-Qt zip
+        uses: actions/upload-artifact@v3
+        with:
+          name: HeadsetControl-Qt
+          path: build/HeadsetControl-Qt_win64.zip
