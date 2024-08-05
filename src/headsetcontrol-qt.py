@@ -6,7 +6,7 @@ import json
 import os
 from PyQt6.QtWidgets import QApplication, QMainWindow, QSystemTrayIcon, QMenu
 from PyQt6.QtGui import QIcon, QAction
-from PyQt6.QtCore import QTimer
+from PyQt6.QtCore import QTimer, QTranslator, QLocale
 from ui_mainwindow import Ui_HeadsetControlQt
 from color_utils import set_frame_color_based_on_window
 from utils import is_windows_10
@@ -395,6 +395,21 @@ class HeadsetControlApp(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    translator = QTranslator()
+    locale = QLocale.system().name()
+    if locale.startswith("en"):
+        file_name = "tr/qms_en.qm"
+    elif locale.startswith("es"):
+        file_name = "tr/qms_es.qm"
+    elif locale.startswith("fr"):
+        file_name = "tr/qms_fr.qm"
+    elif locale.startswith("de"):
+        file_name = "tr/qms_de.qm"
+    else:
+        file_name = None
+
+    if file_name and translator.load(file_name):
+        app.installTranslator(translator)
     if is_windows_10():
         app.setStyle("fusion")
     window = HeadsetControlApp()
