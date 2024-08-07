@@ -63,7 +63,9 @@ class HeadsetControlApp(QMainWindow):
         self.ui.notificationBatterySpinbox.valueChanged.connect(self.save_settings)
         self.ui.startupCheckbox.stateChanged.connect(self.on_startup_checkbox_state_changed)
         self.ui.sidetoneSlider.sliderReleased.connect(self.set_sidetone)
-        self.ui.themeComboBox.addItems(["System", "Light", "Dark"])
+        self.ui.themeComboBox.addItem(self.tr("System"))
+        self.ui.themeComboBox.addItem(self.tr("Light"))
+        self.ui.themeComboBox.addItem(self.tr("Dark"))
         self.ui.themeComboBox.currentIndexChanged.connect(self.on_themeComboBox_index_changed)
 
     def create_tray_icon(self):
@@ -110,7 +112,7 @@ class HeadsetControlApp(QMainWindow):
             self.ui.lightBatterySpinbox.setValue(settings.get("light_battery_threshold", 20))
             self.ui.notificationBatterySpinbox.setValue(settings.get("notification_battery_threshold", 20))
             self.ui.sidetoneSlider.setValue(settings.get("sidetone", 0))
-            self.ui.themeComboBox.setCurrentText(settings.get("theme", "System"))
+            self.ui.themeComboBox.setCurrentIndex(settings.get("theme", 0))
 
     def save_settings(self):
         settings = {
@@ -118,7 +120,7 @@ class HeadsetControlApp(QMainWindow):
             "light_battery_threshold": self.ui.lightBatterySpinbox.value(),
             "notification_battery_threshold": self.ui.notificationBatterySpinbox.value(),
             "sidetone": self.ui.sidetoneSlider.value(),
-            "theme": self.ui.themeComboBox.currentText(),
+            "theme": self.ui.themeComboBox.currentIndex(),
         }
         with open(SETTINGS_FILE, "w") as f:
             json.dump(settings, f, indent=4)
@@ -253,7 +255,8 @@ class HeadsetControlApp(QMainWindow):
 
     def get_battery_icon(self, battery_level, charging=False, missing=False):
         theme = None
-        if self.ui.themeComboBox.currentText() == "System":
+        print(self.ui.themeComboBox.currentIndex())
+        if self.ui.themeComboBox.currentIndex() == 0:
             if sys.platform == "win32":
                 dark_mode = darkdetect.isDark()
                 theme = "light" if dark_mode else "dark"
@@ -263,13 +266,14 @@ class HeadsetControlApp(QMainWindow):
                 else:
                     # I cannot detect every desktop and settings, so assume user is using dark theme and use light icons
                     theme = "light"
-        elif self.ui.themeComboBox.currentText() == "Light":
+        elif self.ui.themeComboBox.currentIndex() == 1:
             theme = "light"
-        elif self.ui.themeComboBox.currentText() == "Dark":
+        elif self.ui.themeComboBox.currentIndex() == 2:
             theme = "dark"
 
         if missing:
             icon_name = f"battery-missing-{theme}"
+            print(icon_name)
         elif charging:
             icon_name = f"battery-100-charging-{theme}"
         else:

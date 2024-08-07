@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file '.\designer\ui_mainwindow.ui'
+# Form implementation generated from reading ui file '.\src\designer\ui_mainwindow.ui'
 #
 # Created by: PyQt6 UI code generator 6.7.0
 #
@@ -177,7 +177,7 @@ class Ui_HeadsetControlQt(object):
 
     def retranslateUi(self, HeadsetControlQt):
         _translate = QtCore.QCoreApplication.translate
-        HeadsetControlQt.setWindowTitle(_translate("HeadsetControlQt", "MainWindow"))
+        HeadsetControlQt.setWindowTitle(_translate("HeadsetControlQt", "HeadsetControl-Qt"))
         self.notFoundLabel.setText(_translate("HeadsetControlQt", "No supported headset found."))
         self.label.setText(_translate("HeadsetControlQt", "Icon theme"))
         self.startupLabel.setText(_translate("HeadsetControlQt", "Run at startup"))
