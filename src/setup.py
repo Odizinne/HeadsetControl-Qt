@@ -5,7 +5,7 @@ src_dir = os.path.dirname(os.path.abspath(__file__))
 build_dir = "build/HeadsetControl-Qt"
 install_dir = os.path.join(os.getenv("LOCALAPPDATA"), "programs", "HeadsetControl-Qt")
 
-include_files = [os.path.join(src_dir, "dependencies/"), os.path.join(src_dir, "icons")]
+include_files = [os.path.join(src_dir, "dependencies/"), os.path.join(src_dir, "icons"), os.path.join(src_dir, "tr/")]
 
 zip_include_packages = ["PyQt6"]
 
