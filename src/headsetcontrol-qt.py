@@ -396,20 +396,16 @@ class HeadsetControlApp(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     translator = QTranslator()
-    locale = QLocale.system().name()
-    if locale.startswith("en"):
-        file_name = "tr/qms_en.qm"
-    elif locale.startswith("es"):
-        file_name = "tr/qms_es.qm"
-    elif locale.startswith("fr"):
-        file_name = "tr/qms_fr.qm"
-    elif locale.startswith("de"):
-        file_name = "tr/qms_de.qm"
+    locale_name = QLocale.system().name()
+    locale = locale_name[:2]
+    if locale:
+        file_name = f"tr/headsetcontrol-qt_{locale}.qm"
     else:
         file_name = None
 
     if file_name and translator.load(file_name):
         app.installTranslator(translator)
+
     if is_windows_10():
         app.setStyle("fusion")
     window = HeadsetControlApp()
