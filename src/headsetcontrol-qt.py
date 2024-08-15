@@ -129,12 +129,15 @@ class HeadsetControlApp(QMainWindow):
         settings = {
             "led_state": True,
             "light_battery_threshold": 20,
-            "light_battery_threshold" "sidetone": 0,
+            "notification_battery_threshold": 20,
+            "sidetone": 0,
             "theme": "System",
         }
         with open(SETTINGS_FILE, "w") as f:
             json.dump(settings, f, indent=4)
 
+
+    
     def update_headset_info(self):
         command = [HEADSETCONTROL_EXECUTABLE, "-o", "json"]
         creation_flags = subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0
