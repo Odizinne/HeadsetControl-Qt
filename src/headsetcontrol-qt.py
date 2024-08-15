@@ -15,11 +15,11 @@ if sys.platform == "win32":
     import winshell
     import darkdetect
 
-    SETTINGS_DIR = os.path.join(os.getenv("APPDATA"), "headsetcontrol-qt")
+    SETTINGS_DIR = os.path.join(os.getenv("APPDATA"), "HeadsetControl-Qt")
     HEADSETCONTROL_EXECUTABLE = os.path.join("dependencies", "headsetcontrol.exe")
     STARTUP_FOLDER = winshell.startup()
 else:
-    SETTINGS_DIR = os.path.join(os.path.expanduser("~"), ".config", "headsetcontrol-qt")
+    SETTINGS_DIR = os.path.join(os.path.expanduser("~"), ".config", "HeadsetControl-Qt")
     HEADSETCONTROL_EXECUTABLE = "headsetcontrol"
     DESKTOP_FILE_PATH = os.path.join(os.path.expanduser("~"), ".config", "autostart", "headsetcontrol-qt.desktop")
 
