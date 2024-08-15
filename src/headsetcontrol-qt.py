@@ -4,6 +4,7 @@ import sys
 import subprocess
 import json
 import os
+import winreg
 from PyQt6.QtWidgets import QApplication, QMainWindow, QSystemTrayIcon, QMenu
 from PyQt6.QtGui import QIcon, QAction
 from PyQt6.QtCore import QTimer, QTranslator, QLocale
@@ -11,7 +12,6 @@ from ui_mainwindow import Ui_HeadsetControlQt
 
 if sys.platform == "win32":
     import winshell
-    import darkdetect
 
     SETTINGS_DIR = os.path.join(os.getenv("APPDATA"), "HeadsetControl-Qt")
     HEADSETCONTROL_EXECUTABLE = os.path.join("dependencies", "headsetcontrol.exe")
@@ -24,6 +24,15 @@ else:
 ICONS_DIR = os.path.join("icons")
 APP_ICON = os.path.join(ICONS_DIR, "icon.png")
 SETTINGS_FILE = os.path.join(SETTINGS_DIR, "settings.json")
+
+
+def is_dark_mode_enabled():
+    registry_key = winreg.OpenKey(
+        winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"
+    )
+    value, regtype = winreg.QueryValueEx(registry_key, "AppsUseLightTheme")
+    winreg.CloseKey(registry_key)
+    return value == 0
 
 
 class HeadsetControlApp(QMainWindow):
@@ -245,7 +254,7 @@ class HeadsetControlApp(QMainWindow):
         theme = None
         if self.ui.themeComboBox.currentIndex() == 0:
             if sys.platform == "win32":
-                dark_mode = darkdetect.isDark()
+                dark_mode = is_dark_mode_enabled()
                 theme = "light" if dark_mode else "dark"
             elif sys.platform == "linux":
                 if os.getenv("XDG_CURRENT_DESKTOP") == "KDE":
