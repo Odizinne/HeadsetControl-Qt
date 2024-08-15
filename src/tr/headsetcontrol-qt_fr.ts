@@ -4,17 +4,17 @@
 <context>
     <name>HeadsetControlApp</name>
     <message>
-        <location filename="../headsetcontrol-qt.py" line="66"/>
+        <location filename="../headsetcontrol-qt.py" line="65"/>
         <source>System</source>
         <translation>Système</translation>
     </message>
     <message>
-        <location filename="../headsetcontrol-qt.py" line="67"/>
+        <location filename="../headsetcontrol-qt.py" line="66"/>
         <source>Light</source>
         <translation>Clair</translation>
     </message>
     <message>
-        <location filename="../headsetcontrol-qt.py" line="68"/>
+        <location filename="../headsetcontrol-qt.py" line="67"/>
         <source>Dark</source>
         <translation>Sombre</translation>
     </message>
@@ -28,23 +28,8 @@
     </message>
     <message>
         <location filename="../designer/ui_mainwindow.ui" line="0"/>
-        <source>No supported headset found.</source>
-        <translation>Aucun casque détécté.</translation>
-    </message>
-    <message>
-        <location filename="../designer/ui_mainwindow.ui" line="0"/>
-        <source>Icon theme</source>
-        <translation>Thème des icones</translation>
-    </message>
-    <message>
-        <location filename="../designer/ui_mainwindow.ui" line="0"/>
-        <source>Run at startup</source>
-        <translation>Lancer au démarrage</translation>
-    </message>
-    <message>
-        <location filename="../designer/ui_mainwindow.ui" line="0"/>
-        <source>Lights</source>
-        <translation>LEDs</translation>
+        <source>GroupBox</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../designer/ui_mainwindow.ui" line="0"/>
@@ -58,6 +43,11 @@
     </message>
     <message>
         <location filename="../designer/ui_mainwindow.ui" line="0"/>
+        <source>Lights</source>
+        <translation>LEDs</translation>
+    </message>
+    <message>
+        <location filename="../designer/ui_mainwindow.ui" line="0"/>
         <source>Disable lights when battery goes below:</source>
         <translation>Désactiver les LEDs quand la batterie tombe sous:</translation>
     </message>
@@ -68,14 +58,27 @@
     </message>
     <message>
         <location filename="../designer/ui_mainwindow.ui" line="0"/>
-        <location filename="../designer/ui_mainwindow.ui" line="0"/>
-        <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <source>Settings</source>
+        <translation>Paramètres</translation>
     </message>
     <message>
         <location filename="../designer/ui_mainwindow.ui" line="0"/>
+        <source>Icon theme</source>
+        <translation>Thème des icones</translation>
+    </message>
+    <message>
+        <location filename="../designer/ui_mainwindow.ui" line="0"/>
+        <source>Run at startup</source>
+        <translation>Lancer au démarrage</translation>
+    </message>
+    <message>
+        <location filename="../designer/ui_mainwindow.ui" line="0"/>
+        <source>No supported headset found.</source>
+        <translation>Aucun casque détécté.</translation>
+    </message>
+    <message>
         <source>General settings</source>
-        <translation>Paramètres</translation>
+        <translation type="vanished">Paramètres</translation>
     </message>
 </context>
 </TS>

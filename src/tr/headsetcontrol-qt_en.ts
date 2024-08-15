@@ -4,17 +4,17 @@
 <context>
     <name>HeadsetControlApp</name>
     <message>
-        <location filename="../headsetcontrol-qt.py" line="66"/>
+        <location filename="../headsetcontrol-qt.py" line="65"/>
         <source>System</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../headsetcontrol-qt.py" line="67"/>
+        <location filename="../headsetcontrol-qt.py" line="66"/>
         <source>Light</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../headsetcontrol-qt.py" line="68"/>
+        <location filename="../headsetcontrol-qt.py" line="67"/>
         <source>Dark</source>
         <translation></translation>
     </message>
@@ -28,22 +28,7 @@
     </message>
     <message>
         <location filename="../designer/ui_mainwindow.ui" line="0"/>
-        <source>No supported headset found.</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../designer/ui_mainwindow.ui" line="0"/>
-        <source>Icon theme</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../designer/ui_mainwindow.ui" line="0"/>
-        <source>Run at startup</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../designer/ui_mainwindow.ui" line="0"/>
-        <source>Lights</source>
+        <source>GroupBox</source>
         <translation></translation>
     </message>
     <message>
@@ -58,6 +43,11 @@
     </message>
     <message>
         <location filename="../designer/ui_mainwindow.ui" line="0"/>
+        <source>Lights</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../designer/ui_mainwindow.ui" line="0"/>
         <source>Disable lights when battery goes below:</source>
         <translation></translation>
     </message>
@@ -68,13 +58,22 @@
     </message>
     <message>
         <location filename="../designer/ui_mainwindow.ui" line="0"/>
-        <location filename="../designer/ui_mainwindow.ui" line="0"/>
-        <source>TextLabel</source>
+        <source>Settings</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../designer/ui_mainwindow.ui" line="0"/>
-        <source>General settings</source>
+        <source>Icon theme</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../designer/ui_mainwindow.ui" line="0"/>
+        <source>Run at startup</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../designer/ui_mainwindow.ui" line="0"/>
+        <source>No supported headset found.</source>
         <translation></translation>
     </message>
 </context>
