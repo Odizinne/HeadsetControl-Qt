@@ -8,8 +8,6 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QSystemTrayIcon, QMenu
 from PyQt6.QtGui import QIcon, QAction
 from PyQt6.QtCore import QTimer, QTranslator, QLocale
 from ui_mainwindow import Ui_HeadsetControlQt
-from color_utils import set_frame_color_based_on_window
-from utils import is_windows_10
 
 if sys.platform == "win32":
     import winshell
@@ -50,14 +48,6 @@ class HeadsetControlApp(QMainWindow):
         self.on_ledBox_state_changed()
 
     def init_ui(self):
-        if app.style().objectName() != "windows11":
-            self.ui.lightBatterySpinbox.setFrame(True)
-            self.ui.notificationBatterySpinbox.setFrame(True)
-            self.ui.themeComboBox.setFrame(True)
-            if app.style().objectName() == "fusion":
-                set_frame_color_based_on_window(self, self.ui.frame)
-                set_frame_color_based_on_window(self, self.ui.settingsFrame)
-
         self.ui.ledBox.stateChanged.connect(self.on_ledBox_state_changed)
         self.ui.lightBatterySpinbox.valueChanged.connect(self.save_settings)
         self.ui.notificationBatterySpinbox.valueChanged.connect(self.save_settings)
@@ -207,28 +197,25 @@ class HeadsetControlApp(QMainWindow):
         capabilities = headset_info.get("capabilities_str", [])
         battery_info = headset_info.get("battery", {})
 
-        self.ui.deviceLabel.setText(f"{device_name}")
+        self.ui.deviceGroupBox.setTitle(f"{device_name}")
 
         battery_status = battery_info.get("status", "UNKNOWN")
         if battery_status == "BATTERY_AVAILABLE":
             battery_level = battery_info.get("level", 0)
-            self.ui.batteryBar.setEnabled(True)
             self.ui.batteryBar.setValue(battery_level)
-            self.ui.statusLabel.setText(f"{battery_level}%")
+            self.ui.batteryBar.setFormat(f"{battery_level}%")
             self.tray_icon.setToolTip(f"Battery Level: {battery_level}%")
 
             icon_path = self.get_battery_icon(battery_level, charging=False)
         elif battery_status == "BATTERY_CHARGING":
-            self.ui.batteryBar.setEnabled(True)
             self.ui.batteryBar.setValue(0)
-            self.ui.statusLabel.setText("Charging")
+            self.ui.batteryBar.setFormat("Charging")
             self.tray_icon.setToolTip("Battery Charging")
 
             icon_path = self.get_battery_icon(battery_level=None, charging=True)
         else:
-            self.ui.batteryBar.setEnabled(False)
             self.ui.batteryBar.setValue(0)
-            self.ui.statusLabel.setText("Off")
+            self.ui.batteryBar.setFormat("Off")
             self.tray_icon.setToolTip("Battery Unavailable")
 
             icon_path = self.get_battery_icon(battery_level=None, missing=True)
@@ -256,7 +243,6 @@ class HeadsetControlApp(QMainWindow):
 
     def get_battery_icon(self, battery_level, charging=False, missing=False):
         theme = None
-        print(self.ui.themeComboBox.currentIndex())
         if self.ui.themeComboBox.currentIndex() == 0:
             if sys.platform == "win32":
                 dark_mode = darkdetect.isDark()
@@ -274,7 +260,6 @@ class HeadsetControlApp(QMainWindow):
 
         if missing:
             icon_name = f"battery-missing-{theme}"
-            print(icon_name)
         elif charging:
             icon_name = f"battery-100-charging-{theme}"
         else:
@@ -333,12 +318,12 @@ class HeadsetControlApp(QMainWindow):
         self.save_settings()
 
     def toggle_ui_elements(self, show):
-        self.ui.deviceLabel.setVisible(show)
-        self.ui.statusLabel.setVisible(show)
-        self.ui.frame.setVisible(show)
-        self.ui.settingsFrame.setVisible(show)
-        self.ui.settingsLabel.setVisible(show)
+        self.ui.deviceGroupBox.setVisible(show)
+        self.ui.generalGroupBox.setVisible(show)
         self.ui.notFoundLabel.setVisible(not show)
+        self.setMinimumSize(0, 0)
+        self.adjustSize()
+        self.setFixedSize(self.size())
 
     def show_window(self):
         self.show()
@@ -411,7 +396,6 @@ if __name__ == "__main__":
     if file_name and translator.load(file_name):
         app.installTranslator(translator)
 
-    if is_windows_10():
-        app.setStyle("fusion")
+    app.setStyle("fusion")
     window = HeadsetControlApp()
     sys.exit(app.exec())
