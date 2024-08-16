@@ -37,7 +37,9 @@ RESOURCES += \
 
 RC_FILE = src/Resources/appicon.rc
 
-LIBS += -lole32
+win32 {
+    LIBS += -lole32
+}
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -56,6 +56,8 @@ private:
     void noDeviceFound();
     void toggleUIElements(bool show);
     static const QString settingsFile;
+    static const QString headsetcontrolExecutable;
+    static const QString desktopFile;
 
     Ui::HeadsetControlQt *ui;
     QSystemTrayIcon *trayIcon;
