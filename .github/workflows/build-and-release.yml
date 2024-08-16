@@ -133,6 +133,10 @@ jobs:
           qmake ../HeadsetControl-Qt.pro CONFIG+=release
           make -j$(nproc)
 
+      - name: Zip binaries folder
+        run: |
+          zip build/HeadsetControl-Qt_linux_64.zip build/HeadsetControl-Qt
+
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -198,6 +202,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: List files in directory
+        run: ls -la
+
+      - name: Zip binaries folder
+        run: |
+          zip ./HeadsetControl-Qt_linux_64.zip ./HeadsetControl-Qt
+
       - name: Upload Windows release asset
         uses: actions/upload-release-asset@v1
         with:
@@ -212,7 +223,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: HeadsetControl-Qt
+          asset_path: HeadsetControl-Qt_linux_64.zip
           asset_name: HeadsetControl-Qt_linux_64.zip
           asset_content_type: application/octet-stream
         env:
