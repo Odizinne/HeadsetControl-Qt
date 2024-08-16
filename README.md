@@ -14,7 +14,7 @@ If a particular setting is greyed out on the settings page, it indicates that yo
 
 ## Download
 
-Precompiled windows binaries can be found in [release](https://odizinne.net/Odizinne/HeadsetControl-Qt/releases/latest) section
+Precompiled windows binaries can be found in [release](https://github.com/odizinne/headsetControl-Qt/releases/latest) section
 
 ## To-do
 - Add other headsetcontrol supported settings (My headset does not support them so i cannot test)
