@@ -191,6 +191,7 @@ jobs:
           tag_name: ${{ env.new_tag }}
           release_name: ${{ env.new_tag }}
           body: ""
+          draft: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
