@@ -51,8 +51,8 @@ HeadsetControlQt::~HeadsetControlQt()
 void HeadsetControlQt::initUI()
 {
     connect(ui->ledBox, &QCheckBox::stateChanged, this, &HeadsetControlQt::onLedBoxStateChanged);
-    connect(ui->lightBatterySpinbox, QOverload<int>::of(&QSpinBox::valueChanged), this, &HeadsetControlQt::onLightBatterySpinboxValueChanged);
-    connect(ui->notificationBatterySpinbox, QOverload<int>::of(&QSpinBox::valueChanged), this, &HeadsetControlQt::onNotificationBatterySpinboxValueChanged);
+    connect(ui->lightBatterySpinbox, QOverload<int>::of(&QSpinBox::valueChanged), this, &HeadsetControlQt::saveSettings);
+    connect(ui->notificationBatterySpinbox, QOverload<int>::of(&QSpinBox::valueChanged), this, &HeadsetControlQt::saveSettings);
     connect(ui->startupCheckbox, &QCheckBox::stateChanged, this, &HeadsetControlQt::onStartupCheckBoxStateChanged);
     connect(ui->sidetoneSlider, &QSlider::sliderReleased, this, &HeadsetControlQt::onSidetoneSliderSliderReleased);
     connect(ui->themeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &HeadsetControlQt::onThemeComboBoxCurrentIndexChanged);
@@ -73,7 +73,7 @@ void HeadsetControlQt::createTrayIcon()
     connect(showAction, &QAction::triggered, this, &HeadsetControlQt::toggleWindow);
     trayMenu->addAction(showAction);
     QAction *exitAction = new QAction("Exit", this);
-    connect(exitAction, &QAction::triggered, this, &HeadsetControlQt::exitApp);
+    connect(exitAction, &QAction::triggered, this, &QApplication::quit);
     trayMenu->addAction(exitAction);
     trayIcon->setContextMenu(trayMenu);
     trayIcon->show();
@@ -339,16 +339,6 @@ void HeadsetControlQt::onLedBoxStateChanged()
     saveSettings();
 }
 
-void HeadsetControlQt::onLightBatterySpinboxValueChanged(int value)
-{
-    saveSettings();
-}
-
-void HeadsetControlQt::onNotificationBatterySpinboxValueChanged(int value)
-{
-    saveSettings();
-}
-
 void HeadsetControlQt::onStartupCheckBoxStateChanged()
 {
     if (ui->startupCheckbox->isChecked()) {
@@ -393,12 +383,6 @@ void HeadsetControlQt::trayIconActivated(QSystemTrayIcon::ActivationReason reaso
     if (reason == QSystemTrayIcon::ActivationReason::Trigger) {
         toggleWindow();
     }
-}
-
-void HeadsetControlQt::exitApp()
-{
-    trayIcon->hide();
-    QApplication::quit();
 }
 
 void HeadsetControlQt::checkStartupCheckbox()

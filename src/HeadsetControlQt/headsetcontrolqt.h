@@ -29,14 +29,11 @@ public:
 
 private slots:
     void onLedBoxStateChanged();
-    void onLightBatterySpinboxValueChanged(int value);
-    void onNotificationBatterySpinboxValueChanged(int value);
     void onSidetoneSliderSliderReleased();
     void onThemeComboBoxCurrentIndexChanged(int index);
     void updateHeadsetInfo();
     void toggleWindow();
     void trayIconActivated(QSystemTrayIcon::ActivationReason reason);
-    void exitApp();
     void checkStartupCheckbox();
     void onStartupCheckBoxStateChanged();
 
