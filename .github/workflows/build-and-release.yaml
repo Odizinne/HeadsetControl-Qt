@@ -1,8 +1,0 @@
-name: Build and Release
-
-on:
-  workflow_dispatch:
-
-jobs:
-  build:
-    uses: odizinne/shared-workflows/.github/workflows/build-and-release.yml@main

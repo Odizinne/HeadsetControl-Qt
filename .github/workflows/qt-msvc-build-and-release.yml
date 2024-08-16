@@ -1,0 +1,181 @@
+name: Build and Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Visual Studio shell
+        uses: egor-tensin/vs-shell@v2
+        with:
+          arch: x64
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.7.2'
+          add-tools-to-path: true
+
+      - name: Install jom
+        id: jom-setup
+        shell: pwsh
+        run: |
+          $url = "https://download.qt.io/official_releases/jom/jom_1_1_4.zip"
+          $outputPath = "jom_1_1_4.zip"
+          Invoke-WebRequest -Uri $url -OutFile $outputPath
+          $extractPath = "jom"
+          if (-not (Test-Path $extractPath)) {
+            New-Item -ItemType Directory -Path $extractPath | Out-Null
+          }
+          Expand-Archive -Path $outputPath -DestinationPath $extractPath
+          $jomDir = "$(pwd)\jom"
+          $jomExe = "$jomDir\jom.exe"
+          if (Test-Path $jomExe) {
+            Write-Output "JOM Path: $jomDir"
+            Write-Output "::set-output name=jom_path::$jomDir"
+          } else {
+            Write-Error "jom.exe not found in $jomDir"
+            exit 1
+          }
+
+      - name: Build with qmake and jom
+        shell: pwsh
+        run: |
+          mkdir build
+          cd build
+          qmake ..\HeadsetControl-Qt.pro CONFIG+=release
+          # Use the JOM path variable
+          $jomPath = "${{ steps.jom-setup.outputs.jom_path }}"
+          & "$jomPath\jom.exe"
+          
+      - name: Remove source and object files
+        shell: pwsh
+        run: |
+          # Define the directory
+          $buildDir = "build/release"
+
+          # Check if the directory exists
+          if (Test-Path $buildDir) {
+              # Remove .cpp, .h, .obj, and .res files
+              Get-ChildItem -Path $buildDir -Include *.cpp, *.h, *.obj, *.res -Recurse | Remove-Item -Force
+          } else {
+              Write-Host "Directory not found: $buildDir"
+          }
+
+      - name: Deploy Qt
+        shell: pwsh
+        run: |
+          # Navigate to the directory containing the executable
+          cd build
+
+          # Use the found path to windeployqt
+          $windeployqtPath = "D:\a\HeadsetControl-Qt\Qt\6.7.2\msvc2019_64\bin\windeployqt6.exe"
+
+          # Check if the executable exists
+          if (Test-Path $windeployqtPath) {
+              # Run windeployqt with the updated options
+              & $windeployqtPath `
+                  --exclude-plugins qmodernwindowsstyle,qsvgicon,qsvg,qico,qjpeg,qgif,qnetworklistmanager,qtuiotouchplugin `
+                  --no-opengl-sw `
+                  --no-system-dxc-compiler `
+                  --no-compiler-runtime `
+                  --no-translations `
+                  --no-system-d3d-compiler `
+                  D:\a\HeadsetControl-Qt\HeadsetControl-Qt\build\release\HeadsetControl-Qt.exe
+          } else {
+              Write-Error "windeployqt not found at the expected path!"
+              exit 1
+          }
+
+      - name: Rename release folder
+        shell: pwsh
+        run: |
+          $releaseDir = "build/release"
+          $newDir = "HeadsetControl-Qt"
+          if (Test-Path $releaseDir) {
+              Rename-Item -Path $releaseDir -NewName $newDir
+          } else {
+              Write-Error "Release folder not found!"
+              exit 1
+          }
+
+      - name: Zip binaries folder
+        run: |
+          $zipFile = "build/HeadsetControl-Qt_msvc_64.zip"
+          $folder = "build/HeadsetControl-Qt"
+          Compress-Archive -Path $folder -DestinationPath $zipFile
+        shell: pwsh
+          
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: HeadsetControl-Qt_msvc_64
+          path: build/HeadsetControl-Qt_msvc_64.zip
+
+  release:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download artifact zip
+        uses: actions/download-artifact@v4
+        with:
+          name: HeadsetControl-Qt_msvc_64
+
+      - name: List files in current directory
+        run: ls -la
+  
+      - name: Bump version and create release
+        id: bump_release
+        run: |
+          git fetch --tags
+          
+          # Determine the latest major version tag
+          LAST_MAJOR_TAG=$(git tag --list 'v*.*.*' | sed -E 's/^v?([0-9]+)\..*/\1/' | sort -nr | head -n 1)
+          
+          # Increment the major version number
+          if [ -z "$LAST_MAJOR_TAG" ]; then
+            NEW_TAG="v1"
+          else
+            NEW_TAG="v$(($LAST_MAJOR_TAG + 1))"
+          fi
+
+          # Check if the tag already exists
+          if git rev-parse "$NEW_TAG" >/dev/null 2>&1; then
+            echo "Tag '$NEW_TAG' already exists. Incrementing to next major version."
+            LAST_MAJOR_TAG=$(git tag --list 'v*' | sed -E 's/^v?([0-9]+).*/\1/' | sort -nr | head -n 1)
+            NEW_TAG="v$(($LAST_MAJOR_TAG + 1))"
+          fi
+
+          echo "New tag is $NEW_TAG"
+          git tag $NEW_TAG
+          git push origin $NEW_TAG
+          echo "new_tag=$NEW_TAG" >> $GITHUB_ENV
+
+      - name: Create GitHub release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ env.new_tag }}
+          release_name: ${{ env.new_tag }}
+          body: ""
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload release assets
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: HeadsetControl-Qt_msvc_64.zip
+          asset_name: HeadsetControl-Qt_msvc_64.zip
+          asset_content_type: application/zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

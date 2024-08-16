@@ -1,0 +1,30 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/battery-010-dark.png</file>
+        <file>icons/battery-020-dark.png</file>
+        <file>icons/battery-030-dark.png</file>
+        <file>icons/battery-040-dark.png</file>
+        <file>icons/battery-050-dark.png</file>
+        <file>icons/battery-060-dark.png</file>
+        <file>icons/battery-070-dark.png</file>
+        <file>icons/battery-080-dark.png</file>
+        <file>icons/battery-090-dark.png</file>
+        <file>icons/battery-100-dark.png</file>
+        <file>icons/battery-100-charging-dark.png</file>
+        <file>icons/battery-missing-dark.png</file>
+        <file>icons/battery-010-light.png</file>
+        <file>icons/battery-020-light.png</file>
+        <file>icons/battery-030-light.png</file>
+        <file>icons/battery-040-light.png</file>
+        <file>icons/battery-050-light.png</file>
+        <file>icons/battery-060-light.png</file>
+        <file>icons/battery-070-light.png</file>
+        <file>icons/battery-080-light.png</file>
+        <file>icons/battery-090-light.png</file>
+        <file>icons/battery-100-light.png</file>
+        <file>icons/battery-100-charging-light.png</file>
+        <file>icons/battery-missing-light.png</file>
+        <file>icons/icon.ico</file>
+        <file>icons/icon.png</file>
+    </qresource>
+</RCC>
