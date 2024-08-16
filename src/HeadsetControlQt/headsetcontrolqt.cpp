@@ -157,11 +157,13 @@ void HeadsetControlQt::updateHeadsetInfo()
 
     if (!process.waitForStarted()) {
         qDebug() << "Failed to start process:" << process.errorString();
+        noDeviceFound();
         return;
     }
 
     if (!process.waitForFinished()) {
         qDebug() << "Process did not finish successfully:" << process.errorString();
+        noDeviceFound();
         return;
     }
 

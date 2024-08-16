@@ -212,7 +212,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: HeadsetControl-Qt_linux_64.zip
+          asset_path: HeadsetControl-Qt
           asset_name: HeadsetControl-Qt_linux_64.zip
           asset_content_type: application/octet-stream
         env:
