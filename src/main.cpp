@@ -7,7 +7,9 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+#ifdef _WIN32
     a.setStyle("fusion");
+#endif
     QLocale locale;
     QString languageCode = locale.name().section('_', 0, 0);
     QTranslator translator;

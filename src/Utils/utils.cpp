@@ -30,3 +30,24 @@ QIcon getIconForTheme()
     return QIcon(iconPath);
 }
 
+QString getKDEPlasmaVersion() {
+    QProcess process;
+    process.start("plasmashell", QStringList() << "--version");
+    process.waitForFinished();
+
+    QString output = process.readAllStandardOutput();
+    QStringList lines = output.split('\n');
+    QString versionLine;
+
+    // Find the line containing the version info
+    for (const QString &line : lines) {
+        if (line.contains("plasmashell")) {
+            versionLine = line;
+            break;
+        }
+    }
+
+    // Extract version number from the line
+    QString version = versionLine.split(' ').last().trimmed();
+    return version;
+}

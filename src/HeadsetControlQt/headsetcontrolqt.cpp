@@ -1,5 +1,5 @@
-#include "HeadsetControlQt.h"
-#include "ui_HeadsetControlQt.h"
+#include "headsetcontrolqt.h"
+#include "ui_headsetcontrolqt.h"
 #include "utils.h"
 #include "shortcutmanager.h"
 #include <QIcon>
@@ -13,10 +13,17 @@
 #include <QDebug>
 #include <QStandardPaths>
 
-
+#ifdef _WIN32
+const QString HeadsetControlQt::headsetcontrolExecutable = "dependencies/headsetcontrol.exe";
 const QString HeadsetControlQt::settingsFile = QStandardPaths::writableLocation(
-                                               QStandardPaths::AppDataLocation)
-                                           + "/HeadsetControl-Qt/settings.json";
+                                                   QStandardPaths::AppDataLocation)
+                                               + "/HeadsetControl-Qt/settings.json";
+#elif __linux__
+const QString HeadsetControlQt::headsetcontrolExecutable = "headsetcontrol";
+const QString HeadsetControlQt::settingsFile = QDir::homePath() + "/.config/HeadsetControl-Qt/settings.json";
+const QString HeadsetControlQt::desktopFile = QDir::homePath() + "/.config/autostart/headsetcontrol-qt.desktop";
+
+#endif
 
 HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     : QMainWindow(parent)
@@ -26,7 +33,6 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     , firstRun(false)
 {
     ui->setupUi(this);
-    setWindowTitle("HeadsetControl-Qt");
     setWindowIcon(QIcon(":/icons/icon.png"));
     setFont();
     loadSettings();
@@ -147,7 +153,7 @@ void HeadsetControlQt::saveSettings()
 void HeadsetControlQt::updateHeadsetInfo()
 {
     QProcess process;
-    process.start("dependencies/headsetcontrol.exe", QStringList() << "-o" << "json");
+    process.start(headsetcontrolExecutable, QStringList() << "-o" << "json");
 
     if (!process.waitForStarted()) {
         qDebug() << "Failed to start process:" << process.errorString();
@@ -220,7 +226,7 @@ void HeadsetControlQt::sendNotificationBasedOnBattery(const QJsonObject &headset
     bool available = (batteryStatus == "BATTERY_AVAILABLE");
 
     if (batteryLevel < ui->notificationBatterySpinbox->value() && !notificationSent && available) {
-        sendNotification("Low battery", QString("%1 has %2% battery left.").arg(headsetName).arg(batteryLevel), QIcon(":/icons/icon.png"), 3000);
+        sendNotification("Low battery", QString("%1 has %2% battery left.").arg(headsetName).arg(batteryLevel), QIcon(":/icons/icon.png"), 5000);
         notificationSent = true;
     } else if (batteryLevel >= ui->notificationBatterySpinbox->value() + 5 && notificationSent && available) {
         notificationSent = false;
@@ -235,7 +241,7 @@ void HeadsetControlQt::sendNotification(const QString &title, const QString &mes
 void HeadsetControlQt::toggleLED()
 {
     QProcess process;
-    process.start("dependencies/headsetcontrol.exe", QStringList() << "-l" << (ui->ledBox->isChecked() ? "1" : "0"));
+    process.start(headsetcontrolExecutable, QStringList() << "-l" << (ui->ledBox->isChecked() ? "1" : "0"));
     process.waitForFinished();
 }
 
@@ -287,7 +293,27 @@ QString HeadsetControlQt::getBatteryIcon(int batteryLevel, bool charging, bool m
     QString theme;
     int themeIndex = ui->themeComboBox->currentIndex();
     if (themeIndex == 0) {
+#ifdef _WIN32
         theme = getTheme();
+#elif __linux__
+        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+        QString desktop = env.value("XDG_CURRENT_DESKTOP");
+        if (desktop.contains("KDE", Qt::CaseInsensitive)) {
+            QString kdeVersion = getKDEPlasmaVersion();
+            if (kdeVersion.startsWith("5")) {
+                qDebug() << "KDE Plasma 5 detected";
+                theme = "light";
+            } else if (kdeVersion.startsWith("6")) {
+                qDebug() << "KDE Plasma 6 detected";
+                theme = "symbolic";
+            } else {
+                qDebug() << "Unknown KDE Plasma version";
+                theme = "light";
+            }
+        } else {
+            theme = "dark"; // Fallback for non-KDE environments
+        }
+#endif
     } else if (themeIndex == 1) {
         theme = "light";
     } else if (themeIndex == 2) {
@@ -342,9 +368,17 @@ void HeadsetControlQt::onLedBoxStateChanged()
 void HeadsetControlQt::onStartupCheckBoxStateChanged()
 {
     if (ui->startupCheckbox->isChecked()) {
+#ifdef _WIN32
         manageShortcut(true);
+#elif __linux__
+        manageDesktopFile(true);
+#endif
     } else {
+#ifdef _WIN32
         manageShortcut(false);
+#elif __linux__
+        manageDesktopFile(false);
+#endif
     }
 }
 
@@ -363,7 +397,7 @@ void HeadsetControlQt::onThemeComboBoxCurrentIndexChanged(int index)
 void HeadsetControlQt::setSidetone()
 {
     QProcess process;
-    process.start("dependencies/headsetcontrol.exe", QStringList() << "-s" << QString::number(ui->sidetoneSlider->value()));
+    process.start(headsetcontrolExecutable, QStringList() << "-s" << QString::number(ui->sidetoneSlider->value()));
     process.waitForFinished();
 }
 
@@ -387,9 +421,15 @@ void HeadsetControlQt::trayIconActivated(QSystemTrayIcon::ActivationReason reaso
 
 void HeadsetControlQt::checkStartupCheckbox()
 {
+#ifdef _WIN32
     if (isShortcutPresent()) {
         ui->startupCheckbox->setChecked(true);
     }
+#elif __linux__
+    if (isDesktopfilePresent()) {
+        ui->startupCheckbox->setChecked(true);
+    }
+#endif
 }
 
 void HeadsetControlQt::closeEvent(QCloseEvent *event)

@@ -37,7 +37,9 @@ RESOURCES += \
 
 RC_FILE = src/Resources/appicon.rc
 
-LIBS += -lole32
+win32 {
+    LIBS += -lole32
+}
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -48,6 +50,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 DEPENDENCIES_DIR = $$PWD/src/dependencies
 DEST_DIR = $$OUT_PWD/release/dependencies
 
-QMAKE_POST_LINK += powershell -Command "New-Item -ItemType Directory -Path '$$DEST_DIR' -Force; Copy-Item -Path '$$DEPENDENCIES_DIR\*' -Destination '$$DEST_DIR' -Recurse -Force"
-#mkdir $$DEST_DIR
+win32 {
+    QMAKE_POST_LINK += powershell -Command "New-Item -ItemType Directory -Path '$$DEST_DIR' -Force; Copy-Item -Path '$$DEPENDENCIES_DIR\*' -Destination '$$DEST_DIR' -Recurse -Force"
+}
 

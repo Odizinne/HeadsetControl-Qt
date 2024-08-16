@@ -6,10 +6,16 @@
 #include <QStandardPaths>
 #include <QSysInfo>
 #include <QtWidgets/QWidget>
-#include <shlobj.h>
-#include <shobjidl.h>
-#include <windows.h>
 
+#ifdef _WIN32
+    #include <shlobj.h>
+    #include <shobjidl.h>
+    #include <windows.h>
+#endif
+
+const QString desktopFile = QDir::homePath() + "/.config/autostart/headsetcontrol-qt.desktop";
+
+#ifdef _WIN32
 QString getStartupFolder()
 {
     QString path;
@@ -99,5 +105,57 @@ void manageShortcut(bool state)
         if (isShortcutPresent()) {
             removeShortcut();
         }
+    }
+}
+#endif
+
+bool isDesktopfilePresent()
+{
+    if (QFile::exists(desktopFile)) {
+        return true;
+    }
+    return false;
+}
+
+void createDesktopFile()
+{
+
+    QFileInfo fileInfo(desktopFile);
+    QDir dir = fileInfo.dir();
+
+    if (!dir.exists()) {
+        dir.mkpath(".");
+    }
+
+    QString applicationFolder = QCoreApplication::applicationDirPath();
+    QString desktopEntryContent =
+        "[Desktop Entry]\n"
+        "Path=" + applicationFolder + "\n"
+        "Type=Application\n"
+        "Exec=" + QCoreApplication::applicationFilePath() + "\n"
+        "Name=HeadsetControl-Qt\n";
+
+    QFile file(desktopFile);
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QTextStream out(&file);
+        out << desktopEntryContent;
+        file.close();
+    }
+}
+
+void removeDesktopFile()
+{
+    QFile file(desktopFile);
+    if (file.exists()) {
+        file.remove();
+    }
+}
+
+void manageDesktopFile(bool state)
+{
+    if (state) {
+        createDesktopFile();
+    } else {
+        removeDesktopFile();
     }
 }
