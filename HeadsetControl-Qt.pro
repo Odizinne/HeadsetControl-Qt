@@ -27,8 +27,13 @@ HEADERS += \
 FORMS += \
     src/HeadsetControlQt/headsetcontrolqt.ui
 
+TRANSLATIONS += \
+    src/Resources/tr/HeadsetControl-Qt_fr.ts \
+    src/Resources/tr/HeadsetControl-Qt_en.ts
+
 RESOURCES += \
-    src/Resources/resources.qrc
+    src/Resources/resources.qrc \
+    src/Resources/translations.qrc
 
 RC_FILE = src/Resources/appicon.rc
 

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>433</width>
+    <width>381</width>
     <height>351</height>
    </rect>
   </property>
@@ -180,7 +180,7 @@
         <widget class="QSpinBox" name="lightBatterySpinbox">
          <property name="minimumSize">
           <size>
-           <width>100</width>
+           <width>0</width>
            <height>25</height>
           </size>
          </property>
@@ -207,7 +207,7 @@
           </size>
          </property>
          <property name="text">
-          <string>Send notification when battery goes below</string>
+          <string>Send notification when battery goes below:</string>
          </property>
         </widget>
        </item>
@@ -215,7 +215,7 @@
         <widget class="QSpinBox" name="notificationBatterySpinbox">
          <property name="minimumSize">
           <size>
-           <width>100</width>
+           <width>0</width>
            <height>25</height>
           </size>
          </property>
@@ -295,7 +295,7 @@
         <widget class="QComboBox" name="themeComboBox">
          <property name="minimumSize">
           <size>
-           <width>100</width>
+           <width>0</width>
            <height>25</height>
           </size>
          </property>

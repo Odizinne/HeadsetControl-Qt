@@ -28,7 +28,6 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     ui->setupUi(this);
     setWindowTitle("HeadsetControl-Qt");
     setWindowIcon(QIcon(":/icons/icon.png"));
-    setFixedSize(size());
     setFont();
     loadSettings();
     initUI();
@@ -329,6 +328,7 @@ void HeadsetControlQt::toggleUIElements(bool show)
     ui->notFoundLabel->setVisible(!show);
     this->setMinimumSize(0, 0);
     this->adjustSize();
+    this->setFixedSize(this->size());
 }
 
 void HeadsetControlQt::onLedBoxStateChanged()
