@@ -14,8 +14,13 @@ If a particular setting is greyed out on the settings page, it indicates that yo
 
 ## Download
 
-Precompiled binaries can be found in [release](https://github.com/odizinne/headsetControl-Qt/releases/latest) section.  
-For linux you need at minimum Qt 6.4.2.  
+### Windows
+
+Precompiled binaries can be found in [release](https://github.com/odizinne/headsetControl-Qt/releases/latest) section.
+
+### Linux
+Linux binaries are built on ubuntu 24.04.  
+You need Qt 6.4.2+ and latest [headsetcontrol](https://github.com/Sapd/HeadsetControl?tab=readme-ov-file#building) installed and available in path.  
 Linux support is experimental and not well tested.
 
 ## To-do
