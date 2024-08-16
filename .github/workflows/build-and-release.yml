@@ -61,6 +61,7 @@ jobs:
               Get-ChildItem -Path $buildDir -Include *.cpp, *.h, *.obj, *.res -Recurse | Remove-Item -Force
           } else {
               Write-Host "Directory not found: $buildDir"
+          }
 
       - name: Deploy Qt
         shell: pwsh
@@ -79,6 +80,7 @@ jobs:
           } else {
               Write-Error "windeployqt not found at the expected path!"
               exit 1
+          }
 
       - name: Rename release folder
         shell: pwsh
@@ -90,6 +92,7 @@ jobs:
           } else {
               Write-Error "Release folder not found!"
               exit 1
+          }
 
       - name: Zip binaries folder
         shell: pwsh
@@ -209,8 +212,8 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: HeadsetControl-Qt_linux_64
-          asset_name: HeadsetControl-Qt_linux_64
+          asset_path: HeadsetControl-Qt_linux_64.zip
+          asset_name: HeadsetControl-Qt_linux_64.zip
           asset_content_type: application/octet-stream
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
