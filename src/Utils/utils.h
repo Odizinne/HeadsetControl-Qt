@@ -5,5 +5,6 @@
 
 QString getTheme();
 QIcon getIconForTheme();
+QString getKDEPlasmaVersion();
 
 #endif // UTILS_H

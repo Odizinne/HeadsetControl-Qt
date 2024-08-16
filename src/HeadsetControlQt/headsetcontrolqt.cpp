@@ -1,5 +1,5 @@
-#include "HeadsetControlQt.h"
-#include "ui_HeadsetControlQt.h"
+#include "headsetcontrolqt.h"
+#include "ui_headsetcontrolqt.h"
 #include "utils.h"
 #include "shortcutmanager.h"
 #include <QIcon>
@@ -226,7 +226,7 @@ void HeadsetControlQt::sendNotificationBasedOnBattery(const QJsonObject &headset
     bool available = (batteryStatus == "BATTERY_AVAILABLE");
 
     if (batteryLevel < ui->notificationBatterySpinbox->value() && !notificationSent && available) {
-        sendNotification("Low battery", QString("%1 has %2% battery left.").arg(headsetName).arg(batteryLevel), QIcon(":/icons/icon.png"), 3000);
+        sendNotification("Low battery", QString("%1 has %2% battery left.").arg(headsetName).arg(batteryLevel), QIcon(":/icons/icon.png"), 5000);
         notificationSent = true;
     } else if (batteryLevel >= ui->notificationBatterySpinbox->value() + 5 && notificationSent && available) {
         notificationSent = false;
@@ -299,7 +299,17 @@ QString HeadsetControlQt::getBatteryIcon(int batteryLevel, bool charging, bool m
         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
         QString desktop = env.value("XDG_CURRENT_DESKTOP");
         if (desktop.contains("KDE", Qt::CaseInsensitive)) {
-            theme = "symbolic";
+            QString kdeVersion = getKDEPlasmaVersion();
+            if (kdeVersion.startsWith("5")) {
+                qDebug() << "KDE Plasma 5 detected";
+                theme = "light";
+            } else if (kdeVersion.startsWith("6")) {
+                qDebug() << "KDE Plasma 6 detected";
+                theme = "symbolic";
+            } else {
+                qDebug() << "Unknown KDE Plasma version";
+                theme = "light";
+            }
         } else {
             theme = "dark"; // Fallback for non-KDE environments
         }

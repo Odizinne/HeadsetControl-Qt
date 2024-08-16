@@ -6,13 +6,16 @@
 #include <QStandardPaths>
 #include <QSysInfo>
 #include <QtWidgets/QWidget>
-#include <shlobj.h>
-#include <shobjidl.h>
-#include <windows.h>
+
+#ifdef _WIN32
+    #include <shlobj.h>
+    #include <shobjidl.h>
+    #include <windows.h>
+#endif
 
 const QString desktopFile = QDir::homePath() + "/.config/autostart/headsetcontrol-qt.desktop";
 
-
+#ifdef _WIN32
 QString getStartupFolder()
 {
     QString path;
@@ -104,6 +107,7 @@ void manageShortcut(bool state)
         }
     }
 }
+#endif
 
 bool isDesktopfilePresent()
 {
