@@ -19,3 +19,4 @@ Precompiled windows binaries can be found in [release](https://github.com/odizin
 ## To-do
 - Add other headsetcontrol supported settings (My headset does not support them so i cannot test)
 - Bring back linux support
+- Bring back translations
