@@ -38,6 +38,7 @@ private slots:
 
 private:
     void initUI();
+    void setupUIConnections();
     void populateComboBoxes();
     void checkStartupCheckbox();
     void createTrayIcon();

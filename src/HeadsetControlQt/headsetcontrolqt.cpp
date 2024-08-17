@@ -34,14 +34,11 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
 {
     ui->setupUi(this);
     setWindowIcon(QIcon(":/icons/icon.png"));
-    setFont();
     loadSettings();
     initUI();
-    populateComboBoxes();
     createTrayIcon();
     updateHeadsetInfo();
     timer->start(10000);
-    checkStartupCheckbox();
     connect(timer, &QTimer::timeout, this, &HeadsetControlQt::updateHeadsetInfo);
     if (firstRun) {
         this->show();
@@ -54,6 +51,14 @@ HeadsetControlQt::~HeadsetControlQt()
 }
 
 void HeadsetControlQt::initUI()
+{
+    populateComboBoxes();
+    setFont();
+    checkStartupCheckbox();
+    setupUIConnections();
+}
+
+void HeadsetControlQt::setupUIConnections()
 {
     connect(ui->ledBox, &QCheckBox::stateChanged, this, &HeadsetControlQt::onLedBoxStateChanged);
     connect(ui->lightBatterySpinbox, QOverload<int>::of(&QSpinBox::valueChanged), this, &HeadsetControlQt::saveSettings);
@@ -68,6 +73,32 @@ void HeadsetControlQt::populateComboBoxes()
     ui->themeComboBox->addItem(tr("System"));
     ui->themeComboBox->addItem(tr("Dark"));
     ui->themeComboBox->addItem(tr("Light"));
+}
+
+void HeadsetControlQt::setFont()
+{
+    QList<QGroupBox*> groupBoxes = {
+        ui->deviceGroupBox,
+        ui->generalGroupBox
+    };
+
+    for (QGroupBox* groupBox : groupBoxes) {
+        groupBox->setStyleSheet("font-weight: bold;");
+
+        const QList<QWidget*> children = groupBox->findChildren<QWidget*>();
+        for (QWidget* child : children) {
+            child->setStyleSheet("font-weight: normal;");
+        }
+    }
+}
+
+void HeadsetControlQt::checkStartupCheckbox()
+{
+#ifdef _WIN32
+    ui->startupCheckbox->setChecked(isShortcutPresent());
+#elif __linux__
+    ui->startupCheckbox->setChecked(isDesktopfilePresent());
+#endif
 }
 
 void HeadsetControlQt::createTrayIcon()
@@ -368,18 +399,7 @@ void HeadsetControlQt::trayIconActivated(QSystemTrayIcon::ActivationReason reaso
     }
 }
 
-void HeadsetControlQt::checkStartupCheckbox()
-{
-#ifdef _WIN32
-    if (isShortcutPresent()) {
-        ui->startupCheckbox->setChecked(true);
-    }
-#elif __linux__
-    if (isDesktopfilePresent()) {
-        ui->startupCheckbox->setChecked(true);
-    }
-#endif
-}
+
 
 void HeadsetControlQt::closeEvent(QCloseEvent *event)
 {
@@ -388,19 +408,4 @@ void HeadsetControlQt::closeEvent(QCloseEvent *event)
 }
 
 
-void HeadsetControlQt::setFont()
-{
-    QList<QGroupBox*> groupBoxes = {
-        ui->deviceGroupBox,
-        ui->generalGroupBox
-    };
 
-    for (QGroupBox* groupBox : groupBoxes) {
-        groupBox->setStyleSheet("font-weight: bold;");
-
-        const QList<QWidget*> children = groupBox->findChildren<QWidget*>();
-        for (QWidget* child : children) {
-            child->setStyleSheet("font-weight: normal;");
-        }
-    }
-}

@@ -47,7 +47,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 # Define the source directory and the target directory in the build folder
-DEPENDENCIES_DIR = $$PWD/src/dependencies
+DEPENDENCIES_DIR = $$PWD/dependencies
 DEST_DIR = $$OUT_PWD/release/dependencies
 
 win32 {
