@@ -1,9 +1,18 @@
 # HeadsetControl-Qt
+
 [![Github All Releases](https://img.shields.io/github/downloads/odizinne/headsetcontrol-qt/total.svg)]()
 [![license](https://img.shields.io/github/license/odizinne/headsetcontrol-qt)]()
 
-Qt Gui for headsetcontrol.  
+Qt Gui for headsetcontrol; windows / linux compatible.  
 Features a tray icon with battery status in tooltip.
+
+**If you appreciate my work and would like to support me:**
+
+<a href="https://ko-fi.com/odizinne">
+  <img src="assets/kofi_button_red.png" alt="Ko-fi" width="200" height="auto">
+</a>
+
+## Overview
 
 ![image](assets/screenshot.png)
 
@@ -19,9 +28,15 @@ If a particular setting is greyed out on the settings page, it indicates that yo
 Precompiled binaries can be found in [release](https://github.com/odizinne/headsetControl-Qt/releases/latest) section.
 
 ### Linux
+
 Linux binaries are built on ubuntu 24.04.  
 You need Qt 6.4.2+ and latest [headsetcontrol](https://github.com/Sapd/HeadsetControl?tab=readme-ov-file#building) installed and available in path.  
 Linux support is experimental and not well tested.
 
 ## To-do
+
 - Add other headsetcontrol supported settings (My headset does not support them so i cannot test)
+
+## Credits
+
+- [Sapd](https://github.com/Sapd/HeadsetControl) for headsetcontrol
