@@ -25,7 +25,8 @@ If a particular setting is greyed out on the settings page, it indicates that yo
 
 ### Windows
 
-Precompiled binaries can be found in [release](https://github.com/odizinne/headsetControl-Qt/releases/latest) section.
+Precompiled binaries can be found in [release](https://github.com/odizinne/headsetControl-Qt/releases/latest) section.  
+You need [Microsoft Visual C++ Redistributable](https://aka.ms/vs/17/release/vc_redist.x64.exe) if it is not already installed.
 
 ### Linux
 
