@@ -3,8 +3,8 @@
 #include <QIcon>
 #include <QString>
 
+QString getBatteryIcon(int batteryLevel, bool charging, bool missing, int themeIndex);
 QString getTheme();
-QIcon getIconForTheme();
 QString getKDEPlasmaVersion();
 
 #endif // UTILS_H

@@ -1,5 +1,4 @@
 #include "headsetcontrolqt.h"
-
 #include <QApplication>
 #include <QLocale>
 #include <QTranslator>

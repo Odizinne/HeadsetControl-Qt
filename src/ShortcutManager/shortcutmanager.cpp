@@ -8,14 +8,10 @@
 #include <QtWidgets/QWidget>
 
 #ifdef _WIN32
-    #include <shlobj.h>
-    #include <shobjidl.h>
-    #include <windows.h>
-#endif
+#include <shlobj.h>
+#include <shobjidl.h>
+#include <windows.h>
 
-const QString desktopFile = QDir::homePath() + "/.config/autostart/headsetcontrol-qt.desktop";
-
-#ifdef _WIN32
 QString getStartupFolder()
 {
     QString path;
@@ -109,6 +105,9 @@ void manageShortcut(bool state)
 }
 #endif
 
+#ifdef __linux__
+const QString desktopFile = QDir::homePath() + "/.config/autostart/headsetcontrol-qt.desktop";
+
 bool isDesktopfilePresent()
 {
     if (QFile::exists(desktopFile)) {
@@ -131,9 +130,9 @@ void createDesktopFile()
     QString desktopEntryContent =
         "[Desktop Entry]\n"
         "Path=" + applicationFolder + "\n"
-        "Type=Application\n"
-        "Exec=" + QCoreApplication::applicationFilePath() + "\n"
-        "Name=HeadsetControl-Qt\n";
+                              "Type=Application\n"
+                              "Exec=" + QCoreApplication::applicationFilePath() + "\n"
+                                                    "Name=HeadsetControl-Qt\n";
 
     QFile file(desktopFile);
     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -159,3 +158,4 @@ void manageDesktopFile(bool state)
         removeDesktopFile();
     }
 }
+#endif

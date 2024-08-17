@@ -30,16 +30,16 @@ public:
 private slots:
     void onLedBoxStateChanged();
     void onSidetoneSliderSliderReleased();
-    void onThemeComboBoxCurrentIndexChanged(int index);
+    void onThemeComboBoxCurrentIndexChanged();
     void updateHeadsetInfo();
     void toggleWindow();
     void trayIconActivated(QSystemTrayIcon::ActivationReason reason);
-    void checkStartupCheckbox();
     void onStartupCheckBoxStateChanged();
 
 private:
     void initUI();
     void populateComboBoxes();
+    void checkStartupCheckbox();
     void createTrayIcon();
     void loadSettings();
     void applySettings();
@@ -52,7 +52,6 @@ private:
     void setSidetone();
     void setFont();
     void updateUIWithHeadsetInfo(const QJsonObject &headsetInfo);
-    QString getBatteryIcon(int batteryLevel, bool charging = false, bool missing = false);
     void noDeviceFound();
     void toggleUIElements(bool show);
     static const QString settingsFile;

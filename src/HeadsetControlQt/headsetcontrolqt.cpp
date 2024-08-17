@@ -262,22 +262,22 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
         ui->batteryBar->setValue(batteryLevel);
         ui->batteryBar->setFormat(QString::number(batteryLevel) + "%");
         trayIcon->setToolTip(QString("Battery Level: %1%").arg(batteryLevel));
-
-        QString iconPath = getBatteryIcon(batteryLevel, false, false);
+        ui->themeComboBox->currentIndex();
+        QString iconPath = getBatteryIcon(batteryLevel, false, false, ui->themeComboBox->currentIndex());
         trayIcon->setIcon(QIcon(iconPath));
     } else if (batteryStatus == "BATTERY_CHARGING") {
         ui->batteryBar->setValue(0);
         ui->batteryBar->setFormat("Charging");
         trayIcon->setToolTip("Battery Charging");
 
-        QString iconPath = getBatteryIcon(batteryLevel, true, false);
+        QString iconPath = getBatteryIcon(batteryLevel, true, false, ui->themeComboBox->currentIndex());
         trayIcon->setIcon(QIcon(iconPath));
     } else {
         ui->batteryBar->setValue(0);
         ui->batteryBar->setFormat("Off");
         trayIcon->setToolTip("Battery Unavailable");
 
-        QString iconPath = getBatteryIcon(batteryLevel, false, true);
+        QString iconPath = getBatteryIcon(batteryLevel, false, true, ui->themeComboBox->currentIndex());
         trayIcon->setIcon(QIcon(iconPath));
     }
 
@@ -288,59 +288,6 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
     ui->sidetoneLabel->setEnabled(capabilities.contains("sidetone"));
 
     toggleUIElements(true);
-}
-
-QString HeadsetControlQt::getBatteryIcon(int batteryLevel, bool charging, bool missing)
-{
-    QString theme;
-    int themeIndex = ui->themeComboBox->currentIndex();
-    if (themeIndex == 0) {
-#ifdef _WIN32
-        theme = getTheme();
-#elif __linux__
-        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-        QString desktop = env.value("XDG_CURRENT_DESKTOP");
-        if (desktop.contains("KDE", Qt::CaseInsensitive)) {
-            QString kdeVersion = getKDEPlasmaVersion();
-            if (kdeVersion.startsWith("5")) {
-                qDebug() << "KDE Plasma 5 detected";
-                theme = "light";
-            } else if (kdeVersion.startsWith("6")) {
-                qDebug() << "KDE Plasma 6 detected";
-                theme = "symbolic";
-            } else {
-                qDebug() << "Unknown KDE Plasma version";
-                theme = "light";
-            }
-        } else {
-            theme = "dark"; // Fallback for non-KDE environments
-        }
-#endif
-    } else if (themeIndex == 1) {
-        theme = "light";
-    } else if (themeIndex == 2) {
-        theme = "dark";
-    }
-
-    QString iconName;
-    if (missing) {
-        iconName = QString("battery-missing-%1").arg(theme);
-    } else if (charging) {
-        iconName = "battery-100-charging-" + theme;
-    } else {
-        if (batteryLevel >= 90) iconName = "battery-100-" + theme;
-        else if (batteryLevel >= 80) iconName = "battery-090-" + theme;
-        else if (batteryLevel >= 70) iconName = "battery-080-" + theme;
-        else if (batteryLevel >= 60) iconName = "battery-070-" + theme;
-        else if (batteryLevel >= 50) iconName = "battery-060-" + theme;
-        else if (batteryLevel >= 40) iconName = "battery-050-" + theme;
-        else if (batteryLevel >= 30) iconName = "battery-040-" + theme;
-        else if (batteryLevel >= 20) iconName = "battery-030-" + theme;
-        else if (batteryLevel >= 10) iconName = "battery-020-" + theme;
-        else iconName = "battery-010-" + theme;
-    }
-
-    return QString(":/icons/%1.png").arg(iconName);
 }
 
 void HeadsetControlQt::noDeviceFound()
@@ -390,7 +337,7 @@ void HeadsetControlQt::onSidetoneSliderSliderReleased()
     saveSettings();
 }
 
-void HeadsetControlQt::onThemeComboBoxCurrentIndexChanged(int index)
+void HeadsetControlQt::onThemeComboBoxCurrentIndexChanged()
 {
     updateHeadsetInfo();
     saveSettings();
