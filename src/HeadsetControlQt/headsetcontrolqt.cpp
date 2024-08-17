@@ -38,7 +38,7 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     initUI();
     createTrayIcon();
     updateHeadsetInfo();
-    timer->start(10000);
+    timer->start(5000);
     connect(timer, &QTimer::timeout, this, &HeadsetControlQt::updateHeadsetInfo);
     if (firstRun) {
         this->show();
