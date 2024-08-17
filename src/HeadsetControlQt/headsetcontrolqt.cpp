@@ -383,11 +383,14 @@ void HeadsetControlQt::setSidetone()
 
 void HeadsetControlQt::toggleWindow()
 {
-    if (isVisible()) {
-        hide();
+    qDebug() << "Toggling window";
+    if (this->isVisible()) {
+        qDebug() << "Hiding window";
+        this->close();
         trayIcon->contextMenu()->actions().first()->setText("Show");
     } else {
-        show();
+        qDebug() << "Showing window";
+        this->show();
         trayIcon->contextMenu()->actions().first()->setText("Hide");
     }
 }
@@ -399,13 +402,7 @@ void HeadsetControlQt::trayIconActivated(QSystemTrayIcon::ActivationReason reaso
     }
 }
 
-
-
 void HeadsetControlQt::closeEvent(QCloseEvent *event)
 {
-    event->ignore();
-    hide();
+    trayIcon->contextMenu()->actions().first()->setText("Show");
 }
-
-
-
