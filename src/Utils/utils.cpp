@@ -58,8 +58,17 @@ QString getBatteryIcon(int batteryLevel, bool charging, bool missing, int themeI
         else iconName = "battery-010-" + theme;
     }
 
-    return QString(":/icons/%1.png").arg(iconName);
+    QString iconPath;
+    if (theme == "symbolic") {
+        iconPath = iconName;
+    } else {
+        iconPath = QString(":/icons/%1.png").arg(iconName);
+    }
+
+    qDebug() << iconPath;
+    return iconPath;
 }
+
 
 #ifdef _WIN32
 QString getTheme()
