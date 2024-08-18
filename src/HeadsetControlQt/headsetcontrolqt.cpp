@@ -295,21 +295,66 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
         trayIcon->setToolTip(QString("Battery Level: %1%").arg(batteryLevel));
         ui->themeComboBox->currentIndex();
         QString iconPath = getBatteryIcon(batteryLevel, false, false, ui->themeComboBox->currentIndex());
+#ifdef _WIN32
         trayIcon->setIcon(QIcon(iconPath));
+#elif __linux__
+        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+        QString desktop = env.value("XDG_CURRENT_DESKTOP");
+        if (desktop.contains("KDE", Qt::CaseInsensitive)) {
+            QString kdeVersion = getKDEPlasmaVersion();
+            if (kdeVersion.startsWith("5")) {
+                trayIcon->setIcon(QIcon(iconPath));
+            } else if (kdeVersion.startsWith("6")) {
+                trayIcon->setIcon(QIcon::fromTheme(iconPath));
+            } else {
+                trayIcon->setIcon(QIcon(iconPath));
+            }
+        }
+#endif
     } else if (batteryStatus == "BATTERY_CHARGING") {
         ui->batteryBar->setValue(0);
         ui->batteryBar->setFormat("Charging");
         trayIcon->setToolTip("Battery Charging");
 
         QString iconPath = getBatteryIcon(batteryLevel, true, false, ui->themeComboBox->currentIndex());
+#ifdef _WIN32
         trayIcon->setIcon(QIcon(iconPath));
+#elif __linux__
+        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+        QString desktop = env.value("XDG_CURRENT_DESKTOP");
+        if (desktop.contains("KDE", Qt::CaseInsensitive)) {
+            QString kdeVersion = getKDEPlasmaVersion();
+            if (kdeVersion.startsWith("5")) {
+                trayIcon->setIcon(QIcon(iconPath));
+            } else if (kdeVersion.startsWith("6")) {
+                trayIcon->setIcon(QIcon::fromTheme(iconPath));
+            } else {
+                trayIcon->setIcon(QIcon(iconPath));
+            }
+        }
+#endif
     } else {
         ui->batteryBar->setValue(0);
         ui->batteryBar->setFormat("Off");
         trayIcon->setToolTip("Battery Unavailable");
 
         QString iconPath = getBatteryIcon(batteryLevel, false, true, ui->themeComboBox->currentIndex());
+#ifdef _WIN32
         trayIcon->setIcon(QIcon(iconPath));
+#elif __linux__
+        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+        QString desktop = env.value("XDG_CURRENT_DESKTOP");
+        if (desktop.contains("KDE", Qt::CaseInsensitive)) {
+            QString kdeVersion = getKDEPlasmaVersion();
+            if (kdeVersion.startsWith("5")) {
+                trayIcon->setIcon(QIcon(iconPath));
+            } else if (kdeVersion.startsWith("6")) {
+                trayIcon->setIcon(QIcon::fromTheme(iconPath));
+            } else {
+                trayIcon->setIcon(QIcon(iconPath));
+            }
+        }
+#endif
     }
 
     ui->ledBox->setEnabled(capabilities.contains("lights"));
