@@ -6,12 +6,6 @@
 Qt Gui for headsetcontrol; windows / linux compatible.  
 Features a tray icon with battery status in tooltip.
 
-**If you appreciate my work and would like to support me:**
-
-<a href="https://ko-fi.com/odizinne">
-  <img src="assets/kofi_button_red.png" alt="Ko-fi" width="200" height="auto">
-</a>
-
 ## Overview
 
 ![image](assets/screenshot.png)
