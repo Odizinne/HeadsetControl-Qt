@@ -228,7 +228,6 @@ void HeadsetControlQt::manageLEDBasedOnBattery(const QJsonObject &headsetInfo)
     if (!ui->ledBox->isChecked()) {
         return;
     }
-    qDebug() << "Pass";
     ui->lightBatterySpinbox->setEnabled(true);
     ui->lightBatteryLabel->setEnabled(true);
 
