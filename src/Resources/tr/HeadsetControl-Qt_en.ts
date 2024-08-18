@@ -35,7 +35,7 @@
     </message>
     <message>
         <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="210"/>
-        <source>Send notification when battery goes below</source>
+        <source>Send notification when battery goes below:</source>
         <translation></translation>
     </message>
     <message>
@@ -59,18 +59,28 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="63"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="73"/>
         <source>System</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="64"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="74"/>
         <source>Dark</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="65"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="75"/>
         <source>Light</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="258"/>
+        <source>Low battery</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="258"/>
+        <source>%1 has %2% battery left.</source>
         <translation></translation>
     </message>
 </context>

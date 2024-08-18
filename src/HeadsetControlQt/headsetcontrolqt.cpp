@@ -255,7 +255,7 @@ void HeadsetControlQt::sendNotificationBasedOnBattery(const QJsonObject &headset
     bool available = (batteryStatus == "BATTERY_AVAILABLE");
 
     if (batteryLevel < ui->notificationBatterySpinbox->value() && !notificationSent && available) {
-        sendNotification("Low battery", QString("%1 has %2% battery left.").arg(headsetName).arg(batteryLevel), QIcon(":/icons/icon.png"), 5000);
+        sendNotification(tr("Low battery"), QString(tr("%1 has %2% battery left.")).arg(headsetName).arg(batteryLevel), QIcon(":/icons/icon.png"), 5000);
         notificationSent = true;
     } else if (batteryLevel >= ui->notificationBatterySpinbox->value() + 5 && notificationSent && available) {
         notificationSent = false;

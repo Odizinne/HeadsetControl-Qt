@@ -35,8 +35,12 @@
     </message>
     <message>
         <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="210"/>
-        <source>Send notification when battery goes below</source>
+        <source>Send notification when battery goes below:</source>
         <translation>Envoyer une notification quand la batterie atteint:</translation>
+    </message>
+    <message>
+        <source>Send notification when battery goes below</source>
+        <translation type="vanished">Envoyer une notification quand la batterie atteint:</translation>
     </message>
     <message>
         <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="256"/>
@@ -59,19 +63,29 @@
         <translation>Aucun casque détecté.</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="63"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="73"/>
         <source>System</source>
         <translation>Système</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="64"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="74"/>
         <source>Dark</source>
         <translation>Sombre</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="65"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="75"/>
         <source>Light</source>
         <translation>Clair</translation>
+    </message>
+    <message>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="258"/>
+        <source>Low battery</source>
+        <translation>Batterie faible</translation>
+    </message>
+    <message>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="258"/>
+        <source>%1 has %2% battery left.</source>
+        <translation>%2% de batterie restant pour %1.</translation>
     </message>
 </context>
 </TS>
