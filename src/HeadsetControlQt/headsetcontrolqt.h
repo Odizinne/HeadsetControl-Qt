@@ -49,7 +49,7 @@ private:
     void manageLEDBasedOnBattery(const QJsonObject &headsetInfo);
     void sendNotificationBasedOnBattery(const QJsonObject &headsetInfo);
     void sendNotification(const QString &title, const QString &message, const QIcon &icon, int duration);
-    void toggleLED();
+    void toggleLED(bool state);
     void setSidetone();
     void setFont();
     void updateUIWithHeadsetInfo(const QJsonObject &headsetInfo);

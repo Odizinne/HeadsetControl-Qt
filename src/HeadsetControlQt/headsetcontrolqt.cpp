@@ -29,6 +29,7 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     , ui(new Ui::HeadsetControlQt)
     , trayIcon(new QSystemTrayIcon(this))
     , timer(new QTimer(this))
+    , ledState(false)
     , notificationSent(false)
     , firstRun(false)
 {
@@ -155,6 +156,7 @@ void HeadsetControlQt::loadSettings()
 void HeadsetControlQt::applySettings()
 {
     ui->ledBox->setChecked(settings.value("led_state").toBool());
+    ledState = ui->ledBox->isChecked();
     ui->lightBatterySpinbox->setEnabled(settings.value("led_state").toBool());
     ui->lightBatteryLabel->setEnabled(settings.value("led_state").toBool());
     ui->lightBatterySpinbox->setValue(settings.value("light_battery_threshold").toInt());
@@ -162,7 +164,7 @@ void HeadsetControlQt::applySettings()
     ui->sidetoneSlider->setValue(settings.value("sidetone").toInt());
     ui->themeComboBox->setCurrentIndex(settings.value("theme").toInt());
     setSidetone();
-    toggleLED();
+    toggleLED(ui->ledBox->isChecked());
 }
 
 void HeadsetControlQt::saveSettings()
@@ -226,7 +228,7 @@ void HeadsetControlQt::manageLEDBasedOnBattery(const QJsonObject &headsetInfo)
     if (!ui->ledBox->isChecked()) {
         return;
     }
-
+    qDebug() << "Pass";
     ui->lightBatterySpinbox->setEnabled(true);
     ui->lightBatteryLabel->setEnabled(true);
 
@@ -236,11 +238,11 @@ void HeadsetControlQt::manageLEDBasedOnBattery(const QJsonObject &headsetInfo)
     bool available = (batteryStatus == "BATTERY_AVAILABLE");
 
     if (batteryLevel < ui->lightBatterySpinbox->value() && ledState && available) {
-        toggleLED();
+        toggleLED(false);
         ledState = false;
         saveSettings();
     } else if (batteryLevel >= ui->lightBatterySpinbox->value() + 5 && !ledState && available) {
-        toggleLED();
+        toggleLED(true);
         ledState = true;
         saveSettings();
     }
@@ -267,10 +269,10 @@ void HeadsetControlQt::sendNotification(const QString &title, const QString &mes
     trayIcon->showMessage(title, message, icon, duration);
 }
 
-void HeadsetControlQt::toggleLED()
+void HeadsetControlQt::toggleLED(bool state)
 {
     QProcess process;
-    process.start(headsetcontrolExecutable, QStringList() << "-l" << (ui->ledBox->isChecked() ? "1" : "0"));
+    process.start(headsetcontrolExecutable, QStringList() << "-l" << (state ? "1" : "0"));
     process.waitForFinished();
 }
 
@@ -380,7 +382,7 @@ void HeadsetControlQt::toggleUIElements(bool show)
 
 void HeadsetControlQt::onLedBoxStateChanged()
 {
-    toggleLED();
+    toggleLED(ui->ledBox->isChecked());
     ui->lightBatterySpinbox->setEnabled(ui->ledBox->isChecked());
     ui->lightBatteryLabel->setEnabled(ui->ledBox->isChecked());
     saveSettings();
