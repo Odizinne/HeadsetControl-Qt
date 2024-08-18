@@ -10,7 +10,6 @@
 #include <QFile>
 #include <QDir>
 #include <QMessageBox>
-#include <QDebug>
 #include <QStandardPaths>
 
 #ifdef _WIN32
@@ -30,6 +29,7 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     , ui(new Ui::HeadsetControlQt)
     , trayIcon(new QSystemTrayIcon(this))
     , timer(new QTimer(this))
+    , notificationSent(false)
     , firstRun(false)
 {
     ui->setupUi(this);
@@ -187,13 +187,11 @@ void HeadsetControlQt::updateHeadsetInfo()
     process.start(headsetcontrolExecutable, QStringList() << "-o" << "json");
 
     if (!process.waitForStarted()) {
-        qDebug() << "Failed to start process:" << process.errorString();
         noDeviceFound();
         return;
     }
 
     if (!process.waitForFinished()) {
-        qDebug() << "Process did not finish successfully:" << process.errorString();
         noDeviceFound();
         return;
     }
@@ -216,11 +214,9 @@ void HeadsetControlQt::updateHeadsetInfo()
             manageLEDBasedOnBattery(headsetInfo);
             sendNotificationBasedOnBattery(headsetInfo);
         } else {
-            qDebug() << "No devices found.";
             noDeviceFound();
         }
     } else {
-        qDebug() << "No 'devices' key found in JSON.";
         noDeviceFound();
     }
 }
@@ -428,13 +424,10 @@ void HeadsetControlQt::setSidetone()
 
 void HeadsetControlQt::toggleWindow()
 {
-    qDebug() << "Toggling window";
     if (this->isVisible()) {
-        qDebug() << "Hiding window";
         this->close();
         trayIcon->contextMenu()->actions().first()->setText("Show");
     } else {
-        qDebug() << "Showing window";
         this->show();
         trayIcon->contextMenu()->actions().first()->setText("Hide");
     }
