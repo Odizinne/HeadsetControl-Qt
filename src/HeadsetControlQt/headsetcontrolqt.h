@@ -63,7 +63,7 @@ private:
     QSystemTrayIcon *trayIcon;
     QTimer *timer;
     QJsonObject settings;
-    bool ledState;
+    bool ledDisabled;
     bool notificationSent;
     bool firstRun;
 

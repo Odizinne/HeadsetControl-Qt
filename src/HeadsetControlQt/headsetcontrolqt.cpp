@@ -29,7 +29,7 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     , ui(new Ui::HeadsetControlQt)
     , trayIcon(new QSystemTrayIcon(this))
     , timer(new QTimer(this))
-    , ledState(false)
+    , ledDisabled(false)
     , notificationSent(false)
     , firstRun(false)
 {
@@ -62,11 +62,12 @@ void HeadsetControlQt::initUI()
 void HeadsetControlQt::setupUIConnections()
 {
     connect(ui->ledBox, &QCheckBox::stateChanged, this, &HeadsetControlQt::onLedBoxStateChanged);
-    connect(ui->lightBatterySpinbox, QOverload<int>::of(&QSpinBox::valueChanged), this, &HeadsetControlQt::saveSettings);
-    connect(ui->notificationBatterySpinbox, QOverload<int>::of(&QSpinBox::valueChanged), this, &HeadsetControlQt::saveSettings);
+    connect(ui->ledBatteryCheckBox, &QCheckBox::stateChanged, this, &HeadsetControlQt::saveSettings);
+    connect(ui->notificationBatteryCheckBox, &QCheckBox::stateChanged, this, &HeadsetControlQt::saveSettings);
     connect(ui->startupCheckbox, &QCheckBox::stateChanged, this, &HeadsetControlQt::onStartupCheckBoxStateChanged);
     connect(ui->sidetoneSlider, &QSlider::sliderReleased, this, &HeadsetControlQt::onSidetoneSliderSliderReleased);
-    connect(ui->themeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &HeadsetControlQt::onThemeComboBoxCurrentIndexChanged);
+    connect(ui->themeComboBox, &QComboBox::currentIndexChanged, this, &HeadsetControlQt::onThemeComboBoxCurrentIndexChanged);
+    connect(ui->lowBatteryThresholdSpinBox, &QSpinBox::valueChanged, this, &HeadsetControlQt::saveSettings);
 }
 
 void HeadsetControlQt::populateComboBoxes()
@@ -120,8 +121,6 @@ void HeadsetControlQt::createTrayIcon()
 void HeadsetControlQt::createDefaultSettings()
 {
     ui->ledBox->setChecked(true);
-    ui->lightBatterySpinbox->setValue(20);
-    ui->notificationBatterySpinbox->setValue(20);
     ui->sidetoneSlider->setValue(0);
     ui->themeComboBox->setCurrentIndex(0);
     saveSettings();
@@ -156,13 +155,11 @@ void HeadsetControlQt::loadSettings()
 void HeadsetControlQt::applySettings()
 {
     ui->ledBox->setChecked(settings.value("led_state").toBool());
-    ledState = ui->ledBox->isChecked();
-    ui->lightBatterySpinbox->setEnabled(settings.value("led_state").toBool());
-    ui->lightBatteryLabel->setEnabled(settings.value("led_state").toBool());
-    ui->lightBatterySpinbox->setValue(settings.value("light_battery_threshold").toInt());
-    ui->notificationBatterySpinbox->setValue(settings.value("notification_battery_threshold").toInt());
+    ui->ledBatteryCheckBox->setChecked(settings.value("led_low_battery").toBool());
+    ui->notificationBatteryCheckBox->setChecked(settings.value("notification_low_battery").toInt());
     ui->sidetoneSlider->setValue(settings.value("sidetone").toInt());
     ui->themeComboBox->setCurrentIndex(settings.value("theme").toInt());
+    ui->lowBatteryThresholdSpinBox->setValue(settings.value("low_battery_threshold").toInt());
     setSidetone();
     toggleLED(ui->ledBox->isChecked());
 }
@@ -170,10 +167,11 @@ void HeadsetControlQt::applySettings()
 void HeadsetControlQt::saveSettings()
 {
     settings["led_state"] = ui->ledBox->isChecked();
-    settings["light_battery_threshold"] = ui->lightBatterySpinbox->value();
-    settings["notification_battery_threshold"] = ui->notificationBatterySpinbox->value();
+    settings["led_low_battery"] = ui->ledBatteryCheckBox->isChecked();
+    settings["notification_low_battery"] = ui->notificationBatteryCheckBox->isChecked();
     settings["sidetone"] = ui->sidetoneSlider->value();
     settings["theme"] = ui->themeComboBox->currentIndex();
+    settings["low_battery_threshold"] = ui->lowBatteryThresholdSpinBox->value();
 
     QFile file(settingsFile);
     if (file.open(QIODevice::WriteOnly)) {
@@ -211,10 +209,13 @@ void HeadsetControlQt::updateHeadsetInfo()
         QJsonArray devicesArray = jsonObj["devices"].toArray();
         if (devicesArray.size() > 0) {
             QJsonObject headsetInfo = devicesArray.first().toObject();
-
             updateUIWithHeadsetInfo(headsetInfo);
-            manageLEDBasedOnBattery(headsetInfo);
-            sendNotificationBasedOnBattery(headsetInfo);
+            if (ui->ledBatteryCheckBox->isChecked()) {
+                manageLEDBasedOnBattery(headsetInfo);
+            }
+            if (ui->notificationBatteryCheckBox->isChecked()) {
+                sendNotificationBasedOnBattery(headsetInfo);
+            }
         } else {
             noDeviceFound();
         }
@@ -225,25 +226,17 @@ void HeadsetControlQt::updateHeadsetInfo()
 
 void HeadsetControlQt::manageLEDBasedOnBattery(const QJsonObject &headsetInfo)
 {
-    if (!ui->ledBox->isChecked()) {
-        return;
-    }
-    ui->lightBatterySpinbox->setEnabled(true);
-    ui->lightBatteryLabel->setEnabled(true);
-
     QJsonObject batteryInfo = headsetInfo["battery"].toObject();
     int batteryLevel = batteryInfo["level"].toInt();
     QString batteryStatus = batteryInfo["status"].toString();
     bool available = (batteryStatus == "BATTERY_AVAILABLE");
 
-    if (batteryLevel < ui->lightBatterySpinbox->value() && ledState && available) {
-        toggleLED(false);
-        ledState = false;
-        saveSettings();
-    } else if (batteryLevel >= ui->lightBatterySpinbox->value() + 5 && !ledState && available) {
-        toggleLED(true);
-        ledState = true;
-        saveSettings();
+    if (batteryLevel < ui->lowBatteryThresholdSpinBox->value() && !ledDisabled && available) {
+        ui->ledBox->setChecked(false);
+        ledDisabled = true;
+    } else if (batteryLevel >= ui->lowBatteryThresholdSpinBox->value() + 5 && ledDisabled && available) {
+        ui->ledBox->setChecked(true);
+        ledDisabled = false;
     }
 }
 
@@ -255,10 +248,10 @@ void HeadsetControlQt::sendNotificationBasedOnBattery(const QJsonObject &headset
     QString batteryStatus = batteryInfo["status"].toString();
     bool available = (batteryStatus == "BATTERY_AVAILABLE");
 
-    if (batteryLevel < ui->notificationBatterySpinbox->value() && !notificationSent && available) {
+    if (batteryLevel < ui->lowBatteryThresholdSpinBox->value() && !notificationSent && available) {
         sendNotification(tr("Low battery"), QString(tr("%1 has %2% battery left.")).arg(headsetName).arg(batteryLevel), QIcon(":/icons/icon.png"), 5000);
         notificationSent = true;
-    } else if (batteryLevel >= ui->notificationBatterySpinbox->value() + 5 && notificationSent && available) {
+    } else if (batteryLevel >= ui->lowBatteryThresholdSpinBox->value() + 5 && notificationSent && available) {
         notificationSent = false;
     }
 }
@@ -356,6 +349,7 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
 
     ui->ledBox->setEnabled(capabilities.contains("lights"));
     ui->ledLabel->setEnabled(capabilities.contains("lights"));
+    ui->ledBatteryCheckBox->setEnabled(capabilities.contains("lights"));
 
     ui->sidetoneSlider->setEnabled(capabilities.contains("sidetone"));
     ui->sidetoneLabel->setEnabled(capabilities.contains("sidetone"));
@@ -374,7 +368,7 @@ void HeadsetControlQt::toggleUIElements(bool show)
     ui->deviceGroupBox->setVisible(show);
     ui->generalGroupBox->setVisible(show);
     ui->notFoundLabel->setVisible(!show);
-    this->setMinimumSize(0, 0);
+    this->setMinimumSize(380, 0);
     this->adjustSize();
     this->setFixedSize(this->size());
 }
@@ -382,8 +376,6 @@ void HeadsetControlQt::toggleUIElements(bool show)
 void HeadsetControlQt::onLedBoxStateChanged()
 {
     toggleLED(ui->ledBox->isChecked());
-    ui->lightBatterySpinbox->setEnabled(ui->ledBox->isChecked());
-    ui->lightBatteryLabel->setEnabled(ui->ledBox->isChecked());
     saveSettings();
 }
 

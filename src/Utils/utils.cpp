@@ -1,5 +1,4 @@
 #include "utils.h"
-#include <QDebug>
 #include <QDir>
 #include <QFile>
 #include <QProcess>
@@ -21,13 +20,10 @@ QString getBatteryIcon(int batteryLevel, bool charging, bool missing, int themeI
         if (desktop.contains("KDE", Qt::CaseInsensitive)) {
             QString kdeVersion = getKDEPlasmaVersion();
             if (kdeVersion.startsWith("5")) {
-                qDebug() << "KDE Plasma 5 detected";
                 theme = "light";
             } else if (kdeVersion.startsWith("6")) {
-                qDebug() << "KDE Plasma 6 detected";
                 theme = "symbolic";
             } else {
-                qDebug() << "Unknown KDE Plasma version";
                 theme = "light";
             }
         } else {
@@ -65,7 +61,6 @@ QString getBatteryIcon(int batteryLevel, bool charging, bool missing, int themeI
         iconPath = QString(":/icons/%1.png").arg(iconName);
     }
 
-    qDebug() << iconPath;
     return iconPath;
 }
 
