@@ -31,9 +31,9 @@ QString getBatteryIcon(int batteryLevel, bool charging, bool missing, int themeI
         }
 #endif
     } else if (themeIndex == 1) {
-        theme = "light";
-    } else if (themeIndex == 2) {
         theme = "dark";
+    } else if (themeIndex == 2) {
+        theme = "light";
     }
 
     QString iconName;

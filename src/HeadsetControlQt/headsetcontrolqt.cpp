@@ -282,7 +282,7 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
     if (batteryStatus == "BATTERY_AVAILABLE") {
         ui->batteryBar->setValue(batteryLevel);
         ui->batteryBar->setFormat(QString::number(batteryLevel) + "%");
-        trayIcon->setToolTip(QString("Battery Level: %1%").arg(batteryLevel));
+        trayIcon->setToolTip(QString("%1: %2%").arg(deviceName).arg(batteryLevel));
         ui->themeComboBox->currentIndex();
         QString iconPath = getBatteryIcon(batteryLevel, false, false, ui->themeComboBox->currentIndex());
 #ifdef _WIN32
@@ -304,7 +304,7 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
     } else if (batteryStatus == "BATTERY_CHARGING") {
         ui->batteryBar->setValue(0);
         ui->batteryBar->setFormat("Charging");
-        trayIcon->setToolTip("Battery Charging");
+        trayIcon->setToolTip(QString("%1: Charging").arg(deviceName));
 
         QString iconPath = getBatteryIcon(batteryLevel, true, false, ui->themeComboBox->currentIndex());
 #ifdef _WIN32
@@ -326,7 +326,7 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
     } else {
         ui->batteryBar->setValue(0);
         ui->batteryBar->setFormat("Off");
-        trayIcon->setToolTip("Battery Unavailable");
+        trayIcon->setToolTip("No headset connected");
 
         QString iconPath = getBatteryIcon(batteryLevel, false, true, ui->themeComboBox->currentIndex());
 #ifdef _WIN32
