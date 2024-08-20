@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>388</width>
-    <height>382</height>
+    <height>413</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -50,6 +50,73 @@
        <string>GroupBox</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_4">
+       <item row="3" column="2">
+        <widget class="QCheckBox" name="notificationBatteryCheckBox">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LayoutDirection::RightToLeft</enum>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QCheckBox" name="ledBox">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LayoutDirection::RightToLeft</enum>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+         <property name="tristate">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QCheckBox" name="ledBatteryCheckBox">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LayoutDirection::RightToLeft</enum>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <widget class="QLabel" name="ledLabel">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Lights</string>
+         </property>
+        </widget>
+       </item>
        <item row="0" column="0" colspan="3">
         <layout class="QGridLayout" name="gridLayout_7">
          <property name="spacing">
@@ -115,8 +182,8 @@
          </item>
         </layout>
        </item>
-       <item row="1" column="0" colspan="2">
-        <widget class="QLabel" name="ledLabel">
+       <item row="3" column="0">
+        <widget class="QLabel" name="notification_label">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -124,29 +191,7 @@
           </size>
          </property>
          <property name="text">
-          <string>Lights</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="2">
-        <widget class="QCheckBox" name="ledBox">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LayoutDirection::RightToLeft</enum>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-         <property name="tristate">
-          <bool>false</bool>
+          <string>Send notification on low battery</string>
          </property>
         </widget>
        </item>
@@ -163,8 +208,8 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="notification_label">
+       <item row="4" column="0">
+        <widget class="QLabel" name="soundBatteryLabel">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -172,28 +217,12 @@
           </size>
          </property>
          <property name="text">
-          <string>Send notification on low battery</string>
+          <string>Beep on low battery</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="2">
-        <widget class="QCheckBox" name="ledBatteryCheckBox">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LayoutDirection::RightToLeft</enum>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="2">
-        <widget class="QCheckBox" name="notificationBatteryCheckBox">
+       <item row="4" column="2">
+        <widget class="QCheckBox" name="soundBatteryCheckBox">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -294,7 +323,7 @@
           </size>
          </property>
          <property name="minimum">
-          <number>20</number>
+          <number>0</number>
          </property>
          <property name="maximum">
           <number>100</number>

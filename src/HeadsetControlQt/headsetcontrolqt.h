@@ -51,6 +51,8 @@ private:
     void sendNotification(const QString &title, const QString &message, const QIcon &icon, int duration);
     void toggleLED(bool state);
     void setSidetone();
+    void sendSoundNotification();
+    void sendSoundNotificationBasedOnBattery(const QJsonObject &headsetInfo);
     void setFont();
     void updateUIWithHeadsetInfo(const QJsonObject &headsetInfo);
     void noDeviceFound();
@@ -65,6 +67,7 @@ private:
     QJsonObject settings;
     bool ledDisabled;
     bool notificationSent;
+    bool soundNotificationSent;
     bool firstRun;
 
 protected:

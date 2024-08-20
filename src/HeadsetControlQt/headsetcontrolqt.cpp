@@ -31,6 +31,7 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     , timer(new QTimer(this))
     , ledDisabled(false)
     , notificationSent(false)
+    , soundNotificationSent(false)
     , firstRun(false)
 {
     ui->setupUi(this);
@@ -68,6 +69,7 @@ void HeadsetControlQt::setupUIConnections()
     connect(ui->sidetoneSlider, &QSlider::sliderReleased, this, &HeadsetControlQt::onSidetoneSliderSliderReleased);
     connect(ui->themeComboBox, &QComboBox::currentIndexChanged, this, &HeadsetControlQt::onThemeComboBoxCurrentIndexChanged);
     connect(ui->lowBatteryThresholdSpinBox, &QSpinBox::valueChanged, this, &HeadsetControlQt::saveSettings);
+    connect(ui->soundBatteryCheckBox, &QCheckBox::stateChanged, this, &HeadsetControlQt::saveSettings);
 }
 
 void HeadsetControlQt::populateComboBoxes()
@@ -160,6 +162,7 @@ void HeadsetControlQt::applySettings()
     ui->sidetoneSlider->setValue(settings.value("sidetone").toInt());
     ui->themeComboBox->setCurrentIndex(settings.value("theme").toInt());
     ui->lowBatteryThresholdSpinBox->setValue(settings.value("low_battery_threshold").toInt());
+    ui->soundBatteryCheckBox->setChecked(settings.value("sound_low_battery").toBool());
     setSidetone();
     toggleLED(ui->ledBox->isChecked());
 }
@@ -172,6 +175,7 @@ void HeadsetControlQt::saveSettings()
     settings["sidetone"] = ui->sidetoneSlider->value();
     settings["theme"] = ui->themeComboBox->currentIndex();
     settings["low_battery_threshold"] = ui->lowBatteryThresholdSpinBox->value();
+    settings["sound_low_battery"] = ui->soundBatteryCheckBox->isChecked();
 
     QFile file(settingsFile);
     if (file.open(QIODevice::WriteOnly)) {
@@ -216,6 +220,9 @@ void HeadsetControlQt::updateHeadsetInfo()
             if (ui->notificationBatteryCheckBox->isChecked()) {
                 sendNotificationBasedOnBattery(headsetInfo);
             }
+            if (ui->soundBatteryCheckBox->isChecked()) {
+                sendSoundNotificationBasedOnBattery(headsetInfo);
+            }
         } else {
             noDeviceFound();
         }
@@ -253,6 +260,22 @@ void HeadsetControlQt::sendNotificationBasedOnBattery(const QJsonObject &headset
         notificationSent = true;
     } else if (batteryLevel >= ui->lowBatteryThresholdSpinBox->value() + 5 && notificationSent && available) {
         notificationSent = false;
+    }
+}
+
+void HeadsetControlQt::sendSoundNotificationBasedOnBattery(const QJsonObject &headsetInfo)
+{
+    QJsonObject batteryInfo = headsetInfo["battery"].toObject();
+    QString headsetName = headsetInfo["device"].toString();
+    int batteryLevel = batteryInfo["level"].toInt();
+    QString batteryStatus = batteryInfo["status"].toString();
+    bool available = (batteryStatus == "BATTERY_AVAILABLE");
+
+    if (batteryLevel < ui->lowBatteryThresholdSpinBox->value() && !soundNotificationSent && available) {
+        sendSoundNotification();
+        soundNotificationSent = true;
+    } else if (batteryLevel >= ui->lowBatteryThresholdSpinBox->value() + 5 && soundNotificationSent && available) {
+        soundNotificationSent = false;
     }
 }
 
@@ -346,14 +369,13 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
         }
 #endif
     }
-
     ui->ledBox->setEnabled(capabilities.contains("lights"));
     ui->ledLabel->setEnabled(capabilities.contains("lights"));
     ui->ledBatteryCheckBox->setEnabled(capabilities.contains("lights"));
-
+    ui->soundBatteryLabel->setEnabled(capabilities.contains("notification sound"));
+    ui->soundBatteryCheckBox->setEnabled(capabilities.contains("notification sound"));
     ui->sidetoneSlider->setEnabled(capabilities.contains("sidetone"));
     ui->sidetoneLabel->setEnabled(capabilities.contains("sidetone"));
-
     toggleUIElements(true);
 }
 
@@ -412,6 +434,13 @@ void HeadsetControlQt::setSidetone()
 {
     QProcess process;
     process.start(headsetcontrolExecutable, QStringList() << "-s" << QString::number(ui->sidetoneSlider->value()));
+    process.waitForFinished();
+}
+
+void HeadsetControlQt::sendSoundNotification()
+{
+    QProcess process;
+    process.start(headsetcontrolExecutable, QStringList() << "-n" << "0");
     process.waitForFinished();
 }
 
