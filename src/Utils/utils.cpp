@@ -42,16 +42,11 @@ QString getBatteryIcon(int batteryLevel, bool charging, bool missing, int themeI
     } else if (charging) {
         iconName = "battery-100-charging-" + theme;
     } else {
-        if (batteryLevel >= 90) iconName = "battery-100-" + theme;
-        else if (batteryLevel >= 80) iconName = "battery-090-" + theme;
-        else if (batteryLevel >= 70) iconName = "battery-080-" + theme;
-        else if (batteryLevel >= 60) iconName = "battery-070-" + theme;
-        else if (batteryLevel >= 50) iconName = "battery-060-" + theme;
-        else if (batteryLevel >= 40) iconName = "battery-050-" + theme;
-        else if (batteryLevel >= 30) iconName = "battery-040-" + theme;
-        else if (batteryLevel >= 20) iconName = "battery-030-" + theme;
-        else if (batteryLevel >= 10) iconName = "battery-020-" + theme;
-        else iconName = "battery-010-" + theme;
+        if (batteryLevel >= 80) iconName = "battery-100-" + theme;
+        else if (batteryLevel >= 60) iconName = "battery-080-" + theme;
+        else if (batteryLevel >= 40) iconName = "battery-060-" + theme;
+        else if (batteryLevel >= 20) iconName = "battery-040-" + theme;
+        else if (batteryLevel >= 0) iconName = "battery-020-" + theme;
     }
 
     QString iconPath;
