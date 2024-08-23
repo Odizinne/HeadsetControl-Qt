@@ -33,6 +33,7 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     , notificationSent(false)
     , soundNotificationSent(false)
     , firstRun(false)
+    , worker(new Worker())
 {
     ui->setupUi(this);
     setWindowIcon(QIcon(":/icons/icon.png"));
@@ -40,8 +41,14 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     initUI();
     createTrayIcon();
     updateHeadsetInfo();
+    connect(worker, &Worker::workRequested, worker, &Worker::doWork);
+    connect(worker, &Worker::sendHeadsetInfo, this, &::HeadsetControlQt::handleHeadsetInfo);
+
+    connect(timer, &QTimer::timeout, worker, &Worker::requestWork);
+
+    worker->moveToThread(&workerThread);
+    workerThread.start();
     timer->start(5000);
-    connect(timer, &QTimer::timeout, this, &HeadsetControlQt::updateHeadsetInfo);
     if (firstRun) {
         this->show();
     }
@@ -49,7 +56,34 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
 
 HeadsetControlQt::~HeadsetControlQt()
 {
+    worker->abort();
+    workerThread.quit();
+    workerThread.wait();
     delete ui;
+}
+
+void HeadsetControlQt::handleHeadsetInfo(const QJsonObject &headsetInfo)
+{
+    if (headsetInfo.contains("devices")) {
+        QJsonArray devicesArray = headsetInfo["devices"].toArray();
+        if (devicesArray.size() > 0) {
+            QJsonObject headsetInfo = devicesArray.first().toObject();
+            updateUIWithHeadsetInfo(headsetInfo);
+            if (ui->ledBatteryCheckBox->isChecked()) {
+                manageLEDBasedOnBattery(headsetInfo);
+            }
+            if (ui->notificationBatteryCheckBox->isChecked()) {
+                sendNotificationBasedOnBattery(headsetInfo);
+            }
+            if (ui->soundBatteryCheckBox->isChecked()) {
+                sendSoundNotificationBasedOnBattery(headsetInfo);
+            }
+        } else {
+            noDeviceFound();
+        }
+    } else {
+        noDeviceFound();
+    }
 }
 
 void HeadsetControlQt::initUI()
@@ -426,7 +460,7 @@ void HeadsetControlQt::onSidetoneSliderSliderReleased()
 
 void HeadsetControlQt::onThemeComboBoxCurrentIndexChanged()
 {
-    updateHeadsetInfo();
+    //updateHeadsetInfo();
     saveSettings();
 }
 

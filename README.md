@@ -31,7 +31,9 @@ Linux support is experimental and not well tested.
 ## To-do
 
 - Add other headsetcontrol supported settings (My headset does not support them so i cannot test)
+- Big code cleanup
 
 ## Credits
 
 - [Sapd](https://github.com/Sapd/HeadsetControl) for headsetcontrol
+

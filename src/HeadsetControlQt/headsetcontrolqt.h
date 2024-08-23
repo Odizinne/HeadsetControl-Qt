@@ -12,6 +12,8 @@
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QJsonDocument>
+#include <QThread>
+#include "worker.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -35,6 +37,7 @@ private slots:
     void toggleWindow();
     void trayIconActivated(QSystemTrayIcon::ActivationReason reason);
     void onStartupCheckBoxStateChanged();
+    void handleHeadsetInfo(const QJsonObject &headsetInfo);
 
 private:
     void initUI();
@@ -69,6 +72,9 @@ private:
     bool notificationSent;
     bool soundNotificationSent;
     bool firstRun;
+
+    QThread workerThread;
+    Worker *worker;
 
 protected:
     void closeEvent(QCloseEvent *event) override;

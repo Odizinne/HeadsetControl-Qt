@@ -11,10 +11,12 @@ CONFIG += c++17
 INCLUDEPATH += \
     src/ShortcutManager \
     src/HeadsetControlQt \
-    src/Utils
+    src/Utils \
+    src/Worker
 
 SOURCES += \
     src/ShortcutManager/shortcutmanager.cpp \
+    src/Worker/worker.cpp \
     src/main.cpp \
     src/HeadsetControlQt/headsetcontrolqt.cpp \
     src/Utils/utils.cpp
@@ -22,7 +24,8 @@ SOURCES += \
 HEADERS += \
     src/ShortcutManager/shortcutmanager.h \
     src/HeadsetControlQt/headsetcontrolqt.h \
-    src/Utils/utils.h
+    src/Utils/utils.h \
+    src/Worker/worker.h
 
 FORMS += \
     src/HeadsetControlQt/headsetcontrolqt.ui
