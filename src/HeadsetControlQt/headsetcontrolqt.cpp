@@ -192,7 +192,7 @@ void HeadsetControlQt::applySettings()
 {
     ui->ledBox->setChecked(settings.value("led_state").toBool());
     ui->ledBatteryCheckBox->setChecked(settings.value("led_low_battery").toBool());
-    ui->notificationBatteryCheckBox->setChecked(settings.value("notification_low_battery").toInt());
+    ui->notificationBatteryCheckBox->setChecked(settings.value("notification_low_battery").toBool());
     ui->sidetoneSlider->setValue(settings.value("sidetone").toInt());
     ui->themeComboBox->setCurrentIndex(settings.value("theme").toInt());
     ui->lowBatteryThresholdSpinBox->setValue(settings.value("low_battery_threshold").toInt());
