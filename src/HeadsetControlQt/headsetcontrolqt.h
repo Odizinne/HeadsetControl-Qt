@@ -56,7 +56,6 @@ private:
     void setSidetone();
     void sendSoundNotification();
     void sendSoundNotificationBasedOnBattery(const QJsonObject &headsetInfo);
-    void setFont();
     void updateUIWithHeadsetInfo(const QJsonObject &headsetInfo);
     void noDeviceFound();
     void toggleUIElements(bool show);

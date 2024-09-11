@@ -88,8 +88,9 @@ void HeadsetControlQt::handleHeadsetInfo(const QJsonObject &headsetInfo)
 
 void HeadsetControlQt::initUI()
 {
+    setFrameColorBasedOnWindow(this, ui->frame);
+    setFrameColorBasedOnWindow(this, ui->frame_2);
     populateComboBoxes();
-    setFont();
     checkStartupCheckbox();
     setupUIConnections();
 }
@@ -111,23 +112,6 @@ void HeadsetControlQt::populateComboBoxes()
     ui->themeComboBox->addItem(tr("System"));
     ui->themeComboBox->addItem(tr("Dark"));
     ui->themeComboBox->addItem(tr("Light"));
-}
-
-void HeadsetControlQt::setFont()
-{
-    QList<QGroupBox*> groupBoxes = {
-        ui->deviceGroupBox,
-        ui->generalGroupBox
-    };
-
-    for (QGroupBox* groupBox : groupBoxes) {
-        groupBox->setStyleSheet("font-weight: bold;");
-
-        const QList<QWidget*> children = groupBox->findChildren<QWidget*>();
-        for (QWidget* child : children) {
-            child->setStyleSheet("font-weight: normal;");
-        }
-    }
 }
 
 void HeadsetControlQt::checkStartupCheckbox()
@@ -331,7 +315,7 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
     QStringList capabilities = headsetInfo["capabilities_str"].toVariant().toStringList();
     QJsonObject batteryInfo = headsetInfo["battery"].toObject();
 
-    ui->deviceGroupBox->setTitle(deviceName);
+    ui->deviceLabel->setText(deviceName);
 
     QString batteryStatus = batteryInfo["status"].toString();
     int batteryLevel = batteryInfo["level"].toInt();
@@ -421,8 +405,8 @@ void HeadsetControlQt::noDeviceFound()
 
 void HeadsetControlQt::toggleUIElements(bool show)
 {
-    ui->deviceGroupBox->setVisible(show);
-    ui->generalGroupBox->setVisible(show);
+    ui->frame->setVisible(show);
+    ui->frame_2->setVisible(show);
     ui->notFoundLabel->setVisible(!show);
     this->setMinimumSize(380, 0);
     this->adjustSize();
