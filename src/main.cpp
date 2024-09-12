@@ -18,4 +18,5 @@ int main(int argc, char *argv[])
     }
     HeadsetControlQt w;
     return a.exec();
+
 }

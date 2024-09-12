@@ -6,103 +6,28 @@
 #include <QStandardPaths>
 #include <QSysInfo>
 #include <QtWidgets/QWidget>
+#include <QStandardPaths>
 
 #ifdef _WIN32
-#include <shlobj.h>
-#include <shobjidl.h>
-#include <windows.h>
+const QString shortcutName = "HeadsetControl-Qt.lnk";
+const QString applicationPath = QCoreApplication::applicationFilePath();
+const QString startupPath = QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation) + QDir::separator() + "Startup";
+const QString shortcutPath = startupPath + QDir::separator() + shortcutName;
 
-QString getStartupFolder()
+void manageShortcut(bool state)
 {
-    QString path;
-    WCHAR szPath[MAX_PATH];
-    if (SHGetFolderPath(NULL, CSIDL_STARTUP, NULL, 0, szPath) == S_OK) {
-        path = QString::fromWCharArray(szPath);
-    }
-    return path;
-}
-
-void setPaths(QString &targetPath, QString &startupFolder)
-{
-    TCHAR executablePath[MAX_PATH];
-    GetModuleFileName(NULL, executablePath, MAX_PATH);
-    targetPath = QString::fromWCharArray(executablePath);
-
-    startupFolder = getStartupFolder();
-}
-
-QString getShortcutPath()
-{
-    static QString shortcutName = "HeadsetControl-Qt.lnk";
-    return getStartupFolder() + "\\" + shortcutName;
-}
-
-void createShortcut(const QString &targetPath)
-{
-    QString shortcutPath = getShortcutPath();
-    QString workingDirectory = QFileInfo(targetPath).path();
-
-    IShellLink *pShellLink = nullptr;
-    IPersistFile *pPersistFile = nullptr;
-
-    if (FAILED(CoInitialize(nullptr))) {
-        qDebug() << "Failed to initialize COM library.";
-        return;
-    }
-
-    if (SUCCEEDED(CoCreateInstance(CLSID_ShellLink,
-                                   nullptr,
-                                   CLSCTX_INPROC_SERVER,
-                                   IID_IShellLink,
-                                   (void **) &pShellLink))) {
-        pShellLink->SetPath(targetPath.toStdWString().c_str());
-        pShellLink->SetWorkingDirectory(workingDirectory.toStdWString().c_str());
-        pShellLink->SetDescription(L"Launch HeadsetControl-Qt");
-
-        if (SUCCEEDED(pShellLink->QueryInterface(IID_IPersistFile, (void **) &pPersistFile))) {
-            pPersistFile->Save(shortcutPath.toStdWString().c_str(), TRUE);
-            pPersistFile->Release();
-        }
-
-        pShellLink->Release();
+    if (state) {
+        QFile::link(applicationPath, shortcutPath);
     } else {
-        qDebug() << "Failed to create ShellLink instance.";
-    }
-
-    CoUninitialize();
-}
-
-bool isShortcutPresent()
-{
-    QString shortcutPath = getShortcutPath();
-    return QFile::exists(shortcutPath);
-}
-
-void removeShortcut()
-{
-    QString shortcutPath = getShortcutPath();
-    if (isShortcutPresent()) {
         QFile::remove(shortcutPath);
     }
 }
 
-void manageShortcut(bool state)
+bool isShortcutPresent()
 {
-    QString targetPath;
-    QString startupFolder;
-
-    setPaths(targetPath, startupFolder);
-
-    if (state) {
-        if (!isShortcutPresent()) {
-            createShortcut(targetPath);
-        }
-    } else {
-        if (isShortcutPresent()) {
-            removeShortcut();
-        }
-    }
+    return QFile::exists(shortcutPath);
 }
+
 #endif
 
 #ifdef __linux__
