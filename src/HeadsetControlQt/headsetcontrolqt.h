@@ -59,6 +59,7 @@ private:
     void updateUIWithHeadsetInfo(const QJsonObject &headsetInfo);
     void noDeviceFound();
     void toggleUIElements(bool show);
+    void sendFirstMinimizeNotification();
     static const QString settingsFile;
     static const QString headsetcontrolExecutable;
     static const QString desktopFile;
@@ -74,6 +75,7 @@ private:
 
     QThread workerThread;
     Worker *worker;
+
 
 protected:
     void closeEvent(QCloseEvent *event) override;

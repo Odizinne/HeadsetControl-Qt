@@ -483,4 +483,14 @@ void HeadsetControlQt::trayIconActivated(QSystemTrayIcon::ActivationReason reaso
 void HeadsetControlQt::closeEvent(QCloseEvent *event)
 {
     trayIcon->contextMenu()->actions().first()->setText("Show");
+    sendFirstMinimizeNotification();
+
+}
+
+void HeadsetControlQt::sendFirstMinimizeNotification()
+{
+    if (firstRun) {
+        sendNotification(tr("HeadsetControl-Qt"), QString(tr("The application is still running in the background.")), QIcon(":/icons/icon.png"), 5000);
+        firstRun = false;
+    }
 }
