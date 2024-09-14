@@ -100,12 +100,12 @@
         <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="130"/>
         <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="469"/>
         <source>Show</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher</translation>
     </message>
     <message>
         <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="133"/>
         <source>Exit</source>
-        <translation type="unfinished"></translation>
+        <translation>Quitter</translation>
     </message>
     <message>
         <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="277"/>
@@ -120,22 +120,22 @@
     <message>
         <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="369"/>
         <source>Off</source>
-        <translation type="unfinished"></translation>
+        <translation>Éteint</translation>
     </message>
     <message>
         <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="370"/>
         <source>No headset connected</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas de casque connecté</translation>
     </message>
     <message>
         <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="472"/>
         <source>Hide</source>
-        <translation type="unfinished"></translation>
+        <translation>Masquer</translation>
     </message>
     <message>
         <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="493"/>
         <source>The application is still running in the background.</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;application tourne toujours en arrière plan.</translation>
     </message>
 </context>
 </TS>
