@@ -400,14 +400,34 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
 void HeadsetControlQt::noDeviceFound()
 {
     toggleUIElements(false);
-    trayIcon->setToolTip("No Device Found");
+    trayIcon->setToolTip(tr("No Device Found"));
+    QString iconPath = getBatteryIcon(0, false, true, ui->themeComboBox->currentIndex());
+#ifdef _WIN32
+    trayIcon->setIcon(QIcon(iconPath));
+#elif __linux__
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    QString desktop = env.value("XDG_CURRENT_DESKTOP");
+    if (desktop.contains("KDE", Qt::CaseInsensitive)) {
+        QString kdeVersion = getKDEPlasmaVersion();
+        if (kdeVersion.startsWith("5")) {
+            trayIcon->setIcon(QIcon(iconPath));
+        } else if (kdeVersion.startsWith("6")) {
+            trayIcon->setIcon(QIcon::fromTheme(iconPath));
+        } else {
+            trayIcon->setIcon(QIcon(iconPath));
+        }
+    }
+#endif
 }
 
 void HeadsetControlQt::toggleUIElements(bool show)
 {
+    ui->settingsLabel->setVisible(show);
     ui->frame->setVisible(show);
+    ui->deviceLabel->setVisible(show);
     ui->frame_2->setVisible(show);
     ui->notFoundLabel->setVisible(!show);
+    this->setFixedSize(QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
     this->setMinimumSize(380, 0);
     this->adjustSize();
     this->setFixedSize(this->size());
@@ -482,7 +502,7 @@ void HeadsetControlQt::trayIconActivated(QSystemTrayIcon::ActivationReason reaso
 
 void HeadsetControlQt::closeEvent(QCloseEvent *event)
 {
-    trayIcon->contextMenu()->actions().first()->setText("Show");
+    trayIcon->contextMenu()->actions().first()->setText(tr("Show"));
     sendFirstMinimizeNotification();
 
 }
