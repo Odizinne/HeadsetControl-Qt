@@ -36,4 +36,4 @@ Linux support is experimental and not well tested.
 ## Credits
 
 - [Sapd](https://github.com/Sapd/HeadsetControl) for headsetcontrol
-
+- [bbacskay](https://github.com/bbacskay) Hungarian translation
