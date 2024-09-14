@@ -127,10 +127,10 @@ void HeadsetControlQt::createTrayIcon()
 {
     trayIcon->setIcon(QIcon(":/icons/icon.png"));
     QMenu *trayMenu = new QMenu(this);
-    QAction *showAction = new QAction("Show", this);
+    QAction *showAction = new QAction(tr("Show"), this);
     connect(showAction, &QAction::triggered, this, &HeadsetControlQt::toggleWindow);
     trayMenu->addAction(showAction);
-    QAction *exitAction = new QAction("Exit", this);
+    QAction *exitAction = new QAction(tr("Exit"), this);
     connect(exitAction, &QAction::triggered, this, &QApplication::quit);
     trayMenu->addAction(exitAction);
     trayIcon->setContextMenu(trayMenu);
@@ -366,8 +366,8 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
 #endif
     } else {
         ui->batteryBar->setValue(0);
-        ui->batteryBar->setFormat("Off");
-        trayIcon->setToolTip("No headset connected");
+        ui->batteryBar->setFormat(tr("Off"));
+        trayIcon->setToolTip(tr("No headset connected"));
 
         QString iconPath = getBatteryIcon(batteryLevel, false, true, ui->themeComboBox->currentIndex());
 #ifdef _WIN32
@@ -466,10 +466,10 @@ void HeadsetControlQt::toggleWindow()
 {
     if (this->isVisible()) {
         this->close();
-        trayIcon->contextMenu()->actions().first()->setText("Show");
+        trayIcon->contextMenu()->actions().first()->setText(tr("Show"));
     } else {
         this->show();
-        trayIcon->contextMenu()->actions().first()->setText("Hide");
+        trayIcon->contextMenu()->actions().first()->setText(tr("Hide"));
     }
 }
 

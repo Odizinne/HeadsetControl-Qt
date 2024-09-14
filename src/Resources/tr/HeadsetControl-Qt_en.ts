@@ -5,92 +5,124 @@
     <name>HeadsetControlQt</name>
     <message>
         <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="26"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="493"/>
         <source>HeadsetControl-Qt</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="50"/>
-        <source>GroupBox</source>
-        <translation></translation>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="193"/>
+        <source>device</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="134"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="254"/>
         <source>Battery</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="163"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="283"/>
         <source>Sidetone</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="116"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="298"/>
         <source>Lights</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="207"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="333"/>
         <source>Disable lights on low battery</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="194"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="362"/>
         <source>Send notification on low battery</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="220"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="391"/>
         <source>Beep on low battery</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="263"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="211"/>
         <source>Settings</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="278"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="146"/>
         <source>Icon theme</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="342"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="82"/>
         <source>Run at startup</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="355"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="111"/>
         <source>Low battery threshold</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="390"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="57"/>
         <source>No supported headset found.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="77"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="112"/>
         <source>System</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="78"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="113"/>
         <source>Dark</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="79"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="114"/>
         <source>Light</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="259"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="130"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="469"/>
+        <source>Show</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="133"/>
+        <source>Exit</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="277"/>
         <source>Low battery</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="259"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="277"/>
         <source>%1 has %2% battery left.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="369"/>
+        <source>Off</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="370"/>
+        <source>No headset connected</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="472"/>
+        <source>Hide</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="493"/>
+        <source>The application is still running in the background.</source>
         <translation></translation>
     </message>
 </context>
