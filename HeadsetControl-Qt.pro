@@ -32,7 +32,8 @@ FORMS += \
 
 TRANSLATIONS += \
     src/Resources/tr/HeadsetControl-Qt_fr.ts \
-    src/Resources/tr/HeadsetControl-Qt_en.ts
+    src/Resources/tr/HeadsetControl-Qt_en.ts \
+    src/Resources/tr/HeadsetControl-Qt_hu.ts
 
 RESOURCES += \
     src/Resources/resources.qrc
