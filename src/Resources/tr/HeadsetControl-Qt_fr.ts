@@ -5,7 +5,7 @@
     <name>HeadsetControlQt</name>
     <message>
         <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="26"/>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="493"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="513"/>
         <source>HeadsetControl-Qt</source>
         <translation></translation>
     </message>
@@ -86,7 +86,8 @@
     </message>
     <message>
         <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="130"/>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="469"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="489"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="505"/>
         <source>Show</source>
         <translation>Afficher</translation>
     </message>
@@ -116,12 +117,17 @@
         <translation>Pas de casque connecté</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="472"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="403"/>
+        <source>No Device Found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="492"/>
         <source>Hide</source>
         <translation>Masquer</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="493"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="513"/>
         <source>The application is still running in the background.</source>
         <translation>L&apos;application tourne toujours en arrière plan.</translation>
     </message>
