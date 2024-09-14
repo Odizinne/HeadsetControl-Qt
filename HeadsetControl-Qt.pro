@@ -35,10 +35,14 @@ TRANSLATIONS += \
     src/Resources/tr/HeadsetControl-Qt_en.ts
 
 RESOURCES += \
-    src/Resources/resources.qrc \
-    src/Resources/translations.qrc
+    src/Resources/resources.qrc
 
 RC_FILE = src/Resources/appicon.rc
+
+# Build/embed translations automatically
+CONFIG += lrelease
+QM_FILES_RESOURCE_PREFIX=/translations/tr
+CONFIG += embed_translations
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

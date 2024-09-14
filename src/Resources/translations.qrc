@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/translations">
-        <file>tr/HeadsetControl-Qt_en.qm</file>
-        <file>tr/HeadsetControl-Qt_fr.qm</file>
-    </qresource>
-</RCC>
