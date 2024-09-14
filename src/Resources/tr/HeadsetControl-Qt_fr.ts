@@ -40,18 +40,6 @@
         <translation>Envoyer une notification quand la batterie est faible</translation>
     </message>
     <message>
-        <source>Disable lights when battery goes below:</source>
-        <translation type="vanished">Désactiver les LEDs quand la batterie atteint:</translation>
-    </message>
-    <message>
-        <source>Send notification when battery goes below:</source>
-        <translation type="vanished">Envoyer une notification quand la batterie atteint:</translation>
-    </message>
-    <message>
-        <source>Send notification when battery goes below</source>
-        <translation type="vanished">Envoyer une notification quand la batterie atteint:</translation>
-    </message>
-    <message>
         <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="391"/>
         <source>Beep on low battery</source>
         <translation>Bip audio quand la batterie est faible</translation>
