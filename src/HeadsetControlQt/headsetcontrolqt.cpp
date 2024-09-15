@@ -12,6 +12,8 @@
 #include <QMessageBox>
 #include <QStandardPaths>
 #include <QStyleFactory>
+#include <QLocale>
+#include <QTranslator>
 
 #ifdef _WIN32
 const QString HeadsetControlQt::headsetcontrolExecutable = "dependencies/headsetcontrol.exe";

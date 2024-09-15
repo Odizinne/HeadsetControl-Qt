@@ -6,8 +6,6 @@
 #include <QMenu>
 #include <QAction>
 #include <QTimer>
-#include <QTranslator>
-#include <QLocale>
 #include <QCloseEvent>
 #include <QJsonObject>
 #include <QJsonValue>
