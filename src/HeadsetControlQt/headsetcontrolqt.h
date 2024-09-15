@@ -72,6 +72,7 @@ private:
     bool notificationSent;
     bool soundNotificationSent;
     bool firstRun;
+    bool closing;
 
     QThread workerThread;
     Worker *worker;
