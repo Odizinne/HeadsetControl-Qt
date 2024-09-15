@@ -9,13 +9,13 @@
 #include <QStandardPaths>
 
 #ifdef _WIN32
-const QString shortcutName = "HeadsetControl-Qt.lnk";
-const QString applicationPath = QCoreApplication::applicationFilePath();
-const QString startupPath = QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation) + QDir::separator() + "Startup";
-const QString shortcutPath = startupPath + QDir::separator() + shortcutName;
-
 void manageShortcut(bool state)
 {
+    QString shortcutName = "HeadsetControl-Qt.lnk";
+    QString applicationPath = QCoreApplication::applicationFilePath();
+    QString startupPath = QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation) + QDir::separator() + "Startup";
+    QString shortcutPath = startupPath + QDir::separator() + shortcutName;
+
     if (state) {
         QFile::link(applicationPath, shortcutPath);
     } else {
@@ -25,6 +25,10 @@ void manageShortcut(bool state)
 
 bool isShortcutPresent()
 {
+    QString shortcutName = "HeadsetControl-Qt.lnk";
+    QString startupPath = QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation) + QDir::separator() + "Startup";
+    QString shortcutPath = startupPath + QDir::separator() + shortcutName;
+
     return QFile::exists(shortcutPath);
 }
 
