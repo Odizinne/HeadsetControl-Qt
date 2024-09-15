@@ -5,62 +5,66 @@
     <name>HeadsetControlQt</name>
     <message>
         <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="26"/>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="518"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="533"/>
         <source>HeadsetControl-Qt</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="193"/>
         <source>device</source>
-        <translation>eszköz</translation>
+        <translation type="vanished">eszköz</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="254"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="185"/>
+        <source>Language</source>
+        <translation>Nyelv</translation>
+    </message>
+    <message>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="277"/>
         <source>Battery</source>
         <translation>Akkumulátor</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="283"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="306"/>
         <source>Sidetone</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="298"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="321"/>
         <source>Lights</source>
         <translation>Fények</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="333"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="356"/>
         <source>Disable lights on low battery</source>
         <translation>Fények ki alacsony akku szintnél</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="362"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="385"/>
         <source>Send notification on low battery</source>
         <translation>Értesítés alacsony akku szintnél</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="391"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="414"/>
         <source>Beep on low battery</source>
         <translation>Hangjelzés alacsony akku szintnél</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="211"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="234"/>
         <source>Settings</source>
         <translation>Beállítások</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="146"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="143"/>
         <source>Icon theme</source>
         <translation>Ikon stílus</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="82"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="130"/>
         <source>Run at startup</source>
         <translation>Indítás bejelentkezéskor</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="111"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="82"/>
         <source>Low battery threshold</source>
         <translation>Alacsony akku határérték</translation>
     </message>
@@ -70,64 +74,64 @@
         <translation>Nem található támogatott fejhallgató.</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="112"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="114"/>
         <source>System</source>
         <translation>Rendszer</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="113"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="115"/>
         <source>Dark</source>
         <translation>Sötét</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="114"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="116"/>
         <source>Light</source>
         <translation>Világos</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="130"/>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="494"/>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="510"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="145"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="509"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="525"/>
         <source>Show</source>
         <translation>Mutat</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="133"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="148"/>
         <source>Exit</source>
         <translation>Kilépés</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="277"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="293"/>
         <source>Low battery</source>
         <translation>Alacsony akkumulátor szint</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="277"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="293"/>
         <source>%1 has %2% battery left.</source>
         <translation>%1 akku töltöttség %2%.</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="374"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="389"/>
         <source>Off</source>
         <translation>Ki</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="375"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="390"/>
         <source>No headset connected</source>
         <translation>Nincs csatlakoztatva fejhallgató</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="408"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="423"/>
         <source>No Device Found</source>
         <translation>Eszköz nem található</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="497"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="512"/>
         <source>Hide</source>
         <translation>Elrejt</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="518"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="533"/>
         <source>The application is still running in the background.</source>
         <translation>Az alkalmazás továbbra is fut a háttérben.</translation>
     </message>

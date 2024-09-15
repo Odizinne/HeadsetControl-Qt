@@ -38,6 +38,7 @@ private slots:
     void trayIconActivated(QSystemTrayIcon::ActivationReason reason);
     void onStartupCheckBoxStateChanged();
     void handleHeadsetInfo(const QJsonObject &headsetInfo);
+    void changeApplicationLanguage();
 
 private:
     void initUI();
@@ -45,6 +46,7 @@ private:
     void populateComboBoxes();
     void checkStartupCheckbox();
     void createTrayIcon();
+    void createTrayMenu();
     void loadSettings();
     void applySettings();
     void saveSettings();

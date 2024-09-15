@@ -37,13 +37,15 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
 {
     ui->setupUi(this);
     setWindowIcon(QIcon(":/icons/icon.png"));
-    loadSettings();
     initUI();
     createTrayIcon();
+    createTrayMenu();
+    loadSettings();
+    setupUIConnections();
     updateHeadsetInfo();
+
     connect(worker, &Worker::workRequested, worker, &Worker::doWork);
     connect(worker, &Worker::sendHeadsetInfo, this, &::HeadsetControlQt::handleHeadsetInfo);
-
     connect(timer, &QTimer::timeout, worker, &Worker::requestWork);
 
     worker->moveToThread(&workerThread);
@@ -92,7 +94,6 @@ void HeadsetControlQt::initUI()
     setFrameColorBasedOnWindow(this, ui->frame_2);
     populateComboBoxes();
     checkStartupCheckbox();
-    setupUIConnections();
 }
 
 void HeadsetControlQt::setupUIConnections()
@@ -105,6 +106,7 @@ void HeadsetControlQt::setupUIConnections()
     connect(ui->themeComboBox, &QComboBox::currentIndexChanged, this, &HeadsetControlQt::onThemeComboBoxCurrentIndexChanged);
     connect(ui->lowBatteryThresholdSpinBox, &QSpinBox::valueChanged, this, &HeadsetControlQt::saveSettings);
     connect(ui->soundBatteryCheckBox, &QCheckBox::stateChanged, this, &HeadsetControlQt::saveSettings);
+    connect(ui->languageComboBox, &QComboBox::currentIndexChanged, this, &HeadsetControlQt::changeApplicationLanguage);
 }
 
 void HeadsetControlQt::populateComboBoxes()
@@ -112,6 +114,13 @@ void HeadsetControlQt::populateComboBoxes()
     ui->themeComboBox->addItem(tr("System"));
     ui->themeComboBox->addItem(tr("Dark"));
     ui->themeComboBox->addItem(tr("Light"));
+    ui->languageComboBox->addItem("System");
+    ui->languageComboBox->addItem("english");
+    ui->languageComboBox->addItem("français");
+    ui->languageComboBox->addItem("deutsch");
+    ui->languageComboBox->addItem("español");
+    ui->languageComboBox->addItem("italiano");
+    ui->languageComboBox->addItem("magyar");
 }
 
 void HeadsetControlQt::checkStartupCheckbox()
@@ -126,6 +135,12 @@ void HeadsetControlQt::checkStartupCheckbox()
 void HeadsetControlQt::createTrayIcon()
 {
     trayIcon->setIcon(QIcon(":/icons/icon.png"));
+    trayIcon->show();
+    connect(trayIcon, &QSystemTrayIcon::activated, this, &HeadsetControlQt::trayIconActivated);
+}
+
+void HeadsetControlQt::createTrayMenu()
+{
     QMenu *trayMenu = new QMenu(this);
     QAction *showAction = new QAction(tr("Show"), this);
     connect(showAction, &QAction::triggered, this, &HeadsetControlQt::toggleWindow);
@@ -134,8 +149,6 @@ void HeadsetControlQt::createTrayIcon()
     connect(exitAction, &QAction::triggered, this, &QApplication::quit);
     trayMenu->addAction(exitAction);
     trayIcon->setContextMenu(trayMenu);
-    trayIcon->show();
-    connect(trayIcon, &QSystemTrayIcon::activated, this, &HeadsetControlQt::trayIconActivated);
 }
 
 void HeadsetControlQt::createDefaultSettings()
@@ -181,6 +194,8 @@ void HeadsetControlQt::applySettings()
     ui->themeComboBox->setCurrentIndex(settings.value("theme").toInt());
     ui->lowBatteryThresholdSpinBox->setValue(settings.value("low_battery_threshold").toInt());
     ui->soundBatteryCheckBox->setChecked(settings.value("sound_low_battery").toBool());
+    ui->languageComboBox->setCurrentIndex(settings.value("language").toInt());
+    changeApplicationLanguage();
     setSidetone();
     toggleLED(ui->ledBox->isChecked());
 }
@@ -194,6 +209,7 @@ void HeadsetControlQt::saveSettings()
     settings["theme"] = ui->themeComboBox->currentIndex();
     settings["low_battery_threshold"] = ui->lowBatteryThresholdSpinBox->value();
     settings["sound_low_battery"] = ui->soundBatteryCheckBox->isChecked();
+    settings["language"] = ui->languageComboBox->currentIndex();
 
     QFile file(settingsFile);
     if (file.open(QIODevice::WriteOnly)) {
@@ -284,7 +300,6 @@ void HeadsetControlQt::sendNotificationBasedOnBattery(const QJsonObject &headset
 void HeadsetControlQt::sendSoundNotificationBasedOnBattery(const QJsonObject &headsetInfo)
 {
     QJsonObject batteryInfo = headsetInfo["battery"].toObject();
-    QString headsetName = headsetInfo["device"].toString();
     int batteryLevel = batteryInfo["level"].toInt();
     QString batteryStatus = batteryInfo["status"].toString();
     bool available = (batteryStatus == "BATTERY_AVAILABLE");
@@ -518,4 +533,41 @@ void HeadsetControlQt::sendFirstMinimizeNotification()
         sendNotification(tr("HeadsetControl-Qt"), QString(tr("The application is still running in the background.")), QIcon(":/icons/icon.png"), 5000);
         firstRun = false;
     }
+}
+
+void HeadsetControlQt::changeApplicationLanguage()
+{
+    QString language = ui->languageComboBox->currentText().toLower();
+    QTranslator translator;
+
+    if (qApp->removeTranslator(&translator)) {
+    }
+
+    QString languageCode;
+    if (language == "system") {
+        QLocale systemLocale;
+        languageCode = systemLocale.name().left(2);
+    } else {
+        QMap<QString, QString> languageCodes;
+        languageCodes["english"] = "en";
+        languageCodes["français"] = "fr";
+        languageCodes["deutsch"] = "de";
+        languageCodes["español"] = "es";
+        languageCodes["italiano"] = "it";
+        languageCodes["magyar"] = "hu";
+
+        languageCode = languageCodes.value(language, "en");
+    }
+
+    QString translationFile = QString(":/translations/tr/HeadsetControl-Qt_%1.qm").arg(languageCode);
+    if (translator.load(translationFile)) {
+        qApp->installTranslator(&translator);
+    } else {
+        qWarning() << "Failed to load translation file:" << translationFile;
+    }
+
+    ui->retranslateUi(this);
+    delete trayIcon->contextMenu();
+    createTrayMenu();
+    saveSettings();
 }
