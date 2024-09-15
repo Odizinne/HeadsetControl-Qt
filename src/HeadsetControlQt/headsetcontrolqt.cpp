@@ -311,6 +311,11 @@ void HeadsetControlQt::toggleLED(bool state)
 
 void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
 {
+    // "product" returns "HID Device" on windows, hidapi limitation i guess.
+    // We can use it on linux to get a more precise device name.
+#ifdef __linux__
+    QString deviceName = headsetInfo["product"].soString();
+#endif
     QString deviceName = headsetInfo["device"].toString();
     QStringList capabilities = headsetInfo["capabilities_str"].toVariant().toStringList();
     QJsonObject batteryInfo = headsetInfo["battery"].toObject();
