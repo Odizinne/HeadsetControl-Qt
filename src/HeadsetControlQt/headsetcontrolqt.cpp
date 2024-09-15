@@ -529,9 +529,9 @@ void HeadsetControlQt::trayIconActivated(QSystemTrayIcon::ActivationReason reaso
 
 void HeadsetControlQt::closeEvent(QCloseEvent *event)
 {
+    event->accept();
     trayIcon->contextMenu()->actions().first()->setText(tr("Show"));
     sendFirstMinimizeNotification();
-
 }
 
 void HeadsetControlQt::sendFirstMinimizeNotification()
