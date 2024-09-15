@@ -11,6 +11,7 @@
 #include <QDir>
 #include <QMessageBox>
 #include <QStandardPaths>
+#include <QStyleFactory>
 
 #ifdef _WIN32
 const QString HeadsetControlQt::headsetcontrolExecutable = "dependencies/headsetcontrol.exe";
@@ -90,8 +91,11 @@ void HeadsetControlQt::handleHeadsetInfo(const QJsonObject &headsetInfo)
 
 void HeadsetControlQt::initUI()
 {
-    setFrameColorBasedOnWindow(this, ui->frame);
-    setFrameColorBasedOnWindow(this, ui->frame_2);
+    QString currentStyle = QApplication::style()->objectName();
+    if (currentStyle == QStyleFactory::create("Fusion")->objectName()) {
+        setFrameColorBasedOnWindow(this, ui->frame);
+        setFrameColorBasedOnWindow(this, ui->frame_2);
+    }
     populateComboBoxes();
     checkStartupCheckbox();
 }
