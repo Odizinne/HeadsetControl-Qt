@@ -76,7 +76,6 @@ private:
     QThread workerThread;
     Worker *worker;
 
-
 protected:
     void closeEvent(QCloseEvent *event) override;
 };

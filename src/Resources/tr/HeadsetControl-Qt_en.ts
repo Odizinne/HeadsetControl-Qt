@@ -5,7 +5,7 @@
     <name>HeadsetControlQt</name>
     <message>
         <location filename="../../HeadsetControlQt/headsetcontrolqt.ui" line="26"/>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="513"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="518"/>
         <source>HeadsetControl-Qt</source>
         <translation></translation>
     </message>
@@ -86,8 +86,8 @@
     </message>
     <message>
         <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="130"/>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="489"/>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="505"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="494"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="510"/>
         <source>Show</source>
         <translation></translation>
     </message>
@@ -107,27 +107,27 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="369"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="374"/>
         <source>Off</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="370"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="375"/>
         <source>No headset connected</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="403"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="408"/>
         <source>No Device Found</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="492"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="497"/>
         <source>Hide</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="513"/>
+        <location filename="../../HeadsetControlQt/headsetcontrolqt.cpp" line="518"/>
         <source>The application is still running in the background.</source>
         <translation></translation>
     </message>
