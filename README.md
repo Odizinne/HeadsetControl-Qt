@@ -36,4 +36,15 @@ Linux support is experimental and not well tested.
 ## Credits
 
 - [Sapd](https://github.com/Sapd/HeadsetControl) for headsetcontrol
-- [bbacskay](https://github.com/bbacskay) Hungarian translation
+
+## Translation
+
+Feel free to submit a pull request to add unsupported languages.  
+Currently done:
+
+- EN (Odizinne)
+- FR (Odizinne)
+- HU ([bbacskay](https://github.com/bbacskay))
+- ES (AI)
+- DE (AI)
+- IT (AI)
