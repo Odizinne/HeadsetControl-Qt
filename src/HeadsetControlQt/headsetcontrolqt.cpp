@@ -43,7 +43,6 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     setWindowIcon(QIcon(":/icons/icon.png"));
     initUI();
     createTrayIcon();
-    createTrayMenu();
     loadSettings();
     setupUIConnections();
     updateHeadsetInfo();
@@ -142,20 +141,19 @@ void HeadsetControlQt::checkStartupCheckbox()
 void HeadsetControlQt::createTrayIcon()
 {
     trayIcon->setIcon(QIcon(":/icons/icon.png"));
-    trayIcon->show();
-    connect(trayIcon, &QSystemTrayIcon::activated, this, &HeadsetControlQt::trayIconActivated);
-}
+    trayMenu = new QMenu(this);
+    showAction = new QAction(tr("Show"), this);
+    exitAction = new QAction(tr("Exit"), this);
 
-void HeadsetControlQt::createTrayMenu()
-{
-    QMenu *trayMenu = new QMenu(this);
-    QAction *showAction = new QAction(tr("Show"), this);
     connect(showAction, &QAction::triggered, this, &HeadsetControlQt::toggleWindow);
-    trayMenu->addAction(showAction);
-    QAction *exitAction = new QAction(tr("Exit"), this);
     connect(exitAction, &QAction::triggered, this, &QApplication::quit);
+
+    trayMenu->addAction(showAction);
     trayMenu->addAction(exitAction);
     trayIcon->setContextMenu(trayMenu);
+    trayIcon->show();
+
+    connect(trayIcon, &QSystemTrayIcon::activated, this, &HeadsetControlQt::trayIconActivated);
 }
 
 void HeadsetControlQt::createDefaultSettings()
@@ -580,7 +578,16 @@ void HeadsetControlQt::changeApplicationLanguage()
     }
 
     ui->retranslateUi(this);
-    delete trayIcon->contextMenu();
-    createTrayMenu();
+    updateTrayMenu();
     saveSettings();
+}
+
+void HeadsetControlQt::updateTrayMenu()
+{
+    if (this->isVisible()) {
+        showAction->setText(tr("Hide"));
+    } else {
+        showAction->setText(tr("Show"));
+    }
+    exitAction->setText(tr("Exit"));
 }

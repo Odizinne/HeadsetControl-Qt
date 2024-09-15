@@ -60,6 +60,7 @@ private:
     void noDeviceFound();
     void toggleUIElements(bool show);
     void sendFirstMinimizeNotification();
+    void updateTrayMenu();
     static const QString settingsFile;
     static const QString headsetcontrolExecutable;
     static const QString desktopFile;
@@ -73,6 +74,9 @@ private:
     bool soundNotificationSent;
     bool firstRun;
     bool closing;
+    QMenu *trayMenu;
+    QAction *exitAction;
+    QAction *showAction;
 
     QThread workerThread;
     Worker *worker;
