@@ -17,34 +17,44 @@ If a particular setting is greyed out on the settings page, it indicates that yo
 
 ## Download
 
+Precompiled binaries can be found in [release](https://github.com/odizinne/headsetControl-Qt/releases/latest) section.  
+
 ### Windows
 
-Precompiled binaries can be found in [release](https://github.com/odizinne/headsetControl-Qt/releases/latest) section.  
 You need [Microsoft Visual C++ Redistributable](https://aka.ms/vs/17/release/vc_redist.x64.exe) if it is not already installed.
 
 ### Linux
 
-Linux binaries are built on ubuntu 24.04.  
-You need Qt 6.4.2+ and latest [headsetcontrol](https://github.com/Sapd/HeadsetControl?tab=readme-ov-file#building) installed and available in path.  
-Linux support is experimental and not well tested.
+Linux binaries are built on ubuntu 24.04 with Qt 6.4.2.  
+You need latest [headsetcontrol](https://github.com/Sapd/HeadsetControl?tab=readme-ov-file#building) available in path.  
 
 ## To-do
 
 - Add other headsetcontrol supported settings (My headset does not support them so i cannot test)
 - Big code cleanup
 
+## Translation
+
+Currently done:
+
+| Language     | Short code   | Made by                                    |
+|--------------|--------------|--------------------------------------------|
+| English      | EN           | Odizinne                                   |
+| French       | FR           | Odizinne                                   |
+| Hungarian    | HU           | [bbacskay](https://github.com/bbacskay)    |
+| Spanish      | ES           | AI                                         |
+| German       | DE           | AI                                         |
+| Italian      | IT           | AI                                         |
+
+
+## Want to help?
+
+HeadsetControl-Qt is not available for your language?  
+AI made a bad translation?  
+Battery icons default to dark theme on a dark panel?
+
+Feel free to sumbit a pull request or open an issue so we can work arround this!
+
 ## Credits
 
 - [Sapd](https://github.com/Sapd/HeadsetControl) for headsetcontrol
-
-## Translation
-
-Feel free to submit a pull request to add unsupported languages.  
-Currently done:
-
-- EN (Odizinne)
-- FR (Odizinne)
-- HU ([bbacskay](https://github.com/bbacskay))
-- ES (AI)
-- DE (AI)
-- IT (AI)
