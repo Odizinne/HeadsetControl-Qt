@@ -363,9 +363,9 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
                 trayIcon->setIcon(QIcon(iconPath));
             } else if (kdeVersion.startsWith("6")) {
                 trayIcon->setIcon(QIcon::fromTheme(iconPath));
-            } else {
-                trayIcon->setIcon(QIcon(iconPath));
             }
+        } else {
+            trayIcon->setIcon(QIcon(iconPath));
         }
 #endif
     } else if (batteryStatus == "BATTERY_CHARGING") {
@@ -385,9 +385,9 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
                 trayIcon->setIcon(QIcon(iconPath));
             } else if (kdeVersion.startsWith("6")) {
                 trayIcon->setIcon(QIcon::fromTheme(iconPath));
-            } else {
-                trayIcon->setIcon(QIcon(iconPath));
             }
+        } else {
+            trayIcon->setIcon(QIcon(iconPath));
         }
 #endif
     } else {
@@ -407,9 +407,9 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
                 trayIcon->setIcon(QIcon(iconPath));
             } else if (kdeVersion.startsWith("6")) {
                 trayIcon->setIcon(QIcon::fromTheme(iconPath));
-            } else {
-                trayIcon->setIcon(QIcon(iconPath));
             }
+        } else {
+            trayIcon->setIcon(QIcon(iconPath));
         }
 #endif
     }
@@ -439,9 +439,9 @@ void HeadsetControlQt::noDeviceFound()
             trayIcon->setIcon(QIcon(iconPath));
         } else if (kdeVersion.startsWith("6")) {
             trayIcon->setIcon(QIcon::fromTheme(iconPath));
-        } else {
-            trayIcon->setIcon(QIcon(iconPath));
         }
+    } else {
+        trayIcon->setIcon(QIcon(iconPath));
     }
 #endif
 }

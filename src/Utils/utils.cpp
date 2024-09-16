@@ -62,15 +62,15 @@ QString getBatteryIcon(int batteryLevel, bool charging, bool missing, int themeI
         QString desktop = env.value("XDG_CURRENT_DESKTOP");
         if (desktop.contains("KDE", Qt::CaseInsensitive)) {
             QString kdeVersion = getKDEPlasmaVersion();
-            if (kdeVersion.startsWith("5")) {
-                theme = "light";
-            } else if (kdeVersion.startsWith("6")) {
+            if (kdeVersion.startsWith("6")) {
                 theme = "symbolic";
             } else {
                 theme = "light";
             }
+        } else if (desktop.contains("GNOME", Qt::CaseInsensitive)) {
+            theme = "light";
         } else {
-            theme = "dark"; // Fallback for non-KDE environments
+            theme = "dark";
         }
 #endif
     } else if (themeIndex == 1) {

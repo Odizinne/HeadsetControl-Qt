@@ -10,5 +10,4 @@ int main(int argc, char *argv[])
     a.setQuitOnLastWindowClosed(false);
     HeadsetControlQt w;
     return a.exec();
-
 }
