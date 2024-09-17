@@ -351,67 +351,26 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
         ui->batteryBar->setFormat(QString::number(batteryLevel) + "%");
         trayIcon->setToolTip(QString("%1: %2%").arg(deviceName).arg(batteryLevel));
         ui->themeComboBox->currentIndex();
-        QString iconPath = getBatteryIcon(batteryLevel, false, false, ui->themeComboBox->currentIndex());
-#ifdef _WIN32
-        trayIcon->setIcon(QIcon(iconPath));
-#elif __linux__
-        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-        QString desktop = env.value("XDG_CURRENT_DESKTOP");
-        if (desktop.contains("KDE", Qt::CaseInsensitive)) {
-            QString kdeVersion = getKDEPlasmaVersion();
-            if (kdeVersion.startsWith("5")) {
-                trayIcon->setIcon(QIcon(iconPath));
-            } else if (kdeVersion.startsWith("6")) {
-                trayIcon->setIcon(QIcon::fromTheme(iconPath));
-            }
-        } else {
-            trayIcon->setIcon(QIcon(iconPath));
-        }
-#endif
+
+        QString iconPath = getBatteryIconPath(batteryLevel, false, false, ui->themeComboBox->currentIndex());
+        trayIcon->setIcon(getBatteryIcon(iconPath));
+
     } else if (batteryStatus == "BATTERY_CHARGING") {
         ui->batteryBar->setValue(0);
         ui->batteryBar->setFormat("Charging");
         trayIcon->setToolTip(QString("%1: Charging").arg(deviceName));
 
-        QString iconPath = getBatteryIcon(batteryLevel, true, false, ui->themeComboBox->currentIndex());
-#ifdef _WIN32
-        trayIcon->setIcon(QIcon(iconPath));
-#elif __linux__
-        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-        QString desktop = env.value("XDG_CURRENT_DESKTOP");
-        if (desktop.contains("KDE", Qt::CaseInsensitive)) {
-            QString kdeVersion = getKDEPlasmaVersion();
-            if (kdeVersion.startsWith("5")) {
-                trayIcon->setIcon(QIcon(iconPath));
-            } else if (kdeVersion.startsWith("6")) {
-                trayIcon->setIcon(QIcon::fromTheme(iconPath));
-            }
-        } else {
-            trayIcon->setIcon(QIcon(iconPath));
-        }
-#endif
+        QString iconPath = getBatteryIconPath(batteryLevel, true, false, ui->themeComboBox->currentIndex());
+        trayIcon->setIcon(getBatteryIcon(iconPath));
+
     } else {
         ui->batteryBar->setValue(0);
         ui->batteryBar->setFormat(tr("Off"));
         trayIcon->setToolTip(tr("No headset connected"));
 
-        QString iconPath = getBatteryIcon(batteryLevel, false, true, ui->themeComboBox->currentIndex());
-#ifdef _WIN32
-        trayIcon->setIcon(QIcon(iconPath));
-#elif __linux__
-        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-        QString desktop = env.value("XDG_CURRENT_DESKTOP");
-        if (desktop.contains("KDE", Qt::CaseInsensitive)) {
-            QString kdeVersion = getKDEPlasmaVersion();
-            if (kdeVersion.startsWith("5")) {
-                trayIcon->setIcon(QIcon(iconPath));
-            } else if (kdeVersion.startsWith("6")) {
-                trayIcon->setIcon(QIcon::fromTheme(iconPath));
-            }
-        } else {
-            trayIcon->setIcon(QIcon(iconPath));
-        }
-#endif
+        QString iconPath = getBatteryIconPath(batteryLevel, false, true, ui->themeComboBox->currentIndex());
+        trayIcon->setIcon(getBatteryIcon(iconPath));
+
     }
     ui->ledBox->setEnabled(capabilities.contains("lights"));
     ui->ledLabel->setEnabled(capabilities.contains("lights"));
@@ -427,23 +386,10 @@ void HeadsetControlQt::noDeviceFound()
 {
     toggleUIElements(false);
     trayIcon->setToolTip(tr("No Device Found"));
-    QString iconPath = getBatteryIcon(0, false, true, ui->themeComboBox->currentIndex());
-#ifdef _WIN32
-    trayIcon->setIcon(QIcon(iconPath));
-#elif __linux__
-    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    QString desktop = env.value("XDG_CURRENT_DESKTOP");
-    if (desktop.contains("KDE", Qt::CaseInsensitive)) {
-        QString kdeVersion = getKDEPlasmaVersion();
-        if (kdeVersion.startsWith("5")) {
-            trayIcon->setIcon(QIcon(iconPath));
-        } else if (kdeVersion.startsWith("6")) {
-            trayIcon->setIcon(QIcon::fromTheme(iconPath));
-        }
-    } else {
-        trayIcon->setIcon(QIcon(iconPath));
-    }
-#endif
+    QString iconPath = getBatteryIconPath(0, false, true, ui->themeComboBox->currentIndex());
+
+    trayIcon->setIcon(getBatteryIcon(iconPath));
+
 }
 
 void HeadsetControlQt::toggleUIElements(bool show)

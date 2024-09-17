@@ -51,7 +51,7 @@ void setFrameColorBasedOnWindow(QWidget *window, QFrame *frame) {
     frame->setPalette(palette);
 }
 
-QString getBatteryIcon(int batteryLevel, bool charging, bool missing, int themeIndex)
+QString getBatteryIconPath(int batteryLevel, bool charging, bool missing, int themeIndex)
 {
     QString theme;
     if (themeIndex == 0) {
@@ -140,3 +140,23 @@ QString getKDEPlasmaVersion() {
     return version;
 }
 #endif
+
+QIcon getBatteryIcon(const QString &BatteryIconPath)
+{
+#ifdef _WIN32
+    return QIcon(BatteryIconPath);
+#elif __linux__
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    QString desktop = env.value("XDG_CURRENT_DESKTOP");
+    if (desktop.contains("KDE", Qt::CaseInsensitive)) {
+        QString kdeVersion = getKDEPlasmaVersion();
+        if (kdeVersion.startsWith("6")) {
+            return QIcon::fromTheme(BatteryIconPath);
+        } else {
+            return QIcon(BatteryIconPath);
+        }
+    } else {
+        return QIcon(BatteryIconPath);
+    }
+#endif
+}
