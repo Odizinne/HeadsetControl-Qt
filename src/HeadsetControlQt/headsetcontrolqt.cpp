@@ -357,8 +357,8 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
 
     } else if (batteryStatus == "BATTERY_CHARGING") {
         ui->batteryBar->setValue(0);
-        ui->batteryBar->setFormat("Charging");
-        trayIcon->setToolTip(QString("%1: Charging").arg(deviceName));
+        ui->batteryBar->setFormat(tr("Charging"));
+        trayIcon->setToolTip(QString(tr("%1: Charging")).arg(deviceName));
 
         QString iconPath = getBatteryIconPath(batteryLevel, true, false, ui->themeComboBox->currentIndex());
         trayIcon->setIcon(getBatteryIcon(iconPath));
@@ -436,7 +436,7 @@ void HeadsetControlQt::onSidetoneSliderSliderReleased()
 
 void HeadsetControlQt::onThemeComboBoxCurrentIndexChanged()
 {
-    //updateHeadsetInfo();
+    updateHeadsetInfo();
     saveSettings();
 }
 
