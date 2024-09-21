@@ -83,7 +83,7 @@ QString Utils::getBatteryIconPath(int batteryLevel, bool charging, bool missing,
 QString Utils::getTheme()
 {
 #ifdef __linux__
-    return "light"
+    return "light";
 #elif _WIN32
     // Determine the theme based on registry value
     QSettings settings(
