@@ -15,6 +15,8 @@
 #include <QLocale>
 #include <QTranslator>
 
+using namespace Utils;
+
 #ifdef _WIN32
 const QString HeadsetControlQt::headsetcontrolExecutable = "dependencies/headsetcontrol.exe";
 const QString HeadsetControlQt::settingsFile = QStandardPaths::writableLocation(
@@ -353,7 +355,7 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
         ui->themeComboBox->currentIndex();
 
         QString iconPath = getBatteryIconPath(batteryLevel, false, false, ui->themeComboBox->currentIndex());
-        trayIcon->setIcon(getBatteryIcon(iconPath));
+        trayIcon->setIcon(QIcon(iconPath));
 
     } else if (batteryStatus == "BATTERY_CHARGING") {
         ui->batteryBar->setValue(0);
@@ -361,7 +363,7 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
         trayIcon->setToolTip(QString(tr("%1: Charging")).arg(deviceName));
 
         QString iconPath = getBatteryIconPath(batteryLevel, true, false, ui->themeComboBox->currentIndex());
-        trayIcon->setIcon(getBatteryIcon(iconPath));
+        trayIcon->setIcon(QIcon(iconPath));
 
     } else {
         ui->batteryBar->setValue(0);
@@ -369,7 +371,7 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
         trayIcon->setToolTip(tr("No headset connected"));
 
         QString iconPath = getBatteryIconPath(batteryLevel, false, true, ui->themeComboBox->currentIndex());
-        trayIcon->setIcon(getBatteryIcon(iconPath));
+        trayIcon->setIcon(QIcon(iconPath));
 
     }
     ui->ledBox->setEnabled(capabilities.contains("lights"));
@@ -388,7 +390,7 @@ void HeadsetControlQt::noDeviceFound()
     trayIcon->setToolTip(tr("No Device Found"));
     QString iconPath = getBatteryIconPath(0, false, true, ui->themeComboBox->currentIndex());
 
-    trayIcon->setIcon(getBatteryIcon(iconPath));
+    trayIcon->setIcon(QIcon(iconPath));
 
 }
 

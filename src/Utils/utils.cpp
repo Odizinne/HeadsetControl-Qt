@@ -35,7 +35,7 @@ bool isDarkMode(const QColor &color) {
     return brightness < 127;
 }
 
-void setFrameColorBasedOnWindow(QWidget *window, QFrame *frame) {
+void Utils::setFrameColorBasedOnWindow(QWidget *window, QFrame *frame) {
     QColor main_bg_color = window->palette().color(QPalette::Window);
     QColor frame_bg_color;
 
@@ -51,28 +51,12 @@ void setFrameColorBasedOnWindow(QWidget *window, QFrame *frame) {
     frame->setPalette(palette);
 }
 
-QString getBatteryIconPath(int batteryLevel, bool charging, bool missing, int themeIndex)
+QString Utils::getBatteryIconPath(int batteryLevel, bool charging, bool missing, int themeIndex)
 {
     QString theme;
+
     if (themeIndex == 0) {
-#ifdef _WIN32
         theme = getTheme();
-#elif __linux__
-        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-        QString desktop = env.value("XDG_CURRENT_DESKTOP");
-        if (desktop.contains("KDE", Qt::CaseInsensitive)) {
-            QString kdeVersion = getKDEPlasmaVersion();
-            if (kdeVersion.startsWith("6")) {
-                theme = "symbolic";
-            } else {
-                theme = "light";
-            }
-        } else if (desktop.contains("GNOME", Qt::CaseInsensitive)) {
-            theme = "light";
-        } else {
-            theme = "dark";
-        }
-#endif
     } else if (themeIndex == 1) {
         theme = "dark";
     } else if (themeIndex == 2) {
@@ -92,20 +76,15 @@ QString getBatteryIconPath(int batteryLevel, bool charging, bool missing, int th
         else if (batteryLevel >= 0) iconName = "battery-020-" + theme;
     }
 
-    QString iconPath;
-    if (theme == "symbolic") {
-        iconPath = iconName;
-    } else {
-        iconPath = QString(":/icons/%1.png").arg(iconName);
-    }
-
-    return iconPath;
+    return QString(":/icons/%1.png").arg(iconName);;
 }
 
 
-#ifdef _WIN32
-QString getTheme()
+QString Utils::getTheme()
 {
+#ifdef __linux__
+    return "light"
+#elif _WIN32
     // Determine the theme based on registry value
     QSettings settings(
         "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
@@ -114,49 +93,5 @@ QString getTheme()
 
     // Return the opposite to match icon (dark icon on light theme)
     return (value == 0) ? "light" : "dark";
-}
-#endif
-
-#ifdef __linux__
-QString getKDEPlasmaVersion() {
-    QProcess process;
-    process.start("plasmashell", QStringList() << "--version");
-    process.waitForFinished();
-
-    QString output = process.readAllStandardOutput();
-    QStringList lines = output.split('\n');
-    QString versionLine;
-
-    // Find the line containing the version info
-    for (const QString &line : lines) {
-        if (line.contains("plasmashell")) {
-            versionLine = line;
-            break;
-        }
-    }
-
-    // Extract version number from the line
-    QString version = versionLine.split(' ').last().trimmed();
-    return version;
-}
-#endif
-
-QIcon getBatteryIcon(const QString &BatteryIconPath)
-{
-#ifdef _WIN32
-    return QIcon(BatteryIconPath);
-#elif __linux__
-    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    QString desktop = env.value("XDG_CURRENT_DESKTOP");
-    if (desktop.contains("KDE", Qt::CaseInsensitive)) {
-        QString kdeVersion = getKDEPlasmaVersion();
-        if (kdeVersion.startsWith("6")) {
-            return QIcon::fromTheme(BatteryIconPath);
-        } else {
-            return QIcon(BatteryIconPath);
-        }
-    } else {
-        return QIcon(BatteryIconPath);
-    }
 #endif
 }
