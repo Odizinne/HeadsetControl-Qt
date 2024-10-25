@@ -7,11 +7,9 @@
 #include <QAction>
 #include <QTimer>
 #include <QCloseEvent>
-#include <QJsonObject>
-#include <QJsonValue>
-#include <QJsonDocument>
 #include <QThread>
 #include "worker.h"
+#include <QSettings>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -61,14 +59,13 @@ private:
     void toggleUIElements(bool show);
     void sendFirstMinimizeNotification();
     void updateTrayMenu();
-    static const QString settingsFile;
     static const QString headsetcontrolExecutable;
     static const QString desktopFile;
+    QSettings settings;
 
     Ui::HeadsetControlQt *ui;
     QSystemTrayIcon *trayIcon;
     QTimer *timer;
-    QJsonObject settings;
     bool ledDisabled;
     bool notificationSent;
     bool soundNotificationSent;

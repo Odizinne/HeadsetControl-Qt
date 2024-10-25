@@ -19,18 +19,14 @@ using namespace Utils;
 
 #ifdef _WIN32
 const QString HeadsetControlQt::headsetcontrolExecutable = "dependencies/headsetcontrol.exe";
-const QString HeadsetControlQt::settingsFile = QStandardPaths::writableLocation(
-                                                   QStandardPaths::AppDataLocation)
-                                               + "/HeadsetControl-Qt/settings.json";
 #elif __linux__
 const QString HeadsetControlQt::headsetcontrolExecutable = "headsetcontrol";
-const QString HeadsetControlQt::settingsFile = QDir::homePath() + "/.config/HeadsetControl-Qt/settings.json";
 const QString HeadsetControlQt::desktopFile = QDir::homePath() + "/.config/autostart/headsetcontrol-qt.desktop";
-
 #endif
 
 HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     : QMainWindow(parent)
+    , settings("Odizinne", "HeadsetControlQt")
     , ui(new Ui::HeadsetControlQt)
     , trayIcon(new QSystemTrayIcon(this))
     , timer(new QTimer(this))
@@ -158,50 +154,17 @@ void HeadsetControlQt::createTrayIcon()
     connect(trayIcon, &QSystemTrayIcon::activated, this, &HeadsetControlQt::trayIconActivated);
 }
 
-void HeadsetControlQt::createDefaultSettings()
-{
-    ui->ledBox->setChecked(true);
-    ui->sidetoneSlider->setValue(0);
-    ui->themeComboBox->setCurrentIndex(0);
-    saveSettings();
-
-    firstRun = true;
-}
-
 void HeadsetControlQt::loadSettings()
 {
-    QDir settingsDir(QFileInfo(settingsFile).absolutePath());
-    if (!settingsDir.exists()) {
-        settingsDir.mkpath(settingsDir.absolutePath());
-    }
+    ui->ledBox->setChecked(settings.value("led_state", true).toBool());
+    ui->ledBatteryCheckBox->setChecked(settings.value("led_low_battery", false).toBool());
+    ui->notificationBatteryCheckBox->setChecked(settings.value("notification_low_battery", false).toBool());
+    ui->sidetoneSlider->setValue(settings.value("sidetone", 0).toInt());
+    ui->themeComboBox->setCurrentIndex(settings.value("theme", 0).toInt());
+    ui->lowBatteryThresholdSpinBox->setValue(settings.value("low_battery_threshold", 10).toInt());
+    ui->soundBatteryCheckBox->setChecked(settings.value("sound_low_battery", false).toBool());
+    ui->languageComboBox->setCurrentIndex(settings.value("language", 0).toInt());
 
-    QFile file(settingsFile);
-    if (!file.exists()) {
-        createDefaultSettings();
-
-    } else {
-        if (file.open(QIODevice::ReadOnly)) {
-            QJsonParseError parseError;
-            QJsonDocument doc = QJsonDocument::fromJson(file.readAll(), &parseError);
-            if (parseError.error == QJsonParseError::NoError) {
-                settings = doc.object();
-            }
-            file.close();
-        }
-    }
-    applySettings();
-}
-
-void HeadsetControlQt::applySettings()
-{
-    ui->ledBox->setChecked(settings.value("led_state").toBool());
-    ui->ledBatteryCheckBox->setChecked(settings.value("led_low_battery").toBool());
-    ui->notificationBatteryCheckBox->setChecked(settings.value("notification_low_battery").toBool());
-    ui->sidetoneSlider->setValue(settings.value("sidetone").toInt());
-    ui->themeComboBox->setCurrentIndex(settings.value("theme").toInt());
-    ui->lowBatteryThresholdSpinBox->setValue(settings.value("low_battery_threshold").toInt());
-    ui->soundBatteryCheckBox->setChecked(settings.value("sound_low_battery").toBool());
-    ui->languageComboBox->setCurrentIndex(settings.value("language").toInt());
     changeApplicationLanguage();
     setSidetone();
     toggleLED(ui->ledBox->isChecked());
@@ -209,22 +172,16 @@ void HeadsetControlQt::applySettings()
 
 void HeadsetControlQt::saveSettings()
 {
-    settings["led_state"] = ui->ledBox->isChecked();
-    settings["led_low_battery"] = ui->ledBatteryCheckBox->isChecked();
-    settings["notification_low_battery"] = ui->notificationBatteryCheckBox->isChecked();
-    settings["sidetone"] = ui->sidetoneSlider->value();
-    settings["theme"] = ui->themeComboBox->currentIndex();
-    settings["low_battery_threshold"] = ui->lowBatteryThresholdSpinBox->value();
-    settings["sound_low_battery"] = ui->soundBatteryCheckBox->isChecked();
-    settings["language"] = ui->languageComboBox->currentIndex();
-
-    QFile file(settingsFile);
-    if (file.open(QIODevice::WriteOnly)) {
-        QJsonDocument doc(settings);
-        file.write(doc.toJson(QJsonDocument::Indented));
-        file.close();
-    }
+    settings.setValue("led_state", ui->ledBox->isChecked());
+    settings.setValue("led_low_battery", ui->ledBatteryCheckBox->isChecked());
+    settings.setValue("notification_low_battery", ui->notificationBatteryCheckBox->isChecked());
+    settings.setValue("sidetone", ui->sidetoneSlider->value());
+    settings.setValue("theme", ui->themeComboBox->currentIndex());
+    settings.setValue("low_battery_threshold", ui->lowBatteryThresholdSpinBox->value());
+    settings.setValue("sound_low_battery", ui->soundBatteryCheckBox->isChecked());
+    settings.setValue("language", ui->languageComboBox->currentIndex());
 }
+
 
 void HeadsetControlQt::updateHeadsetInfo()
 {
