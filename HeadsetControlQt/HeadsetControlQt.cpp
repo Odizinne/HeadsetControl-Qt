@@ -1,7 +1,7 @@
-#include "headsetcontrolqt.h"
-#include "ui_headsetcontrolqt.h"
-#include "utils.h"
-#include "shortcutmanager.h"
+#include "HeadsetControlQt.h"
+#include "ui_HeadsetControlQt.h"
+#include "Utils.h"
+#include "ShortcutManager.h"
 #include <QIcon>
 #include <QJsonDocument>
 #include <QJsonObject>

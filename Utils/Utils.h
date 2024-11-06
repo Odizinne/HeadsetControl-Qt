@@ -1,5 +1,6 @@
 #ifndef UTILS_H
 #define UTILS_H
+
 #include <QIcon>
 #include <QString>
 #include <QFrame>

@@ -1,6 +1,7 @@
 #ifndef HEADSETCONTROLQT_H
 #define HEADSETCONTROLQT_H
 
+#include "Worker.h"
 #include <QMainWindow>
 #include <QSystemTrayIcon>
 #include <QMenu>
@@ -8,7 +9,6 @@
 #include <QTimer>
 #include <QCloseEvent>
 #include <QThread>
-#include "worker.h"
 #include <QSettings>
 
 QT_BEGIN_NAMESPACE
