@@ -107,10 +107,10 @@ void HeadsetControlQt::setupUIConnections()
     connect(ui->notificationBatteryCheckBox, &QCheckBox::stateChanged, this, &HeadsetControlQt::saveSettings);
     connect(ui->startupCheckbox, &QCheckBox::stateChanged, this, &HeadsetControlQt::onStartupCheckBoxStateChanged);
     connect(ui->sidetoneSlider, &QSlider::sliderReleased, this, &HeadsetControlQt::onSidetoneSliderSliderReleased);
-    connect(ui->themeComboBox, &QComboBox::currentIndexChanged, this, &HeadsetControlQt::onThemeComboBoxCurrentIndexChanged);
-    connect(ui->lowBatteryThresholdSpinBox, &QSpinBox::valueChanged, this, &HeadsetControlQt::saveSettings);
+    connect(ui->themeComboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, &HeadsetControlQt::onThemeComboBoxCurrentIndexChanged);
+    connect(ui->lowBatteryThresholdSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &HeadsetControlQt::saveSettings);
     connect(ui->soundBatteryCheckBox, &QCheckBox::stateChanged, this, &HeadsetControlQt::saveSettings);
-    connect(ui->languageComboBox, &QComboBox::currentIndexChanged, this, &HeadsetControlQt::changeApplicationLanguage);
+    connect(ui->languageComboBox, qOverload<int>(&QComboBox::currentIndexChanged) , this, &HeadsetControlQt::changeApplicationLanguage);
 }
 
 void HeadsetControlQt::populateComboBoxes()
