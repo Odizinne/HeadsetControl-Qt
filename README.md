@@ -26,7 +26,15 @@ You need [Microsoft Visual C++ Redistributable](https://aka.ms/vs/17/release/vc_
 ### Linux
 
 Linux binaries are built on ubuntu 24.04 with Qt 6.4.2.  
-You need latest [headsetcontrol](https://github.com/Sapd/HeadsetControl?tab=readme-ov-file#building) available in path.  
+You need latest [headsetcontrol](https://github.com/Sapd/HeadsetControl?tab=readme-ov-file#building) available in path. 
+
+### Installation on Arch Linux
+
+Arch Linux users can install the application using `makepkg`.
+
+```bash
+makepkg -si
+```
 
 ## To-do
 
