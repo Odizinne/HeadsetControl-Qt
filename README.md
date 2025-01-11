@@ -32,8 +32,18 @@ You need latest [headsetcontrol](https://github.com/Sapd/HeadsetControl?tab=read
 
 Arch Linux users can install the application using `makepkg`.
 
+First install `headsetcontrol` as a dependency. 
+```bash
+yay -S --asdeps headsetcontrol-git
+```
+Then, build and install the application:
+
 ```bash
 makepkg -si
+```
+The application is now ready to use.
+```bash
+ headsetcontrol-qt
 ```
 
 ## To-do
