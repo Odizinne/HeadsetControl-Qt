@@ -7,7 +7,8 @@ arch=('x86_64')
 url='https://github.com/Odizinne/HeadsetControl-Qt.git'
 license=('GPL-3.0-or-later')
 makedepends=('git' 'qt6-tools')
-depends=('qt6-base')
+provides=("${_pkgname}=${pkgver}")
+depends=('qt6-base' 'headsetcontrol')
 source=("git+${url}#branch=main")
 sha256sums=('SKIP')
 
