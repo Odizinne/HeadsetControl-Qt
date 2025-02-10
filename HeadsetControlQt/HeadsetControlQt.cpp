@@ -17,8 +17,6 @@
 #include <QQmlContext>
 #include <QApplication>
 
-using namespace Utils;
-
 #ifdef _WIN32
 const QString HeadsetControlQt::headsetcontrolExecutable = "dependencies/headsetcontrol.exe";
 #elif __linux__
@@ -45,6 +43,7 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     toggleLED(settings.value("led_state", true).toBool());
     setSidetone(settings.value("sidetone", 0).toInt());
     updateHeadsetInfo();
+    changeApplicationLanguage(settings.value("language").toInt());
 
     connect(worker, &Worker::workRequested, worker, &Worker::doWork);
     connect(worker, &Worker::sendHeadsetInfo, this, &::HeadsetControlQt::handleHeadsetInfo);
@@ -57,10 +56,10 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
     engine->setInitialProperties({{"mainWindow", QVariant::fromValue(this)}});
     engine->load(QUrl("qrc:/qml/Main.qml"));
-    qmlWindow = qobject_cast<QWindow*>(engine->rootObjects().first());
-    changeApplicationLanguage(settings.value("language").toInt());
+    const QList<QObject*>& objects = engine->rootObjects();
+    qmlWindow = qobject_cast<QWindow*>(objects.isEmpty() ? nullptr : objects.first());
 
-    if (settings.value("firstRun"), true) {
+    if (settings.value("firstRun", true).toBool()) {
         qmlWindow->show();
     }
 }
@@ -116,9 +115,11 @@ void HeadsetControlQt::createTrayIcon()
     startupAction->setCheckable(true);
     startupAction->setChecked(checkStartupCheckbox());
     connect(showAction, &QAction::triggered, this, &HeadsetControlQt::toggleWindow);
+    connect(startupAction, &QAction::triggered, this, &HeadsetControlQt::onStartupCheckBoxStateChanged);
     connect(exitAction, &QAction::triggered, this, &QApplication::quit);
 
     trayMenu->addAction(showAction);
+    trayMenu->addAction(startupAction);
     trayMenu->addAction(exitAction);
     trayIcon->setContextMenu(trayMenu);
     trayIcon->show();
@@ -224,13 +225,6 @@ void HeadsetControlQt::sendNotification(const QString &title, const QString &mes
     trayIcon->showMessage(title, message, icon, duration);
 }
 
-void HeadsetControlQt::toggleLED(bool state)
-{
-    QProcess process;
-    process.start(headsetcontrolExecutable, QStringList() << "-l" << (state ? "1" : "0"));
-    process.waitForFinished();
-}
-
 void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
 {
     // "product" returns "HID Device" on windows, hidapi limitation i guess.
@@ -254,7 +248,7 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
 
         trayIcon->setToolTip(QString("%1: %2%").arg(deviceName).arg(batteryLevel));
 
-        QString iconPath = getBatteryIconPath(batteryLevel, false, false, settings.value("theme", 0).toInt());
+        QString iconPath = Utils::getBatteryIconPath(batteryLevel, false, false, settings.value("theme", 0).toInt());
         trayIcon->setIcon(QIcon(iconPath));
 
     } else if (batteryStatus == "BATTERY_CHARGING") {
@@ -263,7 +257,7 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
 
         trayIcon->setToolTip(QString(tr("%1: Charging")).arg(deviceName));
 
-        QString iconPath = getBatteryIconPath(batteryLevel, true, false, settings.value("theme", 0).toInt());
+        QString iconPath = Utils::getBatteryIconPath(batteryLevel, true, false, settings.value("theme", 0).toInt());
         trayIcon->setIcon(QIcon(iconPath));
 
     } else {
@@ -272,7 +266,7 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
 
         trayIcon->setToolTip(tr("No headset connected"));
 
-        QString iconPath = getBatteryIconPath(batteryLevel, false, true, settings.value("theme", 0).toInt());
+        QString iconPath = Utils::getBatteryIconPath(batteryLevel, false, true, settings.value("theme", 0).toInt());
         trayIcon->setIcon(QIcon(iconPath));
 
     }
@@ -286,7 +280,7 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
 void HeadsetControlQt::noDeviceFound()
 {
     trayIcon->setToolTip(tr("No Device Found"));
-    QString iconPath = getBatteryIconPath(0, false, true, settings.value("theme", 0).toInt());
+    QString iconPath = Utils::getBatteryIconPath(0, false, true, settings.value("theme", 0).toInt());
 
     trayIcon->setIcon(QIcon(iconPath));
     setNoDevice(true);
@@ -309,18 +303,23 @@ void HeadsetControlQt::onStartupCheckBoxStateChanged()
     }
 }
 
-void HeadsetControlQt::setSidetone(int value)
+void HeadsetControlQt::toggleLED(bool state)
 {
-    QProcess process;
-    process.start(headsetcontrolExecutable, QStringList() << "-s" << QString::number(value));
-    process.waitForFinished();
+    QProcess* process = new QProcess(this);
+    connect(process, &QProcess::finished, process, &QProcess::deleteLater);
+    process->start(headsetcontrolExecutable, QStringList() << "-l" << (state ? "1" : "0"));
 }
 
-void HeadsetControlQt::sendSoundNotification()
-{
-    QProcess process;
-    process.start(headsetcontrolExecutable, QStringList() << "-n" << "0");
-    process.waitForFinished();
+void HeadsetControlQt::setSidetone(int value) {
+    QProcess* process = new QProcess(this);
+    connect(process, &QProcess::finished, process, &QProcess::deleteLater);
+    process->start(headsetcontrolExecutable, QStringList() << "-s" << QString::number(value));
+}
+
+void HeadsetControlQt::sendSoundNotification() {
+    QProcess* process = new QProcess(this);
+    connect(process, &QProcess::finished, process, &QProcess::deleteLater);
+    process->start(headsetcontrolExecutable, QStringList() << "-n" << "0");
 }
 
 void HeadsetControlQt::toggleWindow()

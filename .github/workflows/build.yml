@@ -85,7 +85,7 @@ jobs:
           if (Test-Path $windeployqtPath) {
               # Run windeployqt with the updated options
               & $windeployqtPath `
-                  --exclude-plugins qmodernwindowsstyle,qsvgicon,qsvg,qico,qjpeg,qgif,qnetworklistmanager,qtuiotouchplugin `
+                  --exclude-plugins qmodernwindowsstyle,qsvgicon,qsvg,qico,qjpeg,qgif,qnetworklistmanager,qtuiotouchplugin,tls,qmltooling `
                   --no-opengl-sw `
                   --no-system-dxc-compiler `
                   --no-compiler-runtime `

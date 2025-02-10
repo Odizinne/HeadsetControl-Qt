@@ -64,8 +64,8 @@ ApplicationWindow {
                 enabled: root.mainWindow.lightsCapable
 
                 Label {
-                   text: qsTr("Disable lights")
-                   Layout.fillWidth: true
+                    text: qsTr("Disable lights")
+                    Layout.fillWidth: true
                 }
 
                 Switch {
@@ -79,8 +79,8 @@ ApplicationWindow {
                 spacing: 20
 
                 Label {
-                   text: qsTr("Send notification")
-                   Layout.fillWidth: true
+                    text: qsTr("Send notification")
+                    Layout.fillWidth: true
                 }
 
                 Switch {
@@ -95,8 +95,8 @@ ApplicationWindow {
                 enabled: root.mainWindow.soundNotifCapable
 
                 Label {
-                   text: qsTr("Beep")
-                   Layout.fillWidth: true
+                    text: qsTr("Beep")
+                    Layout.fillWidth: true
                 }
 
                 Switch {
@@ -149,13 +149,13 @@ ApplicationWindow {
                 Layout.fillWidth: true
                 indeterminate: root.mainWindow.status === "Charging"
                 Universal.accent: root.mainWindow.status === "Charging" ?
-                    Universal.Green :
-                    Qt.rgba(
-                        1 - (value / 100),
-                        value / 100,
-                        0,
-                        1
-                    )
+                                      Universal.Green :
+                                      Qt.rgba(
+                                          1 - (value / 100),
+                                          value / 100,
+                                          0,
+                                          1
+                                          )
             }
         }
 
@@ -182,7 +182,7 @@ ApplicationWindow {
                 onPressedChanged: {
                     if (!pressed) {
                         settings.sidetone = value
-                        root.mainWindow.setSidetone(value)
+                        root.mainWindow.setSidetone(Math.round(value))
                     }
                 }
             }
@@ -192,8 +192,8 @@ ApplicationWindow {
             spacing: 10
             enabled: root.mainWindow.lightsCapable
             Label {
-               text: qsTr("Lights")
-               Layout.fillWidth: true
+                text: qsTr("Lights")
+                Layout.fillWidth: true
             }
 
             Switch {
