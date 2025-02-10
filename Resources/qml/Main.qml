@@ -4,6 +4,7 @@ import QtQuick
 import QtCore
 
 ApplicationWindow {
+    id: root
     width: 450
     minimumWidth: 450
     maximumWidth: 450
@@ -24,8 +25,8 @@ ApplicationWindow {
     }
 
     Label {
-        opacity: mainWindow.noDevice ? 1 : 0
-        enabled: mainWindow.noDevice ? true : false
+        opacity: root.mainWindow.noDevice ? 1 : 0
+        enabled: root.mainWindow.noDevice ? true : false
         anchors.centerIn: parent
         text: qsTr("No supported headset found.")
     }
@@ -60,7 +61,7 @@ ApplicationWindow {
 
             RowLayout {
                 spacing: 20
-                enabled: mainWindow.lightsCapable
+                enabled: root.mainWindow.lightsCapable
 
                 Label {
                    text: qsTr("Disable lights")
@@ -91,7 +92,7 @@ ApplicationWindow {
 
             RowLayout {
                 spacing: 20
-                enabled: mainWindow.soundNotifCapable
+                enabled: root.mainWindow.soundNotifCapable
 
                 Label {
                    text: qsTr("Beep")
@@ -115,8 +116,8 @@ ApplicationWindow {
 
     ColumnLayout {
         id: mainColumn
-        opacity: mainWindow.noDevice ? 0 : 1
-        enabled: mainWindow.noDevice ? false : true
+        opacity: root.mainWindow.noDevice ? 0 : 1
+        enabled: root.mainWindow.noDevice ? false : true
         anchors.fill: parent
         anchors.margins: 15
         spacing: 8
@@ -125,14 +126,14 @@ ApplicationWindow {
             spacing: 10
 
             Label {
-                text: mainWindow.deviceName
+                text: root.mainWindow.deviceName
                 font.pixelSize: 20
                 font.bold: true
                 Layout.fillWidth: true
             }
 
             Label {
-                text: mainWindow.status
+                text: root.mainWindow.status
                 font.pixelSize: 20
             }
         }
@@ -144,10 +145,10 @@ ApplicationWindow {
                 id: batteryBar
                 from: 0
                 to: 100
-                value: mainWindow.batteryLevel
+                value: root.mainWindow.batteryLevel
                 Layout.fillWidth: true
-                indeterminate: mainWindow.status === "Charging"
-                Universal.accent: mainWindow.status === "Charging" ?
+                indeterminate: root.mainWindow.status === "Charging"
+                Universal.accent: root.mainWindow.status === "Charging" ?
                     Universal.Green :
                     Qt.rgba(
                         1 - (value / 100),
@@ -164,7 +165,7 @@ ApplicationWindow {
 
         RowLayout {
             spacing: 20
-            enabled: mainWindow.sidetoneCapable
+            enabled: root.mainWindow.sidetoneCapable
 
             Label {
                 text: qsTr("Sidetone")
@@ -181,7 +182,7 @@ ApplicationWindow {
                 onPressedChanged: {
                     if (!pressed) {
                         settings.sidetone = value
-                        mainWindow.setSidetone(value)
+                        root.mainWindow.setSidetone(value)
                     }
                 }
             }
@@ -189,7 +190,7 @@ ApplicationWindow {
 
         RowLayout {
             spacing: 10
-            enabled: mainWindow.lightsCapable
+            enabled: root.mainWindow.lightsCapable
             Label {
                text: qsTr("Lights")
                Layout.fillWidth: true
@@ -200,7 +201,7 @@ ApplicationWindow {
                 checked: settings.led_state
                 onCheckedChanged: {
                     settings.led_state = checked
-                    mainWindow.toggleLED(checked)
+                    root.mainWindow.toggleLED(checked)
                 }
             }
         }
@@ -250,7 +251,7 @@ ApplicationWindow {
                 currentIndex: settings.theme
                 onActivated: {
                     settings.theme = currentIndex
-                    mainWindow.updateHeadsetInfo()
+                    root.mainWindow.updateHeadsetInfo()
                 }
             }
         }
@@ -268,7 +269,7 @@ ApplicationWindow {
                 currentIndex: settings.language
                 onActivated: {
                     settings.language = currentIndex
-                    mainWindow.changeApplicationLanguage(currentIndex)
+                    root.mainWindow.changeApplicationLanguage(currentIndex)
                     currentIndex = settings.language
                 }
             }
