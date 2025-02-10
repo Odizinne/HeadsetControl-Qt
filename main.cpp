@@ -10,6 +10,7 @@ int main(int argc, char *argv[])
     a.setQuitOnLastWindowClosed(false);
     a.setOrganizationName("Odizinne");
     a.setApplicationName("HeadsetControlQt");
+    QApplication::setWindowIcon(QIcon(":/icons/icon.png"));
     HeadsetControlQt w;
     return a.exec();
 }
