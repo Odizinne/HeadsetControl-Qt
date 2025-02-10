@@ -1,12 +1,12 @@
-QT       += core gui
+QT       += core gui qml quick quickcontrols2
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++17
+CONFIG += c++17 silent lrelease embed_translations qtquickcompiler
 
-# You can make your code fail to compile if it uses deprecated APIs.
-# In order to do so, uncomment the following line.
-#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+QM_FILES_RESOURCE_PREFIX=/translations
+DEPENDENCIES_DIR = $$PWD/dependencies
+DEST_DIR = $$OUT_PWD/release/dependencies
 
 INCLUDEPATH += \
     ShortcutManager \
@@ -27,9 +27,6 @@ HEADERS += \
     Utils/Utils.h \
     Worker/Worker.h
 
-FORMS += \
-    HeadsetControlQt/HeadsetControlQt.ui
-
 TRANSLATIONS += \
     Resources/tr/HeadsetControl-Qt_fr.ts \
     Resources/tr/HeadsetControl-Qt_en.ts \
@@ -43,19 +40,11 @@ RESOURCES += \
 
 RC_FILE = Resources/appicon.rc
 
-# Build/embed translations automatically
-CONFIG += lrelease
-QM_FILES_RESOURCE_PREFIX=/translations/tr
-CONFIG += embed_translations
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
-
-# Define the source directory and the target directory in the build folder
-DEPENDENCIES_DIR = $$PWD/dependencies
-DEST_DIR = $$OUT_PWD/release/dependencies
 
 win32 {
     QMAKE_POST_LINK += powershell -Command "New-Item -ItemType Directory -Path '$$DEST_DIR' -Force; Copy-Item -Path '$$DEPENDENCIES_DIR\*' -Destination '$$DEST_DIR' -Recurse -Force"

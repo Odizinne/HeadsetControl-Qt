@@ -1,5 +1,4 @@
 #include "HeadsetControlQt.h"
-#include "ui_HeadsetControlQt.h"
 #include "Utils.h"
 #include "ShortcutManager.h"
 #include <QIcon>
@@ -14,6 +13,9 @@
 #include <QStyleFactory>
 #include <QLocale>
 #include <QTranslator>
+#include <QMenu>
+#include <QQmlContext>
+#include <QApplication>
 
 using namespace Utils;
 
@@ -25,9 +27,9 @@ const QString HeadsetControlQt::desktopFile = QDir::homePath() + "/.config/autos
 #endif
 
 HeadsetControlQt::HeadsetControlQt(QWidget *parent)
-    : QMainWindow(parent)
+    : QWidget(parent)
     , settings("Odizinne", "HeadsetControlQt")
-    , ui(new Ui::HeadsetControlQt)
+    , engine(new QQmlApplicationEngine(this))
     , trayIcon(new QSystemTrayIcon(this))
     , timer(new QTimer(this))
     , ledDisabled(false)
@@ -35,14 +37,13 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     , soundNotificationSent(false)
     , firstRun(false)
     , closing(false)
+    , translator(new QTranslator(this))
     , worker(new Worker())
+    , qmlWindow(nullptr)
 {
-    ui->setupUi(this);
-    setWindowIcon(QIcon(":/icons/icon.png"));
-    initUI();
     createTrayIcon();
-    loadSettings();
-    setupUIConnections();
+    toggleLED(settings.value("led_state", true).toBool());
+    setSidetone(settings.value("sidetone", 0).toInt());
     updateHeadsetInfo();
 
     connect(worker, &Worker::workRequested, worker, &Worker::doWork);
@@ -52,8 +53,15 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     worker->moveToThread(&workerThread);
     workerThread.start();
     timer->start(5000);
-    if (firstRun) {
-        this->show();
+
+    QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
+    engine->setInitialProperties({{"mainWindow", QVariant::fromValue(this)}});
+    engine->load(QUrl("qrc:/qml/Main.qml"));
+    qmlWindow = qobject_cast<QWindow*>(engine->rootObjects().first());
+    changeApplicationLanguage(settings.value("language").toInt());
+
+    if (settings.value("firstRun"), true) {
+        qmlWindow->show();
     }
 }
 
@@ -62,7 +70,6 @@ HeadsetControlQt::~HeadsetControlQt()
     worker->abort();
     workerThread.quit();
     workerThread.wait();
-    delete ui;
 }
 
 void HeadsetControlQt::handleHeadsetInfo(const QJsonObject &headsetInfo)
@@ -72,13 +79,13 @@ void HeadsetControlQt::handleHeadsetInfo(const QJsonObject &headsetInfo)
         if (devicesArray.size() > 0) {
             QJsonObject headsetInfo = devicesArray.first().toObject();
             updateUIWithHeadsetInfo(headsetInfo);
-            if (ui->ledBatteryCheckBox->isChecked()) {
+            if (settings.value("led_low_battery", false).toBool()) {
                 manageLEDBasedOnBattery(headsetInfo);
             }
-            if (ui->notificationBatteryCheckBox->isChecked()) {
+            if (settings.value("notification_low_battery", false).toBool()) {
                 sendNotificationBasedOnBattery(headsetInfo);
             }
-            if (ui->soundBatteryCheckBox->isChecked()) {
+            if (settings.value("sound_low_battery", false).toBool()) {
                 sendSoundNotificationBasedOnBattery(headsetInfo);
             }
         } else {
@@ -89,50 +96,12 @@ void HeadsetControlQt::handleHeadsetInfo(const QJsonObject &headsetInfo)
     }
 }
 
-void HeadsetControlQt::initUI()
-{
-    QString currentStyle = QApplication::style()->objectName();
-    if (currentStyle == QStyleFactory::create("Fusion")->objectName()) {
-        setFrameColorBasedOnWindow(this, ui->frame);
-        setFrameColorBasedOnWindow(this, ui->frame_2);
-    }
-    populateComboBoxes();
-    checkStartupCheckbox();
-}
-
-void HeadsetControlQt::setupUIConnections()
-{
-    connect(ui->ledBox, &QCheckBox::stateChanged, this, &HeadsetControlQt::onLedBoxStateChanged);
-    connect(ui->ledBatteryCheckBox, &QCheckBox::stateChanged, this, &HeadsetControlQt::saveSettings);
-    connect(ui->notificationBatteryCheckBox, &QCheckBox::stateChanged, this, &HeadsetControlQt::saveSettings);
-    connect(ui->startupCheckbox, &QCheckBox::stateChanged, this, &HeadsetControlQt::onStartupCheckBoxStateChanged);
-    connect(ui->sidetoneSlider, &QSlider::sliderReleased, this, &HeadsetControlQt::onSidetoneSliderSliderReleased);
-    connect(ui->themeComboBox, &QComboBox::currentIndexChanged, this, &HeadsetControlQt::onThemeComboBoxCurrentIndexChanged);
-    connect(ui->lowBatteryThresholdSpinBox, &QSpinBox::valueChanged, this, &HeadsetControlQt::saveSettings);
-    connect(ui->soundBatteryCheckBox, &QCheckBox::stateChanged, this, &HeadsetControlQt::saveSettings);
-    connect(ui->languageComboBox, &QComboBox::currentIndexChanged, this, &HeadsetControlQt::changeApplicationLanguage);
-}
-
-void HeadsetControlQt::populateComboBoxes()
-{
-    ui->themeComboBox->addItem(tr("System"));
-    ui->themeComboBox->addItem(tr("Dark"));
-    ui->themeComboBox->addItem(tr("Light"));
-    ui->languageComboBox->addItem("System");
-    ui->languageComboBox->addItem("english");
-    ui->languageComboBox->addItem("français");
-    ui->languageComboBox->addItem("deutsch");
-    ui->languageComboBox->addItem("español");
-    ui->languageComboBox->addItem("italiano");
-    ui->languageComboBox->addItem("magyar");
-}
-
-void HeadsetControlQt::checkStartupCheckbox()
+bool HeadsetControlQt::checkStartupCheckbox()
 {
 #ifdef _WIN32
-    ui->startupCheckbox->setChecked(isShortcutPresent());
+    return isShortcutPresent();
 #elif __linux__
-    ui->startupCheckbox->setChecked(isDesktopfilePresent());
+    return isDesktopfilePresent();
 #endif
 }
 
@@ -141,8 +110,11 @@ void HeadsetControlQt::createTrayIcon()
     trayIcon->setIcon(QIcon(":/icons/icon.png"));
     trayMenu = new QMenu(this);
     showAction = new QAction(tr("Show"), this);
+    startupAction = new QAction(tr("Run at startup"), this);
     exitAction = new QAction(tr("Exit"), this);
 
+    startupAction->setCheckable(true);
+    startupAction->setChecked(checkStartupCheckbox());
     connect(showAction, &QAction::triggered, this, &HeadsetControlQt::toggleWindow);
     connect(exitAction, &QAction::triggered, this, &QApplication::quit);
 
@@ -153,35 +125,6 @@ void HeadsetControlQt::createTrayIcon()
 
     connect(trayIcon, &QSystemTrayIcon::activated, this, &HeadsetControlQt::trayIconActivated);
 }
-
-void HeadsetControlQt::loadSettings()
-{
-    ui->ledBox->setChecked(settings.value("led_state", true).toBool());
-    ui->ledBatteryCheckBox->setChecked(settings.value("led_low_battery", false).toBool());
-    ui->notificationBatteryCheckBox->setChecked(settings.value("notification_low_battery", false).toBool());
-    ui->sidetoneSlider->setValue(settings.value("sidetone", 0).toInt());
-    ui->themeComboBox->setCurrentIndex(settings.value("theme", 0).toInt());
-    ui->lowBatteryThresholdSpinBox->setValue(settings.value("low_battery_threshold", 10).toInt());
-    ui->soundBatteryCheckBox->setChecked(settings.value("sound_low_battery", false).toBool());
-    ui->languageComboBox->setCurrentIndex(settings.value("language", 0).toInt());
-
-    changeApplicationLanguage();
-    setSidetone();
-    toggleLED(ui->ledBox->isChecked());
-}
-
-void HeadsetControlQt::saveSettings()
-{
-    settings.setValue("led_state", ui->ledBox->isChecked());
-    settings.setValue("led_low_battery", ui->ledBatteryCheckBox->isChecked());
-    settings.setValue("notification_low_battery", ui->notificationBatteryCheckBox->isChecked());
-    settings.setValue("sidetone", ui->sidetoneSlider->value());
-    settings.setValue("theme", ui->themeComboBox->currentIndex());
-    settings.setValue("low_battery_threshold", ui->lowBatteryThresholdSpinBox->value());
-    settings.setValue("sound_low_battery", ui->soundBatteryCheckBox->isChecked());
-    settings.setValue("language", ui->languageComboBox->currentIndex());
-}
-
 
 void HeadsetControlQt::updateHeadsetInfo()
 {
@@ -212,13 +155,13 @@ void HeadsetControlQt::updateHeadsetInfo()
         if (devicesArray.size() > 0) {
             QJsonObject headsetInfo = devicesArray.first().toObject();
             updateUIWithHeadsetInfo(headsetInfo);
-            if (ui->ledBatteryCheckBox->isChecked()) {
+            if (settings.value("led_low_battery", false).toBool()) {
                 manageLEDBasedOnBattery(headsetInfo);
             }
-            if (ui->notificationBatteryCheckBox->isChecked()) {
+            if (settings.value("notification_low_battery", false).toBool()) {
                 sendNotificationBasedOnBattery(headsetInfo);
             }
-            if (ui->soundBatteryCheckBox->isChecked()) {
+            if (settings.value("sound_low_battery", false).toBool()) {
                 sendSoundNotificationBasedOnBattery(headsetInfo);
             }
         } else {
@@ -236,11 +179,11 @@ void HeadsetControlQt::manageLEDBasedOnBattery(const QJsonObject &headsetInfo)
     QString batteryStatus = batteryInfo["status"].toString();
     bool available = (batteryStatus == "BATTERY_AVAILABLE");
 
-    if (batteryLevel < ui->lowBatteryThresholdSpinBox->value() && !ledDisabled && available) {
-        ui->ledBox->setChecked(false);
+    if (batteryLevel < settings.value("low_battery_threshold", 20).toInt() && !ledDisabled && available) {
+        //ui->ledBox->setChecked(false);
         ledDisabled = true;
-    } else if (batteryLevel >= ui->lowBatteryThresholdSpinBox->value() + 5 && ledDisabled && available) {
-        ui->ledBox->setChecked(true);
+    } else if (batteryLevel >= settings.value("low_battery_threshold", 20).toInt() + 5 && ledDisabled && available) {
+        //ui->ledBox->setChecked(true);
         ledDisabled = false;
     }
 }
@@ -253,10 +196,10 @@ void HeadsetControlQt::sendNotificationBasedOnBattery(const QJsonObject &headset
     QString batteryStatus = batteryInfo["status"].toString();
     bool available = (batteryStatus == "BATTERY_AVAILABLE");
 
-    if (batteryLevel < ui->lowBatteryThresholdSpinBox->value() && !notificationSent && available) {
+    if (batteryLevel < settings.value("low_battery_threshold", 20).toInt() && !notificationSent && available) {
         sendNotification(tr("Low battery"), QString(tr("%1 has %2% battery left.")).arg(headsetName).arg(batteryLevel), QIcon(":/icons/icon.png"), 5000);
         notificationSent = true;
-    } else if (batteryLevel >= ui->lowBatteryThresholdSpinBox->value() + 5 && notificationSent && available) {
+    } else if (batteryLevel >= settings.value("low_battery_threshold", 20).toInt() + 5 && notificationSent && available) {
         notificationSent = false;
     }
 }
@@ -268,10 +211,10 @@ void HeadsetControlQt::sendSoundNotificationBasedOnBattery(const QJsonObject &he
     QString batteryStatus = batteryInfo["status"].toString();
     bool available = (batteryStatus == "BATTERY_AVAILABLE");
 
-    if (batteryLevel < ui->lowBatteryThresholdSpinBox->value() && !soundNotificationSent && available) {
+    if (batteryLevel < settings.value("low_battery_threshold", 20).toInt() && !soundNotificationSent && available) {
         sendSoundNotification();
         soundNotificationSent = true;
-    } else if (batteryLevel >= ui->lowBatteryThresholdSpinBox->value() + 5 && soundNotificationSent && available) {
+    } else if (batteryLevel >= settings.value("low_battery_threshold", 20).toInt() + 5 && soundNotificationSent && available) {
         soundNotificationSent = false;
     }
 }
@@ -300,79 +243,58 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
     QStringList capabilities = headsetInfo["capabilities_str"].toVariant().toStringList();
     QJsonObject batteryInfo = headsetInfo["battery"].toObject();
 
-    ui->deviceLabel->setText(deviceName);
+    setDeviceName(deviceName);
 
     QString batteryStatus = batteryInfo["status"].toString();
     int batteryLevel = batteryInfo["level"].toInt();
 
     if (batteryStatus == "BATTERY_AVAILABLE") {
-        ui->batteryBar->setValue(batteryLevel);
-        ui->batteryBar->setFormat(QString::number(batteryLevel) + "%");
-        trayIcon->setToolTip(QString("%1: %2%").arg(deviceName).arg(batteryLevel));
-        ui->themeComboBox->currentIndex();
+        setBatteryLevel(batteryLevel);
+        setStatus(QString::number(batteryLevel) + "%");
 
-        QString iconPath = getBatteryIconPath(batteryLevel, false, false, ui->themeComboBox->currentIndex());
+        trayIcon->setToolTip(QString("%1: %2%").arg(deviceName).arg(batteryLevel));
+
+        QString iconPath = getBatteryIconPath(batteryLevel, false, false, settings.value("theme", 0).toInt());
         trayIcon->setIcon(QIcon(iconPath));
 
     } else if (batteryStatus == "BATTERY_CHARGING") {
-        ui->batteryBar->setValue(0);
-        ui->batteryBar->setFormat(tr("Charging"));
+        setBatteryLevel(0);
+        setStatus("Charging");
+
         trayIcon->setToolTip(QString(tr("%1: Charging")).arg(deviceName));
 
-        QString iconPath = getBatteryIconPath(batteryLevel, true, false, ui->themeComboBox->currentIndex());
+        QString iconPath = getBatteryIconPath(batteryLevel, true, false, settings.value("theme", 0).toInt());
         trayIcon->setIcon(QIcon(iconPath));
 
     } else {
-        ui->batteryBar->setValue(0);
-        ui->batteryBar->setFormat(tr("Off"));
+        setBatteryLevel(0);
+        setStatus("Off");
+
         trayIcon->setToolTip(tr("No headset connected"));
 
-        QString iconPath = getBatteryIconPath(batteryLevel, false, true, ui->themeComboBox->currentIndex());
+        QString iconPath = getBatteryIconPath(batteryLevel, false, true, settings.value("theme", 0).toInt());
         trayIcon->setIcon(QIcon(iconPath));
 
     }
-    ui->ledBox->setEnabled(capabilities.contains("lights"));
-    ui->ledLabel->setEnabled(capabilities.contains("lights"));
-    ui->ledBatteryCheckBox->setEnabled(capabilities.contains("lights"));
-    ui->soundBatteryLabel->setEnabled(capabilities.contains("notification sound"));
-    ui->soundBatteryCheckBox->setEnabled(capabilities.contains("notification sound"));
-    ui->sidetoneSlider->setEnabled(capabilities.contains("sidetone"));
-    ui->sidetoneLabel->setEnabled(capabilities.contains("sidetone"));
-    toggleUIElements(true);
+
+    setLightsCapable(capabilities.contains("lights"));
+    setSidetoneCapable(capabilities.contains("sidetone"));
+    setSoundNotifCapable(capabilities.contains("notification sound"));
+    setNoDevice(false);
 }
 
 void HeadsetControlQt::noDeviceFound()
 {
-    toggleUIElements(false);
     trayIcon->setToolTip(tr("No Device Found"));
-    QString iconPath = getBatteryIconPath(0, false, true, ui->themeComboBox->currentIndex());
+    QString iconPath = getBatteryIconPath(0, false, true, settings.value("theme", 0).toInt());
 
     trayIcon->setIcon(QIcon(iconPath));
-
-}
-
-void HeadsetControlQt::toggleUIElements(bool show)
-{
-    ui->settingsLabel->setVisible(show);
-    ui->frame->setVisible(show);
-    ui->deviceLabel->setVisible(show);
-    ui->frame_2->setVisible(show);
-    ui->notFoundLabel->setVisible(!show);
-    this->setFixedSize(QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
-    this->setMinimumSize(380, 0);
-    this->adjustSize();
-    this->setFixedSize(this->size());
-}
-
-void HeadsetControlQt::onLedBoxStateChanged()
-{
-    toggleLED(ui->ledBox->isChecked());
-    saveSettings();
+    setNoDevice(true);
 }
 
 void HeadsetControlQt::onStartupCheckBoxStateChanged()
 {
-    if (ui->startupCheckbox->isChecked()) {
+    if (startupAction->isChecked()) {
 #ifdef _WIN32
         manageShortcut(true);
 #elif __linux__
@@ -387,22 +309,10 @@ void HeadsetControlQt::onStartupCheckBoxStateChanged()
     }
 }
 
-void HeadsetControlQt::onSidetoneSliderSliderReleased()
-{
-    setSidetone();
-    saveSettings();
-}
-
-void HeadsetControlQt::onThemeComboBoxCurrentIndexChanged()
-{
-    updateHeadsetInfo();
-    saveSettings();
-}
-
-void HeadsetControlQt::setSidetone()
+void HeadsetControlQt::setSidetone(int value)
 {
     QProcess process;
-    process.start(headsetcontrolExecutable, QStringList() << "-s" << QString::number(ui->sidetoneSlider->value()));
+    process.start(headsetcontrolExecutable, QStringList() << "-s" << QString::number(value));
     process.waitForFinished();
 }
 
@@ -415,11 +325,11 @@ void HeadsetControlQt::sendSoundNotification()
 
 void HeadsetControlQt::toggleWindow()
 {
-    if (this->isVisible()) {
-        this->close();
+    if (qmlWindow->isVisible()) {
+        qmlWindow->close();
         trayIcon->contextMenu()->actions().first()->setText(tr("Show"));
     } else {
-        this->show();
+        qmlWindow->show();
         trayIcon->contextMenu()->actions().first()->setText(tr("Hide"));
     }
 }
@@ -431,60 +341,56 @@ void HeadsetControlQt::trayIconActivated(QSystemTrayIcon::ActivationReason reaso
     }
 }
 
-void HeadsetControlQt::closeEvent(QCloseEvent *event)
-{
-    closing = true;
-    event->accept();
-    trayIcon->contextMenu()->actions().first()->setText(tr("Show"));
-    sendFirstMinimizeNotification();
-}
-
 void HeadsetControlQt::sendFirstMinimizeNotification()
 {
-    if (closing) {
-        return;
-    }
-
-    if (firstRun) {
-        sendNotification(tr("HeadsetControl-Qt"), QString(tr("The application is still running in the background.")), QIcon(":/icons/icon.png"), 5000);
-        firstRun = false;
-    }
+    sendNotification(tr("HeadsetControl-Qt"), QString(tr("The application is still running in the background.")), QIcon(":/icons/icon.png"), 5000);
 }
 
-void HeadsetControlQt::changeApplicationLanguage()
+void HeadsetControlQt::changeApplicationLanguage(int languageIndex)
 {
-    QString language = ui->languageComboBox->currentText().toLower();
-    QTranslator translator;
-
-    if (qApp->removeTranslator(&translator)) {
-    }
+    qApp->removeTranslator(translator);
+    delete translator;
+    translator = new QTranslator(this);
 
     QString languageCode;
-    if (language == "system") {
+    if (languageIndex == 0) {
         QLocale systemLocale;
         languageCode = systemLocale.name().left(2);
     } else {
-        QMap<QString, QString> languageCodes;
-        languageCodes["english"] = "en";
-        languageCodes["français"] = "fr";
-        languageCodes["deutsch"] = "de";
-        languageCodes["español"] = "es";
-        languageCodes["italiano"] = "it";
-        languageCodes["magyar"] = "hu";
-
-        languageCode = languageCodes.value(language, "en");
+        switch (languageIndex) {
+        case 1:
+            languageCode = "en";
+            break;
+        case 2:
+            languageCode = "fr";
+            break;
+        case 3:
+            languageCode = "de";
+            break;
+        case 4:
+            languageCode = "es";
+            break;
+        case 5:
+            languageCode = "it";
+            break;
+        case 6:
+            languageCode = "hu";
+            break;
+        default:
+            languageCode = "en";
+            break;
+        }
     }
 
-    QString translationFile = QString(":/translations/tr/HeadsetControl-Qt_%1.qm").arg(languageCode);
-    if (translator.load(translationFile)) {
-        qApp->installTranslator(&translator);
+    QString translationFile = QString(":/translations/HeadsetControl-Qt_%1.qm").arg(languageCode);
+    if (translator->load(translationFile)) {
+        qGuiApp->installTranslator(translator);
     } else {
         qWarning() << "Failed to load translation file:" << translationFile;
     }
 
-    ui->retranslateUi(this);
+    engine->retranslate();
     updateTrayMenu();
-    saveSettings();
 }
 
 void HeadsetControlQt::updateTrayMenu()

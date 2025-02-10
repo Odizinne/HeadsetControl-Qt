@@ -21,7 +21,7 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
-          version: '6.7.2'
+          version: '6.8.2'
           add-tools-to-path: true
           cache: true
 
@@ -78,7 +78,8 @@ jobs:
           cd build
 
           # Use the found path to windeployqt
-          $windeployqtPath = "D:\a\HeadsetControl-Qt\Qt\6.7.2\msvc2019_64\bin\windeployqt6.exe"
+          $windeployqtPath = "D:\a\HeadsetControl-Qt\Qt\6.8.2\msvc2019_64\bin\windeployqt6.exe"
+          $qmlDir = "D:\a\HeadsetControl-Qt\HeadsetControl-Qt\Resources\qml"
 
           # Check if the executable exists
           if (Test-Path $windeployqtPath) {
@@ -90,6 +91,7 @@ jobs:
                   --no-compiler-runtime `
                   --no-translations `
                   --no-system-d3d-compiler `
+                  --qmldir $qmlDir `
                   D:\a\HeadsetControl-Qt\HeadsetControl-Qt\build\release\HeadsetControl-Qt.exe
           } else {
               Write-Error "windeployqt not found at the expected path!"
@@ -131,8 +133,9 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
-          version: '6.4.2'
+          version: '6.8.2'
           host: 'linux'
+          cache: true
           add-tools-to-path: true
 
       - name: Install dependencies

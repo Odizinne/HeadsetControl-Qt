@@ -8,6 +8,8 @@ int main(int argc, char *argv[])
     a.setStyle("fusion");
 #endif
     a.setQuitOnLastWindowClosed(false);
+    a.setOrganizationName("Odizinne");
+    a.setApplicationName("HeadsetControlQt");
     HeadsetControlQt w;
     return a.exec();
 }
