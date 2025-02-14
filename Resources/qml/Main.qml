@@ -15,13 +15,12 @@ ApplicationWindow {
     title: "HeadsetControl-Qt"
 
     readonly property real maxFrameHeight: Math.max(
-        sidetoneFrame.implicitHeight,
-        lightsFrame.implicitHeight,
-        lowBatteryFrame.implicitHeight,
-        thresholdFrame.implicitHeight,
-        themeFrame.implicitHeight,
-        languageFrame.implicitHeight
-    )
+                                               sidetoneFrame.implicitHeight,
+                                               lightsFrame.implicitHeight,
+                                               lowBatteryFrame.implicitHeight,
+                                               themeFrame.implicitHeight,
+                                               languageFrame.implicitHeight
+                                               )
 
     required property var mainWindow
 
@@ -110,6 +109,22 @@ ApplicationWindow {
                 Switch {
                     checked: settings.sound_low_battery
                     onCheckedChanged: settings.sound_low_battery = checked
+                }
+            }
+
+            RowLayout {
+                spacing: 20
+
+                Label {
+                    text: qsTr("Low battery threshold")
+                    Layout.fillWidth: true
+                }
+
+                SpinBox {
+                    from: 10
+                    to: 30
+                    value: settings.low_battery_threshold
+                    onValueChanged: settings.low_battery_threshold = value
                 }
             }
 
@@ -238,29 +253,6 @@ ApplicationWindow {
                 Button {
                     text: qsTr("Configure")
                     onClicked: lowBatteryActionsPopup.visible = true
-                }
-            }
-        }
-
-        Frame {
-            id: thresholdFrame
-            Layout.fillWidth: true
-            Layout.preferredHeight: root.maxFrameHeight
-
-            RowLayout {
-                anchors.fill: parent
-                anchors.verticalCenter: parent.verticalCenter
-
-                Label {
-                    text: qsTr("Low battery threshold")
-                    Layout.fillWidth: true
-                }
-
-                SpinBox {
-                    from: 10
-                    to: 30
-                    value: settings.low_battery_threshold
-                    onValueChanged: settings.low_battery_threshold = value
                 }
             }
         }
