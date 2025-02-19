@@ -33,7 +33,8 @@ TRANSLATIONS += \
     Resources/tr/HeadsetControl-Qt_hu.ts \
     Resources/tr/HeadsetControl-Qt_es.ts \
     Resources/tr/HeadsetControl-Qt_de.ts \
-    Resources/tr/HeadsetControl-Qt_it.ts
+    Resources/tr/HeadsetControl-Qt_it.ts \
+    Resources/tr/HeadsetControl-Qt_tr.ts
 
 RESOURCES += \
     Resources/resources.qrc

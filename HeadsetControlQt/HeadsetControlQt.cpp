@@ -375,6 +375,9 @@ void HeadsetControlQt::changeApplicationLanguage(int languageIndex)
         case 6:
             languageCode = "hu";
             break;
+        case 7:
+            languageCode = "tr";
+            break;
         default:
             languageCode = "en";
             break;

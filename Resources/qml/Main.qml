@@ -299,7 +299,7 @@ ApplicationWindow {
                 }
 
                 ComboBox {
-                    model: [qsTr("System"), "english", "français", "deutsch", "español", "italiano", "magyar"]
+                    model: [qsTr("System"), "english", "français", "deutsch", "español", "italiano", "magyar", "türkçe"]
                     currentIndex: settings.language
                     onActivated: {
                         settings.language = currentIndex

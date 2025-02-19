@@ -4,138 +4,61 @@
 <context>
     <name>HeadsetControlQt</name>
     <message>
-        <location filename="../../HeadsetControlQt/HeadsetControlQt.ui" line="26"/>
-        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="346"/>
+        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="345"/>
         <source>HeadsetControl-Qt</source>
         <translation>HeadsetControl-Qt</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/HeadsetControlQt.ui" line="57"/>
-        <source>No supported headset found.</source>
-        <translation>Nessun auricolare supportato trovato.</translation>
-    </message>
-    <message>
-        <location filename="../../HeadsetControlQt/HeadsetControlQt.ui" line="133"/>
-        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="109"/>
+        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="112"/>
         <source>Run at startup</source>
         <translation>Esegui all&apos;avvio</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/HeadsetControlQt.ui" line="82"/>
-        <source>Low battery threshold</source>
-        <translation>Soglia di batteria bassa</translation>
-    </message>
-    <message>
-        <location filename="../../HeadsetControlQt/HeadsetControlQt.ui" line="146"/>
-        <source>Icon theme</source>
-        <translation>Tema delle icone</translation>
-    </message>
-    <message>
-        <source>device</source>
-        <translation type="vanished">dispositivo</translation>
-    </message>
-    <message>
-        <location filename="../../HeadsetControlQt/HeadsetControlQt.ui" line="188"/>
-        <source>Language</source>
-        <translation>Lingua</translation>
-    </message>
-    <message>
-        <location filename="../../HeadsetControlQt/HeadsetControlQt.ui" line="237"/>
-        <source>Settings</source>
-        <translation>Impostazioni</translation>
-    </message>
-    <message>
-        <location filename="../../HeadsetControlQt/HeadsetControlQt.ui" line="280"/>
-        <source>Battery</source>
-        <translation>Batteria</translation>
-    </message>
-    <message>
-        <location filename="../../HeadsetControlQt/HeadsetControlQt.ui" line="309"/>
-        <source>Sidetone</source>
-        <translation>Sidetone</translation>
-    </message>
-    <message>
-        <location filename="../../HeadsetControlQt/HeadsetControlQt.ui" line="324"/>
-        <source>Lights</source>
-        <translation>Luci</translation>
-    </message>
-    <message>
-        <location filename="../../HeadsetControlQt/HeadsetControlQt.ui" line="359"/>
-        <source>Disable lights on low battery</source>
-        <translation>Disattiva luci con batteria scarica</translation>
-    </message>
-    <message>
-        <location filename="../../HeadsetControlQt/HeadsetControlQt.ui" line="388"/>
-        <source>Send notification on low battery</source>
-        <translation>Invia notifica quando la batteria è scarica</translation>
-    </message>
-    <message>
-        <location filename="../../HeadsetControlQt/HeadsetControlQt.ui" line="417"/>
-        <source>Beep on low battery</source>
-        <translation>Segnale acustico con batteria scarica</translation>
-    </message>
-    <message>
-        <source>System</source>
-        <translation type="vanished">Sistema</translation>
-    </message>
-    <message>
-        <source>Dark</source>
-        <translation type="vanished">Scuro</translation>
-    </message>
-    <message>
-        <source>Light</source>
-        <translation type="vanished">Chiaro</translation>
-    </message>
-    <message>
-        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="108"/>
-        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="325"/>
-        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="404"/>
+        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="111"/>
+        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="329"/>
+        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="403"/>
         <source>Show</source>
         <translation>Mostra</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="110"/>
-        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="406"/>
+        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="113"/>
+        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="405"/>
         <source>Exit</source>
         <translation>Esci</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="196"/>
+        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="201"/>
         <source>Low battery</source>
         <translation>Batteria scarica</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="196"/>
+        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="201"/>
         <source>%1 has %2% battery left.</source>
         <translation>%1 ha il %2% di batteria rimanente.</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="259"/>
+        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="258"/>
         <source>%1: Charging</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Off</source>
-        <translation type="vanished">Spento</translation>
-    </message>
-    <message>
-        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="268"/>
+        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="267"/>
         <source>No headset connected</source>
         <translation>Nessun auricolare connesso</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="283"/>
+        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="282"/>
         <source>No Device Found</source>
         <translation>Nessun dispositivo trovato</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="328"/>
-        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="402"/>
+        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="332"/>
+        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="401"/>
         <source>Hide</source>
         <translation>Nascondi</translation>
     </message>
     <message>
-        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="346"/>
+        <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="345"/>
         <source>The application is still running in the background.</source>
         <translation>L&apos;applicazione è ancora in esecuzione in secondo piano.</translation>
     </message>
@@ -143,99 +66,78 @@
 <context>
     <name>Main</name>
     <message>
-        <source>HeadsetControl-Qt</source>
-        <translation type="obsolete">HeadsetControl-Qt</translation>
-    </message>
-    <message>
-        <location filename="../qml/Main.qml" line="23"/>
+        <location filename="../qml/Main.qml" line="38"/>
         <source>No supported headset found.</source>
         <translation type="unfinished">Nessun auricolare supportato trovato.</translation>
     </message>
     <message>
-        <source>Disable lights on low battery</source>
-        <translation type="obsolete">Disattiva luci con batteria scarica</translation>
-    </message>
-    <message>
-        <source>Send notification on low battery</source>
-        <translation type="obsolete">Invia notifica quando la batteria è scarica</translation>
-    </message>
-    <message>
-        <source>Beep on low battery</source>
-        <translation type="obsolete">Segnale acustico con batteria scarica</translation>
-    </message>
-    <message>
-        <location filename="../qml/Main.qml" line="58"/>
+        <location filename="../qml/Main.qml" line="76"/>
         <source>Disable lights</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="73"/>
+        <location filename="../qml/Main.qml" line="90"/>
         <source>Send notification</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="89"/>
+        <location filename="../qml/Main.qml" line="105"/>
         <source>Beep</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="101"/>
+        <location filename="../qml/Main.qml" line="132"/>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="136"/>
-        <source>Battery</source>
-        <translation type="unfinished">Batteria</translation>
-    </message>
-    <message>
-        <location filename="../qml/Main.qml" line="154"/>
+        <location filename="../qml/Main.qml" line="190"/>
         <source>Sidetone</source>
         <translation type="unfinished">Sidetone</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="178"/>
+        <location filename="../qml/Main.qml" line="223"/>
         <source>Lights</source>
         <translation type="unfinished">Luci</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="194"/>
+        <location filename="../qml/Main.qml" line="119"/>
         <source>Low battery threshold</source>
         <translation type="unfinished">Soglia di batteria bassa</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="210"/>
+        <location filename="../qml/Main.qml" line="249"/>
         <source>Actions on low battery</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="215"/>
+        <location filename="../qml/Main.qml" line="254"/>
         <source>Configure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="224"/>
+        <location filename="../qml/Main.qml" line="271"/>
         <source>Icon theme</source>
         <translation type="unfinished">Tema delle icone</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="229"/>
-        <location filename="../qml/Main.qml" line="247"/>
+        <location filename="../qml/Main.qml" line="276"/>
+        <location filename="../qml/Main.qml" line="302"/>
         <source>System</source>
         <translation type="unfinished">Sistema</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="229"/>
+        <location filename="../qml/Main.qml" line="276"/>
         <source>Dark</source>
         <translation type="unfinished">Scuro</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="229"/>
+        <location filename="../qml/Main.qml" line="276"/>
         <source>Light</source>
         <translation type="unfinished">Chiaro</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="242"/>
+        <location filename="../qml/Main.qml" line="297"/>
         <source>Language</source>
         <translation type="unfinished">Lingua</translation>
     </message>
