@@ -60,6 +60,7 @@ Currently done:
 | English      | EN           | Odizinne                                   |
 | French       | FR           | Odizinne                                   |
 | Hungarian    | HU           | [bbacskay](https://github.com/bbacskay)    |
+| Turkish      | TR           | [DogancanYr](https://github.com/DogancanYr)|
 | Spanish      | ES           | AI                                         |
 | German       | DE           | AI                                         |
 | Italian      | IT           | AI                                         |

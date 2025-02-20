@@ -39,7 +39,7 @@
     <message>
         <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="258"/>
         <source>%1: Charging</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: Şarj oluyor</translation>
     </message>
     <message>
         <location filename="../../HeadsetControlQt/HeadsetControlQt.cpp" line="267"/>
@@ -73,22 +73,22 @@
     <message>
         <location filename="../qml/Main.qml" line="76"/>
         <source>Disable lights</source>
-        <translation type="unfinished"></translation>
+        <translation>Işıkları kapat</translation>
     </message>
     <message>
         <location filename="../qml/Main.qml" line="90"/>
         <source>Send notification</source>
-        <translation type="unfinished"></translation>
+        <translation>Bildirim gönder</translation>
     </message>
     <message>
         <location filename="../qml/Main.qml" line="105"/>
         <source>Beep</source>
-        <translation type="unfinished"></translation>
+        <translation>Biple</translation>
     </message>
     <message>
         <location filename="../qml/Main.qml" line="132"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Kapat</translation>
     </message>
     <message>
         <location filename="../qml/Main.qml" line="190"/>
@@ -108,12 +108,12 @@
     <message>
         <location filename="../qml/Main.qml" line="249"/>
         <source>Actions on low battery</source>
-        <translation type="unfinished"></translation>
+        <translation>Düşük pilde yapılacaklar</translation>
     </message>
     <message>
         <location filename="../qml/Main.qml" line="254"/>
         <source>Configure</source>
-        <translation type="unfinished"></translation>
+        <translation>Ayarla</translation>
     </message>
     <message>
         <location filename="../qml/Main.qml" line="271"/>
@@ -124,17 +124,17 @@
         <location filename="../qml/Main.qml" line="276"/>
         <location filename="../qml/Main.qml" line="302"/>
         <source>System</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistem</translation>
     </message>
     <message>
         <location filename="../qml/Main.qml" line="276"/>
         <source>Dark</source>
-        <translation type="unfinished"></translation>
+        <translation>Karanlık</translation>
     </message>
     <message>
         <location filename="../qml/Main.qml" line="276"/>
         <source>Light</source>
-        <translation type="unfinished"></translation>
+        <translation>Aydınlık</translation>
     </message>
     <message>
         <location filename="../qml/Main.qml" line="297"/>
