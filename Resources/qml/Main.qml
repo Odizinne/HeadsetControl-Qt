@@ -66,7 +66,24 @@ ApplicationWindow {
         ColumnLayout {
             anchors.fill: parent
             id: mainPopupColumn
-            spacing: 10
+            spacing: 12
+
+            RowLayout {
+                spacing: 20
+                Layout.bottomMargin: 10
+
+                Label {
+                    text: qsTr("Low battery threshold")
+                    Layout.fillWidth: true
+                }
+
+                SpinBox {
+                    from: 10
+                    to: 30
+                    value: settings.low_battery_threshold
+                    onValueChanged: settings.low_battery_threshold = value
+                }
+            }
 
             RowLayout {
                 spacing: 20
@@ -112,23 +129,8 @@ ApplicationWindow {
                 }
             }
 
-            RowLayout {
-                spacing: 20
-
-                Label {
-                    text: qsTr("Low battery threshold")
-                    Layout.fillWidth: true
-                }
-
-                SpinBox {
-                    from: 10
-                    to: 30
-                    value: settings.low_battery_threshold
-                    onValueChanged: settings.low_battery_threshold = value
-                }
-            }
-
             Button {
+                Layout.topMargin: 10
                 text: qsTr("Close")
                 onClicked: lowBatteryActionsPopup.visible = false
                 Layout.alignment: Qt.AlignRight
