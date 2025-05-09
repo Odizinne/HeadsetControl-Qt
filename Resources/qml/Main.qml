@@ -348,6 +348,22 @@ ApplicationWindow {
                         }
                     }
                 }
+
+                RowLayout {
+                    spacing: 10
+                    Layout.preferredHeight: 40
+
+                    Label {
+                        text: qsTr("Run at startup")
+                        Layout.fillWidth: true
+                    }
+
+                    CheckBox {
+                        Layout.rightMargin: -5
+                        checked: root.mainWindow.isRunAtStartup
+                        onClicked: root.mainWindow.setRunAtStartup(checked)
+                    }
+                }
             }
         }
     }

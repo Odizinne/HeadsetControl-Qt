@@ -24,6 +24,7 @@ class HeadsetControlQt : public QWidget
     Q_PROPERTY(bool sidetoneCapable READ sidetoneCapable WRITE setSidetoneCapable NOTIFY sidetoneCapableChanged FINAL)
     Q_PROPERTY(bool soundNotifCapable READ soundNotifCapable WRITE setSoundNotifCapable NOTIFY soundNotifCapableChanged FINAL)
     Q_PROPERTY(bool noDevice READ noDevice WRITE setNoDevice NOTIFY noDeviceChanged FINAL)
+    Q_PROPERTY(bool isRunAtStartup READ isRunAtStartup NOTIFY isRunAtStartupChanged FINAL)
 
 public:
     explicit HeadsetControlQt(QWidget *parent = nullptr);
@@ -37,12 +38,14 @@ public:
     bool sidetoneCapable() const { return m_sidetoneCapable; }
     bool soundNotifCapable() const { return m_soundNotifCapable; }
     bool noDevice() const { return m_noDevice; }
+    bool isRunAtStartup() const { return m_isRunAtStartup; }
 
     Q_INVOKABLE void setSidetone(int value);
     Q_INVOKABLE void toggleLED(bool state);
     Q_INVOKABLE void changeApplicationLanguage(int languageIndex);
     Q_INVOKABLE void updateHeadsetInfo();
     Q_INVOKABLE void sendFirstMinimizeNotification();
+    Q_INVOKABLE void setRunAtStartup(bool enable);
 
 public slots:
     // Property setters
@@ -104,11 +107,11 @@ signals:
     void sidetoneCapableChanged();
     void soundNotifCapableChanged();
     void noDeviceChanged();
+    void isRunAtStartupChanged();
 
 private slots:
     void toggleWindow();
     void trayIconActivated(QSystemTrayIcon::ActivationReason reason);
-    void onStartupCheckBoxStateChanged();
     void handleHeadsetInfo(const QJsonObject &headsetInfo);
     void reflectWindowState(QWindow::Visibility visibility);
 
@@ -121,8 +124,8 @@ private:
     bool m_sidetoneCapable{false};
     bool m_soundNotifCapable{false};
     bool m_noDevice{true};
+    bool m_isRunAtStartup{false};
 
-    bool checkStartupCheckbox();
     void createTrayIcon();
     void manageLEDBasedOnBattery(const QJsonObject &headsetInfo);
     void sendNotificationBasedOnBattery(const QJsonObject &headsetInfo);
@@ -147,7 +150,6 @@ private:
     QTranslator *translator;
     QMenu *trayMenu;
     QAction *exitAction;
-    QAction *startupAction;
     QAction *showAction;
     QThread workerThread;
     Worker *worker;

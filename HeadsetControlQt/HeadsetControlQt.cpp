@@ -26,6 +26,7 @@ const QString HeadsetControlQt::desktopFile = QDir::homePath() + "/.config/autos
 
 HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     : QWidget(parent)
+    , m_isRunAtStartup(ShortcutManager::isShortcutPresent())
     , settings("Odizinne", "HeadsetControlQt")
     , engine(new QQmlApplicationEngine(this))
     , trayIcon(new QSystemTrayIcon(this))
@@ -97,13 +98,14 @@ void HeadsetControlQt::handleHeadsetInfo(const QJsonObject &headsetInfo)
     }
 }
 
-bool HeadsetControlQt::checkStartupCheckbox()
+void HeadsetControlQt::setRunAtStartup(bool enable)
 {
-#ifdef _WIN32
-    return isShortcutPresent();
-#elif __linux__
-    return isDesktopfilePresent();
-#endif
+    ShortcutManager::manageShortcut(enable);
+
+    if (m_isRunAtStartup != enable) {
+        m_isRunAtStartup = enable;
+        emit isRunAtStartupChanged();
+    }
 }
 
 void HeadsetControlQt::createTrayIcon()
@@ -111,17 +113,12 @@ void HeadsetControlQt::createTrayIcon()
     trayIcon->setIcon(QIcon(":/icons/icon.png"));
     trayMenu = new QMenu(this);
     showAction = new QAction(tr("Show"), this);
-    startupAction = new QAction(tr("Run at startup"), this);
     exitAction = new QAction(tr("Exit"), this);
 
-    startupAction->setCheckable(true);
-    startupAction->setChecked(checkStartupCheckbox());
     connect(showAction, &QAction::triggered, this, &HeadsetControlQt::toggleWindow);
-    connect(startupAction, &QAction::triggered, this, &HeadsetControlQt::onStartupCheckBoxStateChanged);
     connect(exitAction, &QAction::triggered, this, &QApplication::quit);
 
     trayMenu->addAction(showAction);
-    trayMenu->addAction(startupAction);
     trayMenu->addAction(exitAction);
     trayIcon->setContextMenu(trayMenu);
     trayIcon->show();
@@ -294,23 +291,6 @@ void HeadsetControlQt::noDeviceFound()
 
     trayIcon->setIcon(QIcon(iconPath));
     setNoDevice(true);
-}
-
-void HeadsetControlQt::onStartupCheckBoxStateChanged()
-{
-    if (startupAction->isChecked()) {
-#ifdef _WIN32
-        manageShortcut(true);
-#elif __linux__
-        manageDesktopFile(true);
-#endif
-    } else {
-#ifdef _WIN32
-        manageShortcut(false);
-#elif __linux__
-        manageDesktopFile(false);
-#endif
-    }
 }
 
 void HeadsetControlQt::toggleLED(bool state)
