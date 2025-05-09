@@ -110,6 +110,7 @@ private slots:
     void trayIconActivated(QSystemTrayIcon::ActivationReason reason);
     void onStartupCheckBoxStateChanged();
     void handleHeadsetInfo(const QJsonObject &headsetInfo);
+    void reflectWindowState(QWindow::Visibility visibility);
 
 private:
     // Property members

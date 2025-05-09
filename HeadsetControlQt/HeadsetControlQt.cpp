@@ -62,6 +62,8 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     if (settings.value("firstRun", true).toBool()) {
         qmlWindow->show();
     }
+
+    connect(qmlWindow, &QWindow::visibilityChanged, this, &HeadsetControlQt::reflectWindowState);
 }
 
 HeadsetControlQt::~HeadsetControlQt()
@@ -125,6 +127,14 @@ void HeadsetControlQt::createTrayIcon()
     trayIcon->show();
 
     connect(trayIcon, &QSystemTrayIcon::activated, this, &HeadsetControlQt::trayIconActivated);
+}
+
+void HeadsetControlQt::reflectWindowState(QWindow::Visibility visibility)
+{
+    if (visibility == QWindow::Hidden)
+        trayIcon->contextMenu()->actions().first()->setText(tr("Show"));
+    else
+        trayIcon->contextMenu()->actions().first()->setText(tr("Hide"));
 }
 
 void HeadsetControlQt::updateHeadsetInfo()
@@ -326,10 +336,8 @@ void HeadsetControlQt::toggleWindow()
 {
     if (qmlWindow->isVisible()) {
         qmlWindow->close();
-        trayIcon->contextMenu()->actions().first()->setText(tr("Show"));
     } else {
         qmlWindow->show();
-        trayIcon->contextMenu()->actions().first()->setText(tr("Hide"));
     }
 }
 
