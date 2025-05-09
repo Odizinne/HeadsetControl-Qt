@@ -1,4 +1,4 @@
-import QtQuick.Controls.FluentWinUI3
+import QtQuick.Controls.Material
 import QtQuick.Layouts
 import QtQuick
 import QtCore
@@ -8,21 +8,52 @@ ApplicationWindow {
     width: 500
     minimumWidth: 500
     maximumWidth: 500
-    height: mainColumn.implicitHeight + 2 * mainColumn.anchors.margins
-    minimumHeight: mainColumn.implicitHeight + 2 * mainColumn.anchors.margins
-    maximumHeight: mainColumn.implicitHeight + 2 * mainColumn.anchors.margins
+    height: mainColumn.implicitHeight + 2 * mainColumn.anchors.margins + 60
+    minimumHeight: mainColumn.implicitHeight + 2 * mainColumn.anchors.margins + 60
+    maximumHeight: mainColumn.implicitHeight + 2 * mainColumn.anchors.margins + 60
     visible: false
+    Material.theme: settings.darkMode ? Material.Dark : Material.Light
+    Material.accent: Material.Pink
+    Material.primary: Material.Indigo
+    color: Material.theme === Material.Dark ? "#1c1a1f" : "#e8e3ea"
     title: "HeadsetControl-Qt"
 
-    readonly property real maxFrameHeight: Math.max(
-                                               sidetoneFrame.implicitHeight,
-                                               lightsFrame.implicitHeight,
-                                               lowBatteryFrame.implicitHeight,
-                                               themeFrame.implicitHeight,
-                                               languageFrame.implicitHeight
-                                               )
-
     required property var mainWindow
+
+    header: ToolBar {
+        height: 60
+        ColumnLayout {
+            anchors.fill: parent
+            anchors.margins: 14
+            spacing: 0
+
+            RowLayout {
+                Layout.preferredHeight: 20
+
+                Label {
+                    text: root.mainWindow.deviceName
+                    font.pixelSize: 20
+                    font.bold: true
+                    Layout.fillWidth: true
+                }
+
+                Label {
+                    text: root.mainWindow.status
+                    font.pixelSize: 20
+                }
+            }
+            ProgressBar {
+                id: batteryBar
+                from: 0
+                to: 100
+                value: root.mainWindow.batteryLevel
+                Layout.fillWidth: true
+                Layout.preferredHeight: 20
+
+                indeterminate: root.mainWindow.status === "Charging"
+            }
+        }
+    }
 
     onClosing: {
         if (settings.firstRun) {
@@ -49,13 +80,14 @@ ApplicationWindow {
         property bool sound_low_battery: false
         property int language: 0
         property bool firstRun: true
+        property bool darkMode: true
     }
 
-    Popup {
+    Dialog {
         id: lowBatteryActionsPopup
         parent: mainColumn
         anchors.centerIn: parent
-        modal: true
+        standardButtons: Dialog.Close
 
         Shortcut {
             enabled: lowBatteryActionsPopup.visible
@@ -71,6 +103,7 @@ ApplicationWindow {
             RowLayout {
                 spacing: 20
                 Layout.bottomMargin: 10
+                Layout.preferredHeight: 40
 
                 Label {
                     text: qsTr("Low battery threshold")
@@ -78,6 +111,7 @@ ApplicationWindow {
                 }
 
                 SpinBox {
+                    Layout.preferredHeight: 35
                     from: 10
                     to: 30
                     value: settings.low_battery_threshold
@@ -88,6 +122,7 @@ ApplicationWindow {
             RowLayout {
                 spacing: 20
                 enabled: root.mainWindow.lightsCapable
+                Layout.preferredHeight: 40
 
                 Label {
                     text: qsTr("Disable lights")
@@ -95,6 +130,7 @@ ApplicationWindow {
                 }
 
                 Switch {
+                    Layout.rightMargin: -10
                     checked: settings.led_low_battery
                     onCheckedChanged: settings.led_low_battery = checked
                 }
@@ -102,6 +138,7 @@ ApplicationWindow {
 
             RowLayout {
                 spacing: 20
+                Layout.preferredHeight: 40
 
                 Label {
                     text: qsTr("Send notification")
@@ -109,6 +146,7 @@ ApplicationWindow {
                 }
 
                 Switch {
+                    Layout.rightMargin: -10
                     checked: settings.notification_low_battery
                     onCheckedChanged: settings.notification_low_battery = checked
                 }
@@ -117,6 +155,7 @@ ApplicationWindow {
             RowLayout {
                 spacing: 20
                 enabled: root.mainWindow.soundNotifCapable
+                Layout.preferredHeight: 40
 
                 Label {
                     text: qsTr("Beep")
@@ -124,16 +163,10 @@ ApplicationWindow {
                 }
 
                 Switch {
+                    Layout.rightMargin: -10
                     checked: settings.sound_low_battery
                     onCheckedChanged: settings.sound_low_battery = checked
                 }
-            }
-
-            Button {
-                Layout.topMargin: 10
-                text: qsTr("Close")
-                onClicked: lowBatteryActionsPopup.visible = false
-                Layout.alignment: Qt.AlignRight
             }
         }
     }
@@ -144,169 +177,156 @@ ApplicationWindow {
         enabled: root.mainWindow.noDevice ? false : true
         anchors.fill: parent
         anchors.margins: 15
-        spacing: 5
+        spacing: 15
 
-        RowLayout {
-            Layout.bottomMargin: 10
-            spacing: 10
-
-            Label {
-                text: root.mainWindow.deviceName
-                font.pixelSize: 20
-                font.bold: true
-                Layout.fillWidth: true
-            }
-
-            Label {
-                text: root.mainWindow.status
-                font.pixelSize: 20
-            }
+        Label {
+            text: qsTr("Headset settings")
+            Layout.bottomMargin: -10
+            Layout.leftMargin: 10
+            color: Material.accent
         }
 
-        RowLayout {
-            spacing: 20
-            Layout.bottomMargin: 10
-
-            ProgressBar {
-                id: batteryBar
-                from: 0
-                to: 100
-                value: root.mainWindow.batteryLevel
-                Layout.fillWidth: true
-                indeterminate: root.mainWindow.status === "Charging"
-            }
-        }
-
-        Frame {
-            id: sidetoneFrame
+        Pane {
             Layout.fillWidth: true
-            Layout.preferredHeight: root.maxFrameHeight
-
-            RowLayout {
+            Material.background: Material.theme === Material.Dark ? "#2b2930" : "#fffbfe"
+            Material.elevation: 6
+            Material.roundedScale: Material.ExtraSmallScale
+            ColumnLayout {
                 anchors.fill: parent
-                anchors.verticalCenter: parent.verticalCenter
-                spacing: 20
-                enabled: root.mainWindow.sidetoneCapable
+                spacing: 15
 
-                Label {
-                    text: qsTr("Sidetone")
-                }
+                RowLayout {
+                    spacing: 20
+                    enabled: root.mainWindow.sidetoneCapable
+                    Layout.preferredHeight: 40
 
-                Slider {
-                    from: 0
-                    to: 128
-                    value: settings.sidetone
-                    Layout.columnSpan: 2
-                    Layout.fillWidth: true
-                    Layout.leftMargin: -5
-                    Layout.rightMargin: -15
-                    onPressedChanged: {
-                        if (!pressed) {
-                            settings.sidetone = value
-                            root.mainWindow.setSidetone(Math.round(value))
+                    Label {
+                        text: qsTr("Sidetone")
+                    }
+
+                    Slider {
+                        from: 0
+                        to: 128
+                        value: settings.sidetone
+                        Layout.columnSpan: 2
+                        Layout.fillWidth: true
+                        Layout.leftMargin: -5
+                        Layout.rightMargin: -15
+                        onPressedChanged: {
+                            if (!pressed) {
+                                settings.sidetone = value
+                                root.mainWindow.setSidetone(Math.round(value))
+                            }
                         }
                     }
                 }
-            }
-        }
 
-        Frame {
-            id: lightsFrame
-            Layout.fillWidth: true
-            Layout.preferredHeight: root.maxFrameHeight
+                RowLayout {
+                    spacing: 10
+                    enabled: root.mainWindow.lightsCapable
+                    Layout.preferredHeight: 40
 
-            RowLayout {
-                anchors.fill: parent
-                anchors.verticalCenter: parent.verticalCenter
-                spacing: 10
-                enabled: root.mainWindow.lightsCapable
+                    Label {
+                        text: qsTr("Lights")
+                        Layout.fillWidth: true
+                    }
 
-                Label {
-                    text: qsTr("Lights")
-                    Layout.fillWidth: true
+                    Switch {
+                        Layout.rightMargin: -10
+                        checked: settings.led_state
+                        onCheckedChanged: {
+                            settings.led_state = checked
+                            root.mainWindow.toggleLED(checked)
+                        }
+                    }
                 }
 
-                Switch {
-                    Layout.rightMargin: -8
-                    checked: settings.led_state
-                    onCheckedChanged: {
-                        settings.led_state = checked
-                        root.mainWindow.toggleLED(checked)
+                RowLayout {
+                    spacing: 10
+                    Layout.preferredHeight: 40
+
+                    Label {
+                        text: qsTr("Actions on low battery")
+                        Layout.fillWidth: true
+                    }
+
+                    Button {
+                        text: qsTr("Configure")
+                        onClicked: lowBatteryActionsPopup.visible = true
                     }
                 }
             }
         }
 
-        Frame {
-            id: lowBatteryFrame
-            Layout.fillWidth: true
-            Layout.preferredHeight: root.maxFrameHeight
-
-            RowLayout {
-                anchors.fill: parent
-                anchors.verticalCenter: parent.verticalCenter
-                spacing: 10
-
-                Label {
-                    text: qsTr("Actions on low battery")
-                    Layout.fillWidth: true
-                }
-
-                Button {
-                    text: qsTr("Configure")
-                    onClicked: lowBatteryActionsPopup.visible = true
-                }
-            }
+        Label {
+            text: qsTr("Application settings")
+            Layout.bottomMargin: -10
+            Layout.leftMargin: 10
+            color: Material.accent
         }
 
-        Frame {
-            id: themeFrame
+        Pane {
             Layout.fillWidth: true
-            Layout.preferredHeight: root.maxFrameHeight
-
-            RowLayout {
+            Material.background: Material.theme === Material.Dark ? "#2b2930" : "#fffbfe"
+            Material.elevation: 6
+            Material.roundedScale: Material.ExtraSmallScale
+            ColumnLayout {
                 anchors.fill: parent
-                anchors.verticalCenter: parent.verticalCenter
-                spacing: 10
+                spacing: 15
+                RowLayout {
+                    spacing: 10
+                    Layout.preferredHeight: 40
 
-                Label {
-                    text: qsTr("Icon theme")
-                    Layout.fillWidth: true
-                }
+                    Label {
+                        text: qsTr("Dark mode")
+                        Layout.fillWidth: true
+                    }
 
-                ComboBox {
-                    model: [qsTr("System"), qsTr("Dark"), qsTr("Light")]
-                    currentIndex: settings.theme
-                    onActivated: {
-                        settings.theme = currentIndex
-                        root.mainWindow.updateHeadsetInfo()
+                    Switch {
+                        Layout.rightMargin: -10
+                        checked: settings.darkMode
+                        onClicked: settings.darkMode = checked
                     }
                 }
-            }
-        }
 
-        Frame {
-            id: languageFrame
-            Layout.fillWidth: true
-            Layout.preferredHeight: root.maxFrameHeight
+                RowLayout {
+                    spacing: 10
+                    Layout.preferredHeight: 40
 
-            RowLayout {
-                anchors.fill: parent
-                anchors.verticalCenter: parent.verticalCenter
-                spacing: 10
+                    Label {
+                        text: qsTr("Icon theme")
+                        Layout.fillWidth: true
+                    }
 
-                Label {
-                    text: qsTr("Language")
-                    Layout.fillWidth: true
+                    ComboBox {
+                        Layout.preferredHeight: 35
+                        model: [qsTr("System"), qsTr("Dark"), qsTr("Light")]
+                        currentIndex: settings.theme
+                        onActivated: {
+                            settings.theme = currentIndex
+                            root.mainWindow.updateHeadsetInfo()
+                        }
+                    }
                 }
 
-                ComboBox {
-                    model: [qsTr("System"), "english", "français", "deutsch", "español", "italiano", "magyar", "türkçe"]
-                    currentIndex: settings.language
-                    onActivated: {
-                        settings.language = currentIndex
-                        root.mainWindow.changeApplicationLanguage(currentIndex)
-                        currentIndex = settings.language
+                RowLayout {
+                    spacing: 10
+                    Layout.preferredHeight: 40
+
+                    Label {
+                        text: qsTr("Language")
+                        Layout.fillWidth: true
+                    }
+
+                    ComboBox {
+                        Layout.preferredHeight: 35
+                        model: [qsTr("System"), "english", "français", "deutsch", "español", "italiano", "magyar", "türkçe"]
+                        currentIndex: settings.language
+                        onActivated: {
+                            settings.language = currentIndex
+                            root.mainWindow.changeApplicationLanguage(currentIndex)
+                            currentIndex = settings.language
+                        }
                     }
                 }
             }
