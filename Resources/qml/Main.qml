@@ -22,13 +22,24 @@ ApplicationWindow {
 
     header: ToolBar {
         height: 60
-        ColumnLayout {
-            anchors.fill: parent
-            anchors.margins: 14
-            spacing: 0
+
+        Item {
+            height: childrenRect.height
+            anchors {
+                left: parent.left
+                right: parent.right
+                verticalCenter: parent.verticalCenter
+                leftMargin: 20
+                rightMargin: 20
+            }
 
             RowLayout {
-                Layout.preferredHeight: 20
+                id: headsetLyt
+                anchors {
+                    top: parent.top
+                    left: parent.left
+                    right: parent.right
+                }
 
                 Label {
                     text: root.mainWindow.deviceName
@@ -42,15 +53,19 @@ ApplicationWindow {
                     font.pixelSize: 20
                 }
             }
+
             ProgressBar {
                 id: batteryBar
                 from: 0
                 to: 100
                 value: root.mainWindow.batteryLevel
-                Layout.fillWidth: true
-                Layout.preferredHeight: 20
-
                 indeterminate: root.mainWindow.status === "Charging"
+                anchors {
+                    top: headsetLyt.bottom
+                    topMargin: 5
+                    left: parent.left
+                    right: parent.right
+                }
             }
         }
     }
