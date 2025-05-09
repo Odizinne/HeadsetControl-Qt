@@ -66,78 +66,88 @@
 <context>
     <name>Main</name>
     <message>
-        <location filename="../qml/Main.qml" line="38"/>
+        <location filename="../qml/Main.qml" line="69"/>
         <source>No supported headset found.</source>
         <translation>Aucun casque détecté.</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="76"/>
+        <location filename="../qml/Main.qml" line="127"/>
         <source>Disable lights</source>
         <translation>Désactiver les LEDs</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="90"/>
+        <location filename="../qml/Main.qml" line="143"/>
         <source>Send notification</source>
         <translation>Envoyer une notification</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="105"/>
+        <location filename="../qml/Main.qml" line="160"/>
         <source>Beep</source>
         <translation>Bip audio</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="132"/>
-        <source>Close</source>
-        <translation>Fermer</translation>
-    </message>
-    <message>
-        <location filename="../qml/Main.qml" line="190"/>
+        <location filename="../qml/Main.qml" line="203"/>
         <source>Sidetone</source>
         <translation>Retour voix</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="223"/>
+        <location filename="../qml/Main.qml" line="229"/>
         <source>Lights</source>
         <translation>LEDs</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="119"/>
+        <location filename="../qml/Main.qml" line="108"/>
         <source>Low battery threshold</source>
         <translation>Niveau batterie faible</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="249"/>
+        <location filename="../qml/Main.qml" line="182"/>
+        <source>Headset settings</source>
+        <translation>Paramètres du casque</translation>
+    </message>
+    <message>
+        <location filename="../qml/Main.qml" line="248"/>
         <source>Actions on low battery</source>
         <translation>Action quand batterie faible</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="254"/>
+        <location filename="../qml/Main.qml" line="253"/>
         <source>Configure</source>
         <translation>Configurer</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="271"/>
+        <location filename="../qml/Main.qml" line="261"/>
+        <source>Application settings</source>
+        <translation>Paramètres de l&apos;application</translation>
+    </message>
+    <message>
+        <location filename="../qml/Main.qml" line="280"/>
+        <source>Dark mode</source>
+        <translation>Thème sombre</translation>
+    </message>
+    <message>
+        <location filename="../qml/Main.qml" line="296"/>
         <source>Icon theme</source>
         <translation>Thème d&apos;icones</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="276"/>
         <location filename="../qml/Main.qml" line="302"/>
+        <location filename="../qml/Main.qml" line="322"/>
         <source>System</source>
         <translation>Système</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="276"/>
+        <location filename="../qml/Main.qml" line="302"/>
         <source>Dark</source>
         <translation>Sombre</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="276"/>
+        <location filename="../qml/Main.qml" line="302"/>
         <source>Light</source>
         <translation>Clair</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="297"/>
+        <location filename="../qml/Main.qml" line="316"/>
         <source>Language</source>
         <translation>Langage</translation>
     </message>

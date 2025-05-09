@@ -8,9 +8,9 @@ ApplicationWindow {
     width: 500
     minimumWidth: 500
     maximumWidth: 500
-    height: mainColumn.implicitHeight + 2 * mainColumn.anchors.margins + 60
-    minimumHeight: mainColumn.implicitHeight + 2 * mainColumn.anchors.margins + 60
-    maximumHeight: mainColumn.implicitHeight + 2 * mainColumn.anchors.margins + 60
+    height: mainColumn.implicitHeight + (2 * mainColumn.anchors.margins) + 60
+    minimumHeight: mainColumn.implicitHeight + (2 * mainColumn.anchors.margins) + 60
+    maximumHeight: mainColumn.implicitHeight + (2 * mainColumn.anchors.margins) + 60
     visible: false
     Material.theme: settings.darkMode ? Material.Dark : Material.Light
     Material.accent: Material.Pink
@@ -98,12 +98,11 @@ ApplicationWindow {
         ColumnLayout {
             anchors.fill: parent
             id: mainPopupColumn
-            spacing: 12
+            spacing: 9
 
             RowLayout {
                 spacing: 20
-                Layout.bottomMargin: 10
-                Layout.preferredHeight: 40
+                Layout.preferredHeight: 35
 
                 Label {
                     text: qsTr("Low battery threshold")
@@ -111,9 +110,9 @@ ApplicationWindow {
                 }
 
                 SpinBox {
-                    Layout.preferredHeight: 35
-                    from: 10
-                    to: 30
+                    Layout.preferredHeight: 30
+                    from: 5
+                    to: 50
                     value: settings.low_battery_threshold
                     onValueChanged: settings.low_battery_threshold = value
                 }
@@ -122,7 +121,7 @@ ApplicationWindow {
             RowLayout {
                 spacing: 20
                 enabled: root.mainWindow.lightsCapable
-                Layout.preferredHeight: 40
+                Layout.preferredHeight: 35
 
                 Label {
                     text: qsTr("Disable lights")
@@ -138,7 +137,7 @@ ApplicationWindow {
 
             RowLayout {
                 spacing: 20
-                Layout.preferredHeight: 40
+                Layout.preferredHeight: 35
 
                 Label {
                     text: qsTr("Send notification")
@@ -155,7 +154,7 @@ ApplicationWindow {
             RowLayout {
                 spacing: 20
                 enabled: root.mainWindow.soundNotifCapable
-                Layout.preferredHeight: 40
+                Layout.preferredHeight: 35
 
                 Label {
                     text: qsTr("Beep")
@@ -181,6 +180,7 @@ ApplicationWindow {
 
         Label {
             text: qsTr("Headset settings")
+            Layout.topMargin: 5
             Layout.bottomMargin: -10
             Layout.leftMargin: 10
             color: Material.accent
@@ -252,7 +252,10 @@ ApplicationWindow {
 
                     Button {
                         text: qsTr("Configure")
+                        topInset: 0
+                        bottomInset: 0
                         onClicked: lowBatteryActionsPopup.visible = true
+                        Layout.preferredHeight: 30
                     }
                 }
             }
@@ -260,6 +263,7 @@ ApplicationWindow {
 
         Label {
             text: qsTr("Application settings")
+            Layout.topMargin: 5
             Layout.bottomMargin: -10
             Layout.leftMargin: 10
             color: Material.accent
