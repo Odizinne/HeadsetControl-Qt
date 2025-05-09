@@ -15,7 +15,7 @@ ApplicationWindow {
     Material.theme: settings.darkMode ? Material.Dark : Material.Light
     Material.accent: Material.Pink
     Material.primary: Material.Indigo
-    color: Material.theme === Material.Dark ? "#1c1a1f" : "#e8e3ea"
+    color: Material.theme === Material.Dark ? "#1C1C1C" : "#E3E3E3"
     title: "HeadsetControl-Qt"
 
     required property var mainWindow
@@ -203,7 +203,7 @@ ApplicationWindow {
 
         Pane {
             Layout.fillWidth: true
-            Material.background: Material.theme === Material.Dark ? "#2b2930" : "#fffbfe"
+            Material.background: Material.theme === Material.Dark ? "#2B2B2B" : "#FFFFFF"
             Material.elevation: 6
             Material.roundedScale: Material.ExtraSmallScale
             ColumnLayout {
@@ -286,7 +286,7 @@ ApplicationWindow {
 
         Pane {
             Layout.fillWidth: true
-            Material.background: Material.theme === Material.Dark ? "#2b2930" : "#fffbfe"
+            Material.background: Material.theme === Material.Dark ? "#2B2B2B" : "#FFFFFF"
             Material.elevation: 6
             Material.roundedScale: Material.ExtraSmallScale
             ColumnLayout {
