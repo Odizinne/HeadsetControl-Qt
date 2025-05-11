@@ -2,6 +2,7 @@
 #define HEADSETCONTROLQT_H
 
 #include "Worker.h"
+#include "HIDEventMonitor.h"
 #include <QWindow>
 #include <QSystemTrayIcon>
 #include <QMenu>
@@ -154,6 +155,7 @@ private:
     QThread workerThread;
     Worker *worker;
     QWindow *qmlWindow;
+    HIDEventMonitor *usbMonitor;
 };
 
 #endif // HEADSETCONTROLQT_H

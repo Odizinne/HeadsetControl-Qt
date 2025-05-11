@@ -39,6 +39,7 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     , translator(new QTranslator(this))
     , worker(new Worker())
     , qmlWindow(nullptr)
+    , usbMonitor(new HIDEventMonitor())
 {
     createTrayIcon();
     toggleLED(settings.value("led_state", true).toBool());
@@ -52,7 +53,7 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
 
     worker->moveToThread(&workerThread);
     workerThread.start();
-    timer->start(5000);
+    timer->start(60000);
 
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
     engine->setInitialProperties({{"mainWindow", QVariant::fromValue(this)}});
@@ -65,6 +66,11 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     }
 
     connect(qmlWindow, &QWindow::visibilityChanged, this, &HeadsetControlQt::reflectWindowState);
+
+    QObject::connect(usbMonitor, &HIDEventMonitor::deviceAdded, worker, &Worker::requestWork);
+    QObject::connect(usbMonitor, &HIDEventMonitor::deviceRemoved, worker, &Worker::requestWork);
+
+    usbMonitor->startMonitoring();
 }
 
 HeadsetControlQt::~HeadsetControlQt()
@@ -128,10 +134,13 @@ void HeadsetControlQt::createTrayIcon()
 
 void HeadsetControlQt::reflectWindowState(QWindow::Visibility visibility)
 {
-    if (visibility == QWindow::Hidden)
+    if (visibility == QWindow::Hidden) {
         trayIcon->contextMenu()->actions().first()->setText(tr("Show"));
-    else
+    }
+    else {
+        worker->requestWork();
         trayIcon->contextMenu()->actions().first()->setText(tr("Hide"));
+    }
 }
 
 void HeadsetControlQt::updateHeadsetInfo()

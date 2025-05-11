@@ -12,11 +12,13 @@ INCLUDEPATH += \
     ShortcutManager \
     HeadsetControlQt \
     Utils \
-    Worker
+    Worker \
+    HIDEventMonitor
 
 SOURCES += \
     ShortcutManager/ShortcutManager.cpp \
     Worker/Worker.cpp \
+    HIDEventMonitor/HIDEventMonitor.cpp \
     main.cpp \
     HeadsetControlQt/HeadsetControlQt.cpp \
     Utils/Utils.cpp
@@ -25,7 +27,8 @@ HEADERS += \
     ShortcutManager/ShortcutManager.h \
     HeadsetControlQt/HeadsetControlQt.h \
     Utils/Utils.h \
-    Worker/Worker.h
+    Worker/Worker.h \
+    HIDEventMonitor/HIDEventMonitor.h
 
 TRANSLATIONS += \
     Resources/tr/HeadsetControl-Qt_fr.ts \
@@ -41,6 +44,7 @@ RESOURCES += \
 
 RC_FILE = Resources/appicon.rc
 
+LIBS += -luser32 -ladvapi32
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
