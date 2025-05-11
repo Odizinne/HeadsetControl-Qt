@@ -21,6 +21,7 @@ ApplicationWindow {
     required property var mainWindow
 
     header: ToolBar {
+        visible: !root.mainWindow.noDevice
         height: 60
 
         Item {
@@ -79,7 +80,6 @@ ApplicationWindow {
 
     Label {
         opacity: root.mainWindow.noDevice ? 1 : 0
-        enabled: root.mainWindow.noDevice ? true : false
         anchors.centerIn: parent
         text: qsTr("No supported headset found.")
     }
