@@ -68,6 +68,17 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     connect(qmlWindow, &QWindow::visibilityChanged, this, &HeadsetControlQt::reflectWindowState);
 
     QObject::connect(usbMonitor, &HIDEventMonitor::deviceAdded, worker, &Worker::requestWork);
+
+    /*===========================================================
+    | Rescan 5s after first scan on plug                        |
+    | Void Elite do need it as it take long to init,            |
+    | and headset will be reported off for the first seconds    |
+    | Maybe i could just scan once 5s after plugged             |
+    | but idk how other devices are acting                      |
+    ===========================================================*/
+    QObject::connect(usbMonitor, &HIDEventMonitor::deviceAdded, this, [this]() {
+        QTimer::singleShot(5000, this->worker, &Worker::requestWork);
+    });
     QObject::connect(usbMonitor, &HIDEventMonitor::deviceRemoved, worker, &Worker::requestWork);
 
     usbMonitor->startMonitoring();
