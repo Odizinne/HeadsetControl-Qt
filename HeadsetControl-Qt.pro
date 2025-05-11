@@ -44,7 +44,13 @@ RESOURCES += \
 
 RC_FILE = Resources/appicon.rc
 
-LIBS += -luser32 -ladvapi32
+win32 {
+    LIBS += -luser32 -ladvapi32
+}
+
+unix {
+    LIBS += -ludev
+}
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
