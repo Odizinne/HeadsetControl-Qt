@@ -132,10 +132,8 @@ void HIDEventMonitor::monitorUSBChanges() {
 
                 if (action && subsystem && devNode) {
                     if (strcmp(action, "add") == 0) {
-                        qDebug() << "HID Device Added:" << devNode << "Subsystem:" << subsystem;
                         emit deviceAdded(QString("HID Device Connected: %1").arg(devNode));
                     } else if (strcmp(action, "remove") == 0) {
-                        qDebug() << "HID Device Removed:" << devNode << "Subsystem:" << subsystem;
                         emit deviceRemoved(QString("HID Device Removed: %1").arg(devNode));
                     }
                 }
