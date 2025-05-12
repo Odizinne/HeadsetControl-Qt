@@ -30,7 +30,8 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     , settings("Odizinne", "HeadsetControlQt")
     , engine(new QQmlApplicationEngine(this))
     , trayIcon(new QSystemTrayIcon(this))
-    , timer(new QTimer(this))
+    , fetchTimer(new QTimer(this))
+    , chargingAnimationTimer(new QTimer(this))
     , ledDisabled(false)
     , notificationSent(false)
     , soundNotificationSent(false)
@@ -39,7 +40,7 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     , translator(new QTranslator(this))
     , worker(new Worker())
     , qmlWindow(nullptr)
-    , usbMonitor(new HIDEventMonitor())
+    , usbMonitor(new HIDEventMonitor(this))
 {
     createTrayIcon();
     toggleLED(settings.value("led_state", true).toBool());
@@ -47,13 +48,8 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     updateHeadsetInfo();
     changeApplicationLanguage(settings.value("language").toInt());
 
-    connect(worker, &Worker::workRequested, worker, &Worker::doWork);
-    connect(worker, &Worker::sendHeadsetInfo, this, &::HeadsetControlQt::handleHeadsetInfo);
-    connect(timer, &QTimer::timeout, worker, &Worker::requestWork);
-
     worker->moveToThread(&workerThread);
     workerThread.start();
-    timer->start(60000);
 
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
     engine->setInitialProperties({{"mainWindow", QVariant::fromValue(this)}});
@@ -65,9 +61,11 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
         qmlWindow->show();
     }
 
+    connect(worker, &Worker::workRequested, worker, &Worker::doWork);
+    connect(worker, &Worker::sendHeadsetInfo, this, &::HeadsetControlQt::handleHeadsetInfo);
+    connect(fetchTimer, &QTimer::timeout, worker, &Worker::requestWork);
     connect(qmlWindow, &QWindow::visibilityChanged, this, &HeadsetControlQt::reflectWindowState);
-
-    QObject::connect(usbMonitor, &HIDEventMonitor::deviceAdded, worker, &Worker::requestWork);
+    connect(chargingAnimationTimer, &QTimer::timeout, this, &HeadsetControlQt::updateTrayChargingAnimation);
 
     /*===========================================================
     | Rescan 5s after first scan on plug                        |
@@ -76,16 +74,23 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     | Maybe i could just scan once 5s after plugged             |
     | but idk how other devices are acting                      |
     ===========================================================*/
-    QObject::connect(usbMonitor, &HIDEventMonitor::deviceAdded, this, [this]() {
+    connect(usbMonitor, &HIDEventMonitor::deviceRemoved, worker, &Worker::requestWork);
+    connect(usbMonitor, &HIDEventMonitor::deviceAdded, worker, &Worker::requestWork);
+    connect(usbMonitor, &HIDEventMonitor::deviceAdded, this, [this]() {
         QTimer::singleShot(5000, this->worker, &Worker::requestWork);
     });
-    QObject::connect(usbMonitor, &HIDEventMonitor::deviceRemoved, worker, &Worker::requestWork);
 
     usbMonitor->startMonitoring();
+
+    fetchTimer->setInterval(60000);
+    chargingAnimationTimer->setInterval(2000);
+
+    fetchTimer->start();
 }
 
 HeadsetControlQt::~HeadsetControlQt()
 {
+    chargingAnimationTimer->stop();
     worker->abort();
     workerThread.quit();
     workerThread.wait();
@@ -152,6 +157,21 @@ void HeadsetControlQt::reflectWindowState(QWindow::Visibility visibility)
         worker->requestWork();
         trayIcon->contextMenu()->actions().first()->setText(tr("Hide"));
     }
+}
+
+void HeadsetControlQt::updateTrayChargingAnimation()
+{
+    currentChargingFrame += 20;
+    if (currentChargingFrame > 100) {
+        currentChargingFrame = 20;
+    }
+
+    bool isDarkTheme = settings.value("theme", 0).toInt() == 1;
+    QString iconPath = QString(":/icons/battery-%1-charging-%2.png")
+                           .arg(currentChargingFrame)
+                           .arg(isDarkTheme ? "dark" : "light");
+
+    trayIcon->setIcon(QIcon(iconPath));
 }
 
 void HeadsetControlQt::updateHeadsetInfo()
@@ -270,32 +290,29 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
     int batteryLevel = batteryInfo["level"].toInt();
 
     if (batteryStatus == "BATTERY_AVAILABLE") {
+        chargingAnimationTimer->stop();
         setBatteryLevel(batteryLevel);
         setStatus(QString::number(batteryLevel) + "%");
-
         trayIcon->setToolTip(QString("%1: %2%").arg(deviceName).arg(batteryLevel));
-
         QString iconPath = Utils::getBatteryIconPath(batteryLevel, false, false, settings.value("theme", 0).toInt());
         trayIcon->setIcon(QIcon(iconPath));
-
-    } else if (batteryStatus == "BATTERY_CHARGING") {
+    }
+    else if (batteryStatus == "BATTERY_CHARGING") {
         setBatteryLevel(0);
         setStatus("Charging");
-
         trayIcon->setToolTip(QString(tr("%1: Charging")).arg(deviceName));
-
-        QString iconPath = Utils::getBatteryIconPath(batteryLevel, true, false, settings.value("theme", 0).toInt());
-        trayIcon->setIcon(QIcon(iconPath));
-
-    } else {
+        if (!chargingAnimationTimer->isActive()) {
+            currentChargingFrame = 20;
+            chargingAnimationTimer->start();
+        }
+    }
+    else {
+        chargingAnimationTimer->stop();
         setBatteryLevel(0);
         setStatus("Off");
-
         trayIcon->setToolTip(tr("No headset connected"));
-
         QString iconPath = Utils::getBatteryIconPath(batteryLevel, false, true, settings.value("theme", 0).toInt());
         trayIcon->setIcon(QIcon(iconPath));
-
     }
 
     setLightsCapable(capabilities.contains("lights"));

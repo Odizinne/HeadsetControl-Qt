@@ -5,6 +5,10 @@
         <file>icons/battery-060-dark.png</file>
         <file>icons/battery-080-dark.png</file>
         <file>icons/battery-100-dark.png</file>
+        <file>icons/battery-20-charging-dark.png</file>
+        <file>icons/battery-40-charging-dark.png</file>
+        <file>icons/battery-60-charging-dark.png</file>
+        <file>icons/battery-80-charging-dark.png</file>
         <file>icons/battery-100-charging-dark.png</file>
         <file>icons/battery-missing-dark.png</file>
         <file>icons/battery-020-light.png</file>
@@ -12,6 +16,10 @@
         <file>icons/battery-060-light.png</file>
         <file>icons/battery-080-light.png</file>
         <file>icons/battery-100-light.png</file>
+        <file>icons/battery-20-charging-light.png</file>
+        <file>icons/battery-40-charging-light.png</file>
+        <file>icons/battery-60-charging-light.png</file>
+        <file>icons/battery-80-charging-light.png</file>
         <file>icons/battery-100-charging-light.png</file>
         <file>icons/battery-missing-light.png</file>
         <file>icons/icon.ico</file>

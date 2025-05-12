@@ -115,6 +115,7 @@ private slots:
     void trayIconActivated(QSystemTrayIcon::ActivationReason reason);
     void handleHeadsetInfo(const QJsonObject &headsetInfo);
     void reflectWindowState(QWindow::Visibility visibility);
+    void updateTrayChargingAnimation();
 
 private:
     // Property members
@@ -142,7 +143,8 @@ private:
     QSettings settings;
     QQmlApplicationEngine *engine;
     QSystemTrayIcon *trayIcon;
-    QTimer *timer;
+    QTimer *fetchTimer;
+    QTimer *chargingAnimationTimer;
     bool ledDisabled;
     bool notificationSent;
     bool soundNotificationSent;
@@ -156,6 +158,7 @@ private:
     Worker *worker;
     QWindow *qmlWindow;
     HIDEventMonitor *usbMonitor;
+    int currentChargingFrame{20};
 };
 
 #endif // HEADSETCONTROLQT_H
