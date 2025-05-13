@@ -322,8 +322,10 @@ ApplicationWindow {
                         model: [qsTr("System"), qsTr("Dark"), qsTr("Light")]
                         currentIndex: settings.theme
                         onActivated: {
-                            settings.theme = currentIndex
-                            root.mainWindow.updateHeadsetInfo()
+                            settings.setValue("theme", currentIndex)
+                            Qt.callLater(function() {
+                                root.mainWindow.updateHeadsetInfo()
+                            })
                         }
                     }
                 }
