@@ -1,4 +1,4 @@
-#include "Worker.h"
+#include "worker.h"
 #include <QProcess>
 #include <QJsonDocument>
 

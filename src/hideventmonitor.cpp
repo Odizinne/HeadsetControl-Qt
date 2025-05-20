@@ -1,4 +1,4 @@
-#include "HIDEventMonitor.h"
+#include "hideventmonitor.h"
 
 #ifdef _WIN32
 

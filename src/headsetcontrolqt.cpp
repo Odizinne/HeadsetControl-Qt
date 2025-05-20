@@ -1,6 +1,6 @@
-#include "HeadsetControlQt.h"
-#include "Utils.h"
-#include "ShortcutManager.h"
+#include "headsetcontrolqt.h"
+#include "utils.h"
+#include "shortcutmanager.h"
 #include <QIcon>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -53,7 +53,7 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
 
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
     engine->setInitialProperties({{"mainWindow", QVariant::fromValue(this)}});
-    engine->load(QUrl("qrc:/qml/Main.qml"));
+    engine->loadFromModule("Odizinne.HeadsetControlQt", "Main");
     const QList<QObject*>& objects = engine->rootObjects();
     qmlWindow = qobject_cast<QWindow*>(objects.isEmpty() ? nullptr : objects.first());
 
@@ -409,7 +409,7 @@ void HeadsetControlQt::changeApplicationLanguage(int languageIndex)
         }
     }
 
-    QString translationFile = QString(":/translations/HeadsetControl-Qt_%1.qm").arg(languageCode);
+    QString translationFile = QString(":/i18n/HeadsetControl-Qt_%1.qm").arg(languageCode);
     if (translator->load(translationFile)) {
         qGuiApp->installTranslator(translator);
     } else {

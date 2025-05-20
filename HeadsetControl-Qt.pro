@@ -13,7 +13,8 @@ INCLUDEPATH += \
     HeadsetControlQt \
     Utils \
     Worker \
-    HIDEventMonitor
+    HIDEventMonitor \
+    HeadsetControlChecker
 
 SOURCES += \
     ShortcutManager/ShortcutManager.cpp \
@@ -21,14 +22,16 @@ SOURCES += \
     HIDEventMonitor/HIDEventMonitor.cpp \
     main.cpp \
     HeadsetControlQt/HeadsetControlQt.cpp \
-    Utils/Utils.cpp
+    Utils/Utils.cpp \
+    HeadsetControlChecker/HeadsetControlChecker.cpp
 
 HEADERS += \
     ShortcutManager/ShortcutManager.h \
     HeadsetControlQt/HeadsetControlQt.h \
     Utils/Utils.h \
     Worker/Worker.h \
-    HIDEventMonitor/HIDEventMonitor.h
+    HIDEventMonitor/HIDEventMonitor.h \
+    HeadsetControlChecker/HeadsetControlChecker.h
 
 TRANSLATIONS += \
     Resources/tr/HeadsetControl-Qt_fr.ts \
@@ -56,8 +59,4 @@ unix {
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
-
-win32 {
-    QMAKE_POST_LINK += powershell -Command "New-Item -ItemType Directory -Path '$$DEST_DIR' -Force; Copy-Item -Path '$$DEPENDENCIES_DIR\*' -Destination '$$DEST_DIR' -Recurse -Force"
-}
 

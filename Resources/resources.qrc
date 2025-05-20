@@ -24,6 +24,5 @@
         <file>icons/battery-missing-light.png</file>
         <file>icons/icon.ico</file>
         <file>icons/icon.png</file>
-        <file>qml/Main.qml</file>
     </qresource>
 </RCC>
