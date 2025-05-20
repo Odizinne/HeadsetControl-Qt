@@ -2,7 +2,7 @@
 #define HEADSETCONTROLQT_H
 
 #include "worker.h"
-#include "HIDEventMonitor.h"
+#include "hideventmonitor.h"
 #include <QWindow>
 #include <QSystemTrayIcon>
 #include <QMenu>
