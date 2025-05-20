@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
 project(HeadsetControl-Qt VERSION 1.0 LANGUAGES C CXX)
-
 set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "Installation directory" FORCE)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -8,6 +7,9 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(QT_QML_GENERATE_QMLLS_INI ON)
 set(CMAKE_DISABLE_FIND_PACKAGE_WrapVulkanHeaders TRUE)
+
+# Add this line to include GNUInstallDirs
+include(GNUInstallDirs)
 
 find_package(Qt6 REQUIRED COMPONENTS
     Core
@@ -18,9 +20,7 @@ find_package(Qt6 REQUIRED COMPONENTS
     Widgets
     LinguistTools
 )
-
 qt_standard_project_setup(REQUIRES 6.9)
-
 set(SOURCES
     src/shortcutmanager.cpp
     src/worker.cpp
@@ -30,7 +30,6 @@ set(SOURCES
     src/hideventmonitor.cpp
     src/headsetcontrolchecker.cpp
 )
-
 set(HEADERS
     include/shortcutmanager.h
     include/headsetcontrolqt.h
@@ -39,14 +38,12 @@ set(HEADERS
     include/hideventmonitor.h
     include/headsetcontrolchecker.h
 )
-
 qt_add_executable(HeadsetControl-Qt WIN32 MACOSX_BUNDLE
     ${SOURCES}
     ${HEADERS}
     Resources/resources.qrc
     Resources/appicon.rc
 )
-
 qt_add_qml_module(HeadsetControl-Qt
     URI Odizinne.HeadsetControlQt
     VERSION ${PROJECT_VERSION}
@@ -54,12 +51,9 @@ qt_add_qml_module(HeadsetControl-Qt
     qml/HeadsetcontrolPrompt.qml
     qml/Main.qml
 )
-
-
 target_include_directories(HeadsetControl-Qt PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
-
 if(WIN32)
     target_link_libraries(HeadsetControl-Qt PRIVATE
         user32
@@ -70,7 +64,6 @@ elseif(UNIX AND NOT APPLE)
         udev
     )
 endif()
-
 target_link_libraries(HeadsetControl-Qt PRIVATE
     Qt::Core
     Qt::Gui
@@ -79,7 +72,6 @@ target_link_libraries(HeadsetControl-Qt PRIVATE
     Qt::QuickControls2
     Qt::Widgets
 )
-
 qt_add_translations(HeadsetControl-Qt
     TS_FILES
         i18n/HeadsetControl-Qt_fr.ts
@@ -92,21 +84,13 @@ qt_add_translations(HeadsetControl-Qt
     RESOURCE_PREFIX "/i18n"
     LUPDATE_OPTIONS "-no-obsolete"
 )
-
 add_dependencies(${CMAKE_PROJECT_NAME} update_translations)
 
-if(QNX)
-    set(INSTALL_PATH "/tmp/${PROJECT_NAME}/bin")
-elseif(UNIX AND NOT ANDROID AND NOT APPLE)
-    set(INSTALL_PATH "/opt/${PROJECT_NAME}/bin")
-endif()
-
-if(DEFINED INSTALL_PATH)
-    install(TARGETS HeadsetControl-Qt
-        BUNDLE DESTINATION .
-        RUNTIME DESTINATION ${INSTALL_PATH}
-    )
-endif()
+# Change this line to match QuickSoundSwitcher
+install(TARGETS HeadsetControl-Qt
+    BUNDLE DESTINATION .
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
 
 qt_generate_deploy_qml_app_script(
     TARGET HeadsetControl-Qt
