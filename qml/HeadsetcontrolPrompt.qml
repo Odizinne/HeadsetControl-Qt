@@ -1,8 +1,6 @@
 import QtQuick
 import QtQuick.Controls.Material
 import QtQuick.Layouts
-import QtQuick.Dialogs
-import Qt.labs.platform
 import QtCore
 
 ApplicationWindow {
@@ -16,6 +14,8 @@ ApplicationWindow {
     maximumHeight: mainColumn.implicitHeight + 30
     flags: Qt.Dialog
     visible: true
+
+    required property var checker
 
     property string latestVersion: "3.0.0"
     property bool isDownloading: false
@@ -33,22 +33,22 @@ ApplicationWindow {
         isDownloading = true
         statusMessage = qsTr("Downloading HeadsetControl...")
         downloadProgress = 0.1
-        checker.downloadHeadsetControl()
+        root.checker.downloadHeadsetControl()
     }
 
     Connections {
-        target: checker
+        target: root.checker
 
         function onDownloadProgressChanged() {
-            downloadProgress = checker.downloadProgress
-            if (downloadProgress < 1.0) {
-                statusMessage = qsTr("Downloading... ")
+            root.downloadProgress = root.checker.downloadProgress
+            if (root.downloadProgress < 1.0) {
+                root.statusMessage = qsTr("Downloading... ")
             }
         }
 
         function onExtractionStarted() {
-            statusMessage = qsTr("Extracting files...")
-            downloadProgress = 1.0
+            root.statusMessage = qsTr("Extracting files...")
+            root.downloadProgress = 1.0
         }
 
         function onDownloadCompleted() {
@@ -56,8 +56,8 @@ ApplicationWindow {
         }
 
         function onDownloadFailed(error) {
-            statusMessage = qsTr("Error: ") + error
-            isDownloading = false
+            root.statusMessage = qsTr("Error: ") + error
+            root.isDownloading = false
         }
     }
 
@@ -82,29 +82,29 @@ ApplicationWindow {
         spacing: 15
 
         Label {
-            text: !isDownloading ? qsTr("HeadsetControl is not installed") : qsTr("Installing HeadsetControl...")
+            text: !root.isDownloading ? qsTr("HeadsetControl is not installed") : qsTr("Installing HeadsetControl...")
             font.pixelSize: 16
             font.bold: true
             Layout.fillWidth: true
-            color: !isDownloading ? Material.accent : Material.foreground
+            color: !root.isDownloading ? Material.accent : Material.foreground
         }
 
         Label {
             text: qsTr("HeadsetControl is required to monitor and control your headset.\nWould you like to download and install it now?")
             wrapMode: Text.WordWrap
-            visible: !isDownloading
+            visible: !root.isDownloading
             Layout.fillWidth: true
         }
 
         Label {
-            text: statusMessage
-            visible: statusMessage !== ""
+            text: root.statusMessage
+            visible: root.statusMessage !== ""
             Layout.fillWidth: true
         }
 
         ProgressBar {
-            visible: isDownloading
-            value: downloadProgress
+            visible: root.isDownloading
+            value: root.downloadProgress
             from: 0
             to: 1
             Layout.fillWidth: true
@@ -122,18 +122,18 @@ ApplicationWindow {
                 id: dlBtn
                 text: qsTr("Download")
                 Layout.preferredWidth: parent.buttonWidth
-                visible: !isDownloading
-                enabled: !isDownloading
-                onClicked: downloadHeadsetControl()
+                visible: !root.isDownloading
+                enabled: !root.isDownloading
+                onClicked: root.downloadHeadsetControl()
             }
 
             Button {
                 id: cancelBtn
                 text: qsTr("Cancel")
                 Layout.preferredWidth: parent.buttonWidth
-                visible: !isDownloading
+                visible: !root.isDownloading
                 onClicked: {
-                    installCancelled()
+                    root.installCancelled()
                     root.close()
                 }
             }

@@ -61,7 +61,7 @@
 <context>
     <name>HeadsetcontrolPrompt</name>
     <message>
-        <location filename="../qml/HeadsetcontrolPrompt.qml" line="10"/>
+        <location filename="../qml/HeadsetcontrolPrompt.qml" line="8"/>
         <source>HeadsetControl missing</source>
         <translation type="unfinished"></translation>
     </message>

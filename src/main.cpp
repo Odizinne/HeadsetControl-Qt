@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
         }
 
         promptEngine = new QQmlApplicationEngine();
-        promptEngine->rootContext()->setContextProperty("checker", &checker);
+        promptEngine->setInitialProperties({{"checker", QVariant::fromValue(&checker)}});
         promptEngine->loadFromModule("Odizinne.HeadsetControlQt", "HeadsetcontrolPrompt");
         const QList<QObject*> rootObjects = promptEngine->rootObjects();
         QObject* rootObject = rootObjects.first();
