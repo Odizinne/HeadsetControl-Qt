@@ -242,7 +242,7 @@ ApplicationWindow {
 
                     Label {
                         id: chatmixLabel
-                        text: qsTr("Enable chatmix")
+                        text: Qt.platform.os === "linux" ? qsTr("Enable chatmix") : qsTr("Chatmix")
                     }
 
                     IconImage {
@@ -270,6 +270,7 @@ ApplicationWindow {
                     }
 
                     Switch {
+                        visible: Qt.platform.os === "linux"
                         checked: settings.enableChatmix
                         onClicked: settings.enableChatmix = checked
                         Layout.rightMargin: -10

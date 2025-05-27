@@ -279,15 +279,19 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
     QString deviceName;
 #ifdef __linux__
     deviceName = headsetInfo["product"].toString();
-#endif
+#else
     deviceName = headsetInfo["device"].toString();
-    if (deviceName == "SteelSeries Arctis Nova 7" && settings.value("enableChatmix", true).toBool()) {
+#endif
+
+#ifdef __linux__
+    if (deviceName == "Arctis Nova 7" && settings.value("enableChatmix", true).toBool()) {
         fetchTimer->setInterval(1000);
         createChatMixScripts();
         runChatMixSetup();
     } else {
         fetchTimer->setInterval(60000);
     }
+#endif
 
     QStringList capabilities = headsetInfo["capabilities_str"].toVariant().toStringList();
     QJsonObject batteryInfo = headsetInfo["battery"].toObject();
@@ -334,10 +338,12 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
             m_chatmix = newChatmix;
             emit chatmixChanged();
 
-            if (deviceName == "SteelSeries Arctis Nova 7" &&
+#ifdef __linux__
+            if (deviceName == "Arctis Nova 7" &&
                 settings.value("enableChatmix", true).toBool()) {
                 updateChatMixVolumes(newChatmix);
             }
+#endif
         }
     }
 
