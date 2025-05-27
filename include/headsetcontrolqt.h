@@ -26,6 +26,7 @@ class HeadsetControlQt : public QWidget
     Q_PROPERTY(bool soundNotifCapable READ soundNotifCapable WRITE setSoundNotifCapable NOTIFY soundNotifCapableChanged FINAL)
     Q_PROPERTY(bool noDevice READ noDevice WRITE setNoDevice NOTIFY noDeviceChanged FINAL)
     Q_PROPERTY(bool isRunAtStartup READ isRunAtStartup NOTIFY isRunAtStartupChanged FINAL)
+    Q_PROPERTY(int chatmix READ chatmix NOTIFY chatmixChanged)
 
 public:
     explicit HeadsetControlQt(QWidget *parent = nullptr);
@@ -47,6 +48,8 @@ public:
     Q_INVOKABLE void updateHeadsetInfo();
     Q_INVOKABLE void sendFirstMinimizeNotification();
     Q_INVOKABLE void setRunAtStartup(bool enable);
+
+    int chatmix() const { return m_chatmix; }
 
 public slots:
     // Property setters
@@ -109,6 +112,7 @@ signals:
     void soundNotifCapableChanged();
     void noDeviceChanged();
     void isRunAtStartupChanged();
+    void chatmixChanged();
 
 private slots:
     void toggleWindow();
@@ -127,6 +131,7 @@ private:
     bool m_soundNotifCapable{false};
     bool m_noDevice{true};
     bool m_isRunAtStartup{false};
+    int m_chatmix = 64;
 
     void createTrayIcon();
     void manageLEDBasedOnBattery(const QJsonObject &headsetInfo);

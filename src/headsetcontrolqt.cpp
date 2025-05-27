@@ -318,6 +318,15 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
     setLightsCapable(capabilities.contains("lights"));
     setSidetoneCapable(capabilities.contains("sidetone"));
     setSoundNotifCapable(capabilities.contains("notification sound"));
+
+    if (headsetInfo.contains("chatmix")) {
+        int newChatmix = headsetInfo["chatmix"].toInt();
+        if (newChatmix >= 0 && newChatmix <= 128 && m_chatmix != newChatmix) {
+            m_chatmix = newChatmix;
+            emit chatmixChanged();
+        }
+    }
+
     setNoDevice(false);
 }
 

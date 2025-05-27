@@ -4,20 +4,20 @@
 <context>
     <name>HeadsetControlQt</name>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="370"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="379"/>
         <source>HeadsetControl-Qt</source>
         <translation>Kulaklık Kontolcüsü</translation>
     </message>
     <message>
         <location filename="../src/headsetcontrolqt.cpp" line="137"/>
         <location filename="../src/headsetcontrolqt.cpp" line="154"/>
-        <location filename="../src/headsetcontrolqt.cpp" line="428"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="437"/>
         <source>Show</source>
         <translation>Göster</translation>
     </message>
     <message>
         <location filename="../src/headsetcontrolqt.cpp" line="138"/>
-        <location filename="../src/headsetcontrolqt.cpp" line="430"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="439"/>
         <source>Exit</source>
         <translation>Çık</translation>
     </message>
@@ -42,18 +42,18 @@
         <translation>Herhangi bir kulaklık bağlanmadı</translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="326"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="335"/>
         <source>No Device Found</source>
         <translation>Herhangi bir cihaz bulunamadı</translation>
     </message>
     <message>
         <location filename="../src/headsetcontrolqt.cpp" line="158"/>
-        <location filename="../src/headsetcontrolqt.cpp" line="426"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="435"/>
         <source>Hide</source>
         <translation>Gizle</translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="370"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="379"/>
         <source>The application is still running in the background.</source>
         <translation>Uygulama arka planda çalışmaya devam ediyor.</translation>
     </message>
@@ -140,7 +140,7 @@ Would you like to download and install it now?</source>
         <translation>Mikrafon dinleme sesi</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="245"/>
+        <location filename="../qml/Main.qml" line="276"/>
         <source>Lights</source>
         <translation>Işık</translation>
     </message>
@@ -155,53 +155,58 @@ Would you like to download and install it now?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="264"/>
+        <location filename="../qml/Main.qml" line="245"/>
+        <source>Chatmix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/Main.qml" line="295"/>
         <source>Actions on low battery</source>
         <translation>Düşük pilde yapılacaklar</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="269"/>
+        <location filename="../qml/Main.qml" line="300"/>
         <source>Configure</source>
         <translation>Ayarla</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="280"/>
+        <location filename="../qml/Main.qml" line="311"/>
         <source>Application settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="300"/>
+        <location filename="../qml/Main.qml" line="331"/>
         <source>Dark mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="316"/>
+        <location filename="../qml/Main.qml" line="347"/>
         <source>Icon theme</source>
         <translation>İkon teması</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="322"/>
-        <location filename="../qml/Main.qml" line="344"/>
+        <location filename="../qml/Main.qml" line="353"/>
+        <location filename="../qml/Main.qml" line="375"/>
         <source>System</source>
         <translation>Sistem</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="322"/>
+        <location filename="../qml/Main.qml" line="353"/>
         <source>Dark</source>
         <translation>Karanlık</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="322"/>
+        <location filename="../qml/Main.qml" line="353"/>
         <source>Light</source>
         <translation>Aydınlık</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="338"/>
+        <location filename="../qml/Main.qml" line="369"/>
         <source>Language</source>
         <translation>Dil</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="359"/>
+        <location filename="../qml/Main.qml" line="390"/>
         <source>Run at startup</source>
         <translation type="unfinished">Başlangıçta başlat</translation>
     </message>

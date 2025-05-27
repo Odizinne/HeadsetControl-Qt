@@ -237,6 +237,37 @@ ApplicationWindow {
                 }
 
                 RowLayout {
+                    spacing: 20
+                    enabled: root.mainWindow.sidetoneCapable
+                    Layout.preferredHeight: 40
+
+                    Label {
+                        text: qsTr("Chatmix")
+                        Layout.fillWidth: true
+                    }
+
+                    Label {
+                        text: "gameIcon"
+                    }
+
+                    Slider {
+                        from: 0
+                        to: 128
+                        value: root.mainWindow.chatmix
+                        Layout.columnSpan: 2
+                        Layout.fillWidth: true
+                        Layout.leftMargin: -5
+                        Layout.rightMargin: -15
+                        enabled: false
+                    }
+
+                    Label {
+                        text: "chatIcon"
+                    }
+
+                }
+
+                RowLayout {
                     spacing: 10
                     enabled: root.mainWindow.lightsCapable
                     Layout.preferredHeight: 40
