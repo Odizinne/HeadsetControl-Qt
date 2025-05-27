@@ -281,6 +281,9 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
     deviceName = headsetInfo["product"].toString();
 #endif
     deviceName = headsetInfo["device"].toString();
+    if (deviceName == "SteelSeries Arctis Nova 7") {
+        fetchTimer->setInterval(1000);
+    }
     QStringList capabilities = headsetInfo["capabilities_str"].toVariant().toStringList();
     QJsonObject batteryInfo = headsetInfo["battery"].toObject();
 
