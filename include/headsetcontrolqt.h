@@ -22,6 +22,7 @@ class HeadsetControlQt : public QWidget
     Q_PROPERTY(int batteryLevel READ batteryLevel WRITE setBatteryLevel NOTIFY batteryLevelChanged FINAL)
     Q_PROPERTY(QString status READ status WRITE setStatus NOTIFY statusChanged FINAL)
     Q_PROPERTY(bool lightsCapable READ lightsCapable WRITE setLightsCapable NOTIFY lightsCapableChanged FINAL)
+    Q_PROPERTY(bool chatmixCapable READ chatmixCapable WRITE setChatmixCapable NOTIFY chatmixCapableChanged FINAL)
     Q_PROPERTY(bool sidetoneCapable READ sidetoneCapable WRITE setSidetoneCapable NOTIFY sidetoneCapableChanged FINAL)
     Q_PROPERTY(bool soundNotifCapable READ soundNotifCapable WRITE setSoundNotifCapable NOTIFY soundNotifCapableChanged FINAL)
     Q_PROPERTY(bool noDevice READ noDevice WRITE setNoDevice NOTIFY noDeviceChanged FINAL)
@@ -41,6 +42,7 @@ public:
     bool soundNotifCapable() const { return m_soundNotifCapable; }
     bool noDevice() const { return m_noDevice; }
     bool isRunAtStartup() const { return m_isRunAtStartup; }
+    bool chatmixCapable() const { return m_chatmixCapable; }
 
     Q_INVOKABLE void setSidetone(int value);
     Q_INVOKABLE void toggleLED(bool state);
@@ -102,6 +104,13 @@ public slots:
         }
     }
 
+    void setChatmixCapable(bool capable) {
+        if (m_chatmixCapable != capable) {
+            m_chatmixCapable = capable;
+            emit chatmixCapableChanged();
+        }
+    }
+
 signals:
     // Property change signals
     void deviceNameChanged();
@@ -113,6 +122,7 @@ signals:
     void noDeviceChanged();
     void isRunAtStartupChanged();
     void chatmixChanged();
+    void chatmixCapableChanged();
 
 private slots:
     void toggleWindow();
@@ -132,6 +142,7 @@ private:
     bool m_noDevice{true};
     bool m_isRunAtStartup{false};
     int m_chatmix = 64;
+    bool m_chatmixCapable{false};
 
     void createTrayIcon();
     void manageLEDBasedOnBattery(const QJsonObject &headsetInfo);
@@ -164,6 +175,14 @@ private:
     QWindow *qmlWindow;
     HIDEventMonitor *usbMonitor;
     int currentChargingFrame{20};
+
+    bool isAudioSystemAvailable(const QString &system);
+    QString getActiveAudioSystem();
+    void createChatMixScripts();
+    void runChatMixSetup();
+    void updateChatMixVolumes(int mixLevel);
+    bool chatMixSetupRan;
+    int lastMixLevel;
 };
 
 #endif // HEADSETCONTROLQT_H

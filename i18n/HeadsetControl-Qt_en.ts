@@ -4,20 +4,20 @@
 <context>
     <name>HeadsetControlQt</name>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="379"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="393"/>
         <source>HeadsetControl-Qt</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/headsetcontrolqt.cpp" line="137"/>
         <location filename="../src/headsetcontrolqt.cpp" line="154"/>
-        <location filename="../src/headsetcontrolqt.cpp" line="437"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="451"/>
         <source>Show</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/headsetcontrolqt.cpp" line="138"/>
-        <location filename="../src/headsetcontrolqt.cpp" line="439"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="453"/>
         <source>Exit</source>
         <translation></translation>
     </message>
@@ -32,28 +32,28 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="303"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="311"/>
         <source>%1: Charging</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="313"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="321"/>
         <source>No headset connected</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="335"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="349"/>
         <source>No Device Found</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/headsetcontrolqt.cpp" line="158"/>
-        <location filename="../src/headsetcontrolqt.cpp" line="435"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="449"/>
         <source>Hide</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="379"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="393"/>
         <source>The application is still running in the background.</source>
         <translation></translation>
     </message>
@@ -115,98 +115,98 @@ Would you like to download and install it now?</source>
 <context>
     <name>Main</name>
     <message>
-        <location filename="../qml/Main.qml" line="84"/>
+        <location filename="../qml/Main.qml" line="85"/>
         <source>No supported headset found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="142"/>
+        <location filename="../qml/Main.qml" line="144"/>
         <source>Disable lights</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="158"/>
+        <location filename="../qml/Main.qml" line="160"/>
         <source>Send notification</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="175"/>
+        <location filename="../qml/Main.qml" line="177"/>
         <source>Beep</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="219"/>
+        <location filename="../qml/Main.qml" line="221"/>
         <source>Sidetone</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="276"/>
+        <location filename="../qml/Main.qml" line="245"/>
+        <source>Enable chatmix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/Main.qml" line="285"/>
         <source>Lights</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="123"/>
+        <location filename="../qml/Main.qml" line="125"/>
         <source>Low battery threshold</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="197"/>
+        <location filename="../qml/Main.qml" line="199"/>
         <source>Headset settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="245"/>
-        <source>Chatmix</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qml/Main.qml" line="295"/>
+        <location filename="../qml/Main.qml" line="304"/>
         <source>Actions on low battery</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="300"/>
+        <location filename="../qml/Main.qml" line="309"/>
         <source>Configure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="311"/>
+        <location filename="../qml/Main.qml" line="320"/>
         <source>Application settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="331"/>
+        <location filename="../qml/Main.qml" line="340"/>
         <source>Dark mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="347"/>
+        <location filename="../qml/Main.qml" line="356"/>
         <source>Icon theme</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="353"/>
-        <location filename="../qml/Main.qml" line="375"/>
+        <location filename="../qml/Main.qml" line="362"/>
+        <location filename="../qml/Main.qml" line="384"/>
         <source>System</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="353"/>
+        <location filename="../qml/Main.qml" line="362"/>
         <source>Dark</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="353"/>
+        <location filename="../qml/Main.qml" line="362"/>
         <source>Light</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="369"/>
+        <location filename="../qml/Main.qml" line="378"/>
         <source>Language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="390"/>
+        <location filename="../qml/Main.qml" line="399"/>
         <source>Run at startup</source>
         <translation type="unfinished"></translation>
     </message>

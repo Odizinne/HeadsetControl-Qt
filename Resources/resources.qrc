@@ -24,5 +24,7 @@
         <file>icons/battery-missing-light.png</file>
         <file>icons/icon.ico</file>
         <file>icons/icon.png</file>
+        <file>icons/voice.png</file>
+        <file>icons/game.png</file>
     </qresource>
 </RCC>

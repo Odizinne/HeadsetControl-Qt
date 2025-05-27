@@ -281,9 +281,14 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
     deviceName = headsetInfo["product"].toString();
 #endif
     deviceName = headsetInfo["device"].toString();
-    if (deviceName == "SteelSeries Arctis Nova 7") {
+    if (deviceName == "SteelSeries Arctis Nova 7" && settings.value("enableChatmix", true).toBool()) {
         fetchTimer->setInterval(1000);
+        createChatMixScripts();
+        runChatMixSetup();
+    } else {
+        fetchTimer->setInterval(60000);
     }
+
     QStringList capabilities = headsetInfo["capabilities_str"].toVariant().toStringList();
     QJsonObject batteryInfo = headsetInfo["battery"].toObject();
 
@@ -321,12 +326,18 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
     setLightsCapable(capabilities.contains("lights"));
     setSidetoneCapable(capabilities.contains("sidetone"));
     setSoundNotifCapable(capabilities.contains("notification sound"));
+    setChatmixCapable(capabilities.contains("chatmix"));
 
     if (headsetInfo.contains("chatmix")) {
         int newChatmix = headsetInfo["chatmix"].toInt();
         if (newChatmix >= 0 && newChatmix <= 128 && m_chatmix != newChatmix) {
             m_chatmix = newChatmix;
             emit chatmixChanged();
+
+            if (deviceName == "SteelSeries Arctis Nova 7" &&
+                settings.value("enableChatmix", true).toBool()) {
+                updateChatMixVolumes(newChatmix);
+            }
         }
     }
 
@@ -440,4 +451,133 @@ void HeadsetControlQt::updateTrayMenu()
         showAction->setText(tr("Show"));
     }
     exitAction->setText(tr("Exit"));
+}
+
+bool HeadsetControlQt::isAudioSystemAvailable(const QString &system)
+{
+    QProcess process;
+    if (system == "pipewire") {
+        process.start("systemctl", QStringList() << "--user" << "is-active" << "pipewire.service");
+    } else if (system == "pulseaudio") {
+        process.start("pulseaudio", QStringList() << "--check");
+    }
+
+    process.waitForFinished(3000);
+    return process.exitCode() == 0;
+}
+
+QString HeadsetControlQt::getActiveAudioSystem()
+{
+    if (isAudioSystemAvailable("pipewire")) {
+        return "pipewire";
+    } else if (isAudioSystemAvailable("pulseaudio")) {
+        return "pulseaudio";
+    }
+    return QString();
+}
+
+void HeadsetControlQt::createChatMixScripts()
+{
+    QString binPath = QDir::homePath() + "/.local/bin/headsetcontrol-qt";
+    QDir().mkpath(binPath);
+
+    QString audioSystem = getActiveAudioSystem();
+    if (audioSystem.isEmpty()) {
+        qDebug() << "No supported audio system found";
+        return;
+    }
+
+    QString scriptPath = binPath + "/setup-chatmix.sh";
+    QFile scriptFile(scriptPath);
+
+    if (scriptFile.exists()) {
+        return; // Script already exists
+    }
+
+    if (scriptFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QTextStream out(&scriptFile);
+        out << "#!/bin/bash\n\n";
+
+        if (audioSystem == "pipewire") {
+            out << "#Reset Pipewire\n";
+            out << "systemctl --user restart pipewire.service\n\n";
+            out << "#Create Game Mix\n";
+            out << "pactl load-module module-null-sink sink_name=GameMix\n";
+            out << "pactl load-module module-loopback source=GameMix.monitor sink=alsa_output.usb-SteelSeries_Arctis_Nova_7-00.analog-stereo\n\n";
+            out << "#Create Chat Mix\n";
+            out << "pactl load-module module-null-sink sink_name=ChatMix\n";
+            out << "pactl load-module module-loopback source=ChatMix.monitor sink=alsa_output.usb-SteelSeries_Arctis_Nova_7-00.analog-stereo\n";
+        } else { // pulseaudio
+            out << "#Reset PulseAudio\n";
+            out << "pulseaudio -k\n\n";
+            out << "#Create GameMix\n";
+            out << "pacmd load-module module-null-sink sink_name=GameMix\n";
+            out << "pacmd update-sink-proplist GameMix device.description=GameMix\n";
+            out << "pacmd load-module module-loopback source=GameMix.monitor sink=alsa_output.usb-SteelSeries_Arctis_Nova_7-00.iec958-stereo\n\n";
+            out << "#Create ChatMix\n";
+            out << "pacmd load-module module-null-sink sink_name=ChatMix\n";
+            out << "pacmd update-sink-proplist ChatMix device.description=ChatMix\n";
+            out << "pacmd load-module module-loopback source=ChatMix.monitor sink=alsa_output.usb-SteelSeries_Arctis_Nova_7-00.iec958-stereo\n";
+        }
+
+        scriptFile.close();
+
+        // Make script executable
+        QFile::setPermissions(scriptPath, QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner);
+    }
+}
+
+void HeadsetControlQt::runChatMixSetup()
+{
+    if (chatMixSetupRan) {
+        return;
+    }
+
+    QString scriptPath = QDir::homePath() + "/.local/bin/headsetcontrol-qt/setup-chatmix.sh";
+    QProcess *process = new QProcess(this);
+
+    connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+            this, [this, process](int exitCode, QProcess::ExitStatus exitStatus) {
+                if (exitCode == 0) {
+                    chatMixSetupRan = true;
+                    qDebug() << "ChatMix setup completed successfully";
+                } else {
+                    qDebug() << "ChatMix setup failed with exit code:" << exitCode;
+                }
+                process->deleteLater();
+            });
+
+    process->start("/bin/bash", QStringList() << scriptPath);
+}
+
+void HeadsetControlQt::updateChatMixVolumes(int mixLevel)
+{
+    if (lastMixLevel == mixLevel) {
+        return;
+    }
+
+    int gameLevel, chatLevel;
+
+    if (mixLevel > 64) {
+        gameLevel = 200 - (mixLevel * 100 / 64);
+        chatLevel = 100;
+    } else if (mixLevel < 64) {
+        gameLevel = 100;
+        chatLevel = (mixLevel * 100 / 64);
+    } else {
+        gameLevel = 100;
+        chatLevel = 100;
+    }
+
+    lastMixLevel = mixLevel;
+
+    QProcess *gameProcess = new QProcess(this);
+    connect(gameProcess, &QProcess::finished, gameProcess, &QProcess::deleteLater);
+    gameProcess->start("pactl", QStringList() << "--" << "set-sink-volume" << "GameMix" << QString("%1%").arg(gameLevel));
+
+    QProcess *chatProcess = new QProcess(this);
+    connect(chatProcess, &QProcess::finished, chatProcess, &QProcess::deleteLater);
+    chatProcess->start("pactl", QStringList() << "--" << "set-sink-volume" << "ChatMix" << QString("%1%").arg(chatLevel));
+
+    qDebug() << "Updated ChatMix volumes - Game:" << gameLevel << "% Chat:" << chatLevel << "%";
 }

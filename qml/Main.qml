@@ -1,4 +1,5 @@
 import QtQuick.Controls.Material
+import QtQuick.Controls.impl
 import QtQuick.Layouts
 import QtQuick
 import QtCore
@@ -96,6 +97,7 @@ ApplicationWindow {
         property int language: 0
         property bool firstRun: true
         property bool darkMode: true
+        property bool enableChatmix: true
     }
 
     Dialog {
@@ -223,10 +225,7 @@ ApplicationWindow {
                         from: 0
                         to: 128
                         value: settings.sidetone
-                        Layout.columnSpan: 2
                         Layout.fillWidth: true
-                        Layout.leftMargin: -5
-                        Layout.rightMargin: -15
                         onPressedChanged: {
                             if (!pressed) {
                                 settings.sidetone = value
@@ -238,33 +237,43 @@ ApplicationWindow {
 
                 RowLayout {
                     spacing: 20
-                    enabled: root.mainWindow.sidetoneCapable
+                    visible: root.mainWindow.chatmixCapable
                     Layout.preferredHeight: 40
 
                     Label {
-                        text: qsTr("Chatmix")
-                        Layout.fillWidth: true
+                        id: chatmixLabel
+                        text: qsTr("Enable chatmix")
                     }
 
-                    Label {
-                        text: "gameIcon"
+                    IconImage {
+                        source: "qrc:/icons/game.png"
+                        sourceSize.width: 20
+                        sourceSize.height: 20
+                        color: Material.foreground
                     }
 
                     Slider {
                         from: 0
                         to: 128
                         value: root.mainWindow.chatmix
-                        Layout.columnSpan: 2
                         Layout.fillWidth: true
-                        Layout.leftMargin: -5
-                        Layout.rightMargin: -15
                         enabled: false
+                        Layout.leftMargin: -20
+                        Layout.rightMargin: -20
                     }
 
-                    Label {
-                        text: "chatIcon"
+                    IconImage {
+                        source: "qrc:/icons/voice.png"
+                        sourceSize.width: 20
+                        sourceSize.height: 20
+                        color: Material.foreground
                     }
 
+                    Switch {
+                        checked: settings.enableChatmix
+                        onClicked: settings.enableChatmix = checked
+                        Layout.rightMargin: -10
+                    }
                 }
 
                 RowLayout {
