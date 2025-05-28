@@ -78,3 +78,4 @@ Feel free to sumbit a pull request or open an issue so we can work arround this!
 ## Credits
 
 - [Sapd](https://github.com/Sapd/HeadsetControl) for headsetcontrol
+- [jakears93](https://github.com/jakears93/Nova7ChatmixLinux) for Nova7ChatmixLinux scripts
