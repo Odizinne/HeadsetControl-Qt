@@ -41,6 +41,9 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     , worker(new Worker())
     , qmlWindow(nullptr)
     , usbMonitor(new HIDEventMonitor(this))
+    , chatMixSetupRan(false)
+    , lastMixLevel(-1)
+    , initialFetchDone(false)
 {
     createTrayIcon();
     toggleLED(settings.value("led_state", true).toBool());
@@ -112,11 +115,23 @@ void HeadsetControlQt::handleHeadsetInfo(const QJsonObject &headsetInfo)
             if (settings.value("sound_low_battery", false).toBool()) {
                 sendSoundNotificationBasedOnBattery(headsetInfo);
             }
+
+            // Auto-setup ChatMix after initial fetch if enabled
+            if (!initialFetchDone) {
+                initialFetchDone = true;
+                checkAndSetupChatMixOnStartup();
+            }
         } else {
             noDeviceFound();
+            if (!initialFetchDone) {
+                initialFetchDone = true;
+            }
         }
     } else {
         noDeviceFound();
+        if (!initialFetchDone) {
+            initialFetchDone = true;
+        }
     }
 }
 
@@ -283,20 +298,10 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
     deviceName = headsetInfo["device"].toString();
 #endif
 
-#ifdef __linux__
-    if (deviceName == "Arctis Nova 7" && settings.value("enableChatmix", true).toBool()) {
-        fetchTimer->setInterval(1000);
-        createChatMixScripts();
-        runChatMixSetup();
-    } else {
-        fetchTimer->setInterval(60000);
-    }
-#endif
+    setDeviceName(deviceName);
 
     QStringList capabilities = headsetInfo["capabilities_str"].toVariant().toStringList();
     QJsonObject batteryInfo = headsetInfo["battery"].toObject();
-
-    setDeviceName(deviceName);
 
     QString batteryStatus = batteryInfo["status"].toString();
     int batteryLevel = batteryInfo["level"].toInt();
@@ -340,7 +345,8 @@ void HeadsetControlQt::updateUIWithHeadsetInfo(const QJsonObject &headsetInfo)
 
 #ifdef __linux__
             if (deviceName == "Arctis Nova 7" &&
-                settings.value("enableChatmix", true).toBool()) {
+                settings.value("enableChatmix", true).toBool() &&
+                chatMixSetupRan) {
                 updateChatMixVolumes(newChatmix);
             }
 #endif
@@ -357,6 +363,15 @@ void HeadsetControlQt::noDeviceFound()
 
     trayIcon->setIcon(QIcon(iconPath));
     setNoDevice(true);
+
+    // Reset ChatMix if no device found
+#ifdef __linux__
+    if (chatMixSetupRan) {
+        fetchTimer->setInterval(60000);
+        removeChatMixSinks();
+        chatMixSetupRan = false;
+    }
+#endif
 }
 
 void HeadsetControlQt::toggleLED(bool state)
@@ -457,6 +472,69 @@ void HeadsetControlQt::updateTrayMenu()
         showAction->setText(tr("Show"));
     }
     exitAction->setText(tr("Exit"));
+}
+
+void HeadsetControlQt::toggleChatMixSetup(bool enable)
+{
+#ifdef __linux__
+    // Only proceed if we have a Nova 7 connected
+    if (m_deviceName != "Arctis Nova 7") {
+        return;
+    }
+
+    if (enable) {
+        // Enable ChatMix: create sinks and change timer
+        fetchTimer->setInterval(1000);
+        createChatMixScripts();
+        runChatMixSetup();
+    } else {
+        // Disable ChatMix: remove sinks and reset timer
+        fetchTimer->setInterval(60000);
+        removeChatMixSinks();
+        chatMixSetupRan = false;
+    }
+#endif
+}
+
+void HeadsetControlQt::checkAndSetupChatMixOnStartup()
+{
+#ifdef __linux__
+    if (m_deviceName == "Arctis Nova 7" && settings.value("enableChatmix", true).toBool()) {
+        fetchTimer->setInterval(1000);
+        createChatMixScripts();
+        runChatMixSetup();
+    }
+#endif
+}
+
+void HeadsetControlQt::removeChatMixSinks()
+{
+#ifdef __linux__
+    QString audioSystem = getActiveAudioSystem();
+    if (audioSystem.isEmpty()) {
+        return;
+    }
+
+    // Remove GameMix sink
+    QProcess *gameProcess = new QProcess(this);
+    connect(gameProcess, &QProcess::finished, gameProcess, &QProcess::deleteLater);
+
+    // Remove ChatMix sink
+    QProcess *chatProcess = new QProcess(this);
+    connect(chatProcess, &QProcess::finished, chatProcess, &QProcess::deleteLater);
+
+    if (audioSystem == "pipewire") {
+        // For PipeWire, we need to find and unload the specific modules
+        gameProcess->start("pactl", QStringList() << "unload-module" << "module-null-sink");
+        chatProcess->start("pactl", QStringList() << "unload-module" << "module-loopback");
+    } else { // pulseaudio
+        // For PulseAudio, similar approach
+        gameProcess->start("pacmd", QStringList() << "unload-module" << "module-null-sink");
+        chatProcess->start("pacmd", QStringList() << "unload-module" << "module-loopback");
+    }
+
+    qDebug() << "Removed ChatMix sinks";
+#endif
 }
 
 bool HeadsetControlQt::isAudioSystemAvailable(const QString &system)

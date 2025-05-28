@@ -272,7 +272,10 @@ ApplicationWindow {
                     Switch {
                         visible: Qt.platform.os === "linux"
                         checked: settings.enableChatmix
-                        onClicked: settings.enableChatmix = checked
+                        onClicked: {
+                            settings.enableChatmix = checked
+                            root.mainWindow.toggleChatMixSetup(checked)
+                        }
                         Layout.rightMargin: -10
                     }
                 }

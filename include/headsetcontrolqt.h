@@ -50,6 +50,7 @@ public:
     Q_INVOKABLE void updateHeadsetInfo();
     Q_INVOKABLE void sendFirstMinimizeNotification();
     Q_INVOKABLE void setRunAtStartup(bool enable);
+    Q_INVOKABLE void toggleChatMixSetup(bool enable);
 
     int chatmix() const { return m_chatmix; }
 
@@ -154,6 +155,15 @@ private:
     void noDeviceFound();
     void updateTrayMenu();
 
+    // ChatMix related methods
+    void checkAndSetupChatMixOnStartup();
+    void removeChatMixSinks();
+    bool isAudioSystemAvailable(const QString &system);
+    QString getActiveAudioSystem();
+    void createChatMixScripts();
+    void runChatMixSetup();
+    void updateChatMixVolumes(int mixLevel);
+
     static const QString headsetcontrolExecutable;
     static const QString desktopFile;
     QSettings settings;
@@ -176,13 +186,10 @@ private:
     HIDEventMonitor *usbMonitor;
     int currentChargingFrame{20};
 
-    bool isAudioSystemAvailable(const QString &system);
-    QString getActiveAudioSystem();
-    void createChatMixScripts();
-    void runChatMixSetup();
-    void updateChatMixVolumes(int mixLevel);
+    // ChatMix related members
     bool chatMixSetupRan;
     int lastMixLevel;
+    bool initialFetchDone;
 };
 
 #endif // HEADSETCONTROLQT_H
