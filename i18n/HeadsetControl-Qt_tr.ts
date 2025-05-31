@@ -4,56 +4,56 @@
 <context>
     <name>HeadsetControlQt</name>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="414"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="399"/>
         <source>HeadsetControl-Qt</source>
         <translation>Kulaklık Kontolcüsü</translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="152"/>
-        <location filename="../src/headsetcontrolqt.cpp" line="169"/>
-        <location filename="../src/headsetcontrolqt.cpp" line="472"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="180"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="197"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="457"/>
         <source>Show</source>
         <translation>Göster</translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="153"/>
-        <location filename="../src/headsetcontrolqt.cpp" line="474"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="181"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="459"/>
         <source>Exit</source>
         <translation>Çık</translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="263"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="248"/>
         <source>Low battery</source>
         <translation>Düşük pil</translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="263"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="248"/>
         <source>%1 has %2% battery left.</source>
         <translation>%1 &apos;in %2% pili kaldı.</translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="320"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="305"/>
         <source>%1: Charging</source>
         <translation>%1: Şarj oluyor</translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="330"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="315"/>
         <source>No headset connected</source>
         <translation>Herhangi bir kulaklık bağlanmadı</translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="361"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="346"/>
         <source>No Device Found</source>
         <translation>Herhangi bir cihaz bulunamadı</translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="173"/>
-        <location filename="../src/headsetcontrolqt.cpp" line="470"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="201"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="455"/>
         <source>Hide</source>
         <translation>Gizle</translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="414"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="399"/>
         <source>The application is still running in the background.</source>
         <translation>Uygulama arka planda çalışmaya devam ediyor.</translation>
     </message>

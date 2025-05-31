@@ -4,56 +4,56 @@
 <context>
     <name>HeadsetControlQt</name>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="414"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="399"/>
         <source>HeadsetControl-Qt</source>
         <translation>HeadsetControl-Qt</translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="152"/>
-        <location filename="../src/headsetcontrolqt.cpp" line="169"/>
-        <location filename="../src/headsetcontrolqt.cpp" line="472"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="180"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="197"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="457"/>
         <source>Show</source>
         <translation>Mostra</translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="153"/>
-        <location filename="../src/headsetcontrolqt.cpp" line="474"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="181"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="459"/>
         <source>Exit</source>
         <translation>Esci</translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="263"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="248"/>
         <source>Low battery</source>
         <translation>Batteria scarica</translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="263"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="248"/>
         <source>%1 has %2% battery left.</source>
         <translation>%1 ha il %2% di batteria rimanente.</translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="320"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="305"/>
         <source>%1: Charging</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="330"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="315"/>
         <source>No headset connected</source>
         <translation>Nessun auricolare connesso</translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="361"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="346"/>
         <source>No Device Found</source>
         <translation>Nessun dispositivo trovato</translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="173"/>
-        <location filename="../src/headsetcontrolqt.cpp" line="470"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="201"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="455"/>
         <source>Hide</source>
         <translation>Nascondi</translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="414"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="399"/>
         <source>The application is still running in the background.</source>
         <translation>L&apos;applicazione è ancora in esecuzione in secondo piano.</translation>
     </message>

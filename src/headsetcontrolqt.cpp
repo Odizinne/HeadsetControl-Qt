@@ -16,6 +16,7 @@
 #include <QMenu>
 #include <QQmlContext>
 #include <QApplication>
+#include <QtConcurrent/QtConcurrentRun>
 
 #ifdef _WIN32
 const QString HeadsetControlQt::headsetcontrolExecutable = "dependencies/headsetcontrol.exe";
@@ -38,9 +39,9 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     , firstRun(false)
     , closing(false)
     , translator(new QTranslator(this))
-    , worker(new Worker())
     , qmlWindow(nullptr)
     , usbMonitor(new HIDEventMonitor(this))
+    , headsetWatcher(new QFutureWatcher<QJsonObject>(this))
     , chatMixSetupRan(false)
     , lastMixLevel(-1)
     , initialFetchDone(false)
@@ -50,9 +51,6 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     setSidetone(settings.value("sidetone", 0).toInt());
     updateHeadsetInfo();
     changeApplicationLanguage(settings.value("language").toInt());
-
-    worker->moveToThread(&workerThread);
-    workerThread.start();
 
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
     engine->setInitialProperties({{"mainWindow", QVariant::fromValue(this)}});
@@ -64,9 +62,13 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
         qmlWindow->show();
     }
 
-    connect(worker, &Worker::workRequested, worker, &Worker::doWork);
-    connect(worker, &Worker::sendHeadsetInfo, this, &::HeadsetControlQt::handleHeadsetInfo);
-    connect(fetchTimer, &QTimer::timeout, worker, &Worker::requestWork);
+    connect(headsetWatcher, &QFutureWatcher<QJsonObject>::finished, this, [this]() {
+        if (!headsetWatcher->isCanceled()) {
+            handleHeadsetInfo(headsetWatcher->result());
+        }
+    });
+
+    connect(fetchTimer, &QTimer::timeout, this, &HeadsetControlQt::fetchHeadsetInfo);
     connect(qmlWindow, &QWindow::visibilityChanged, this, &HeadsetControlQt::reflectWindowState);
     connect(chargingAnimationTimer, &QTimer::timeout, this, &HeadsetControlQt::updateTrayChargingAnimation);
 
@@ -77,10 +79,10 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
     | Maybe i could just scan once 5s after plugged             |
     | but idk how other devices are acting                      |
     ===========================================================*/
-    connect(usbMonitor, &HIDEventMonitor::deviceRemoved, worker, &Worker::requestWork);
-    connect(usbMonitor, &HIDEventMonitor::deviceAdded, worker, &Worker::requestWork);
+    connect(usbMonitor, &HIDEventMonitor::deviceRemoved, this, &HeadsetControlQt::fetchHeadsetInfo);
+    connect(usbMonitor, &HIDEventMonitor::deviceAdded, this, &HeadsetControlQt::fetchHeadsetInfo);
     connect(usbMonitor, &HIDEventMonitor::deviceAdded, this, [this]() {
-        QTimer::singleShot(5000, this->worker, &Worker::requestWork);
+        QTimer::singleShot(5000, this, &HeadsetControlQt::fetchHeadsetInfo);
     });
 
     usbMonitor->startMonitoring();
@@ -94,9 +96,35 @@ HeadsetControlQt::HeadsetControlQt(QWidget *parent)
 HeadsetControlQt::~HeadsetControlQt()
 {
     chargingAnimationTimer->stop();
-    worker->abort();
-    workerThread.quit();
-    workerThread.wait();
+    if (headsetWatcher->isRunning()) {
+        headsetWatcher->cancel();
+        headsetWatcher->waitForFinished();
+    }
+}
+
+void HeadsetControlQt::fetchHeadsetInfo()
+{
+    if (headsetWatcher->isRunning()) {
+        headsetWatcher->cancel();
+    }
+
+    QFuture<QJsonObject> future = QtConcurrent::run(&HeadsetControlQt::getHeadsetInfoSync, this);
+    headsetWatcher->setFuture(future);
+}
+
+QJsonObject HeadsetControlQt::getHeadsetInfoSync()
+{
+    QProcess process;
+    process.start(headsetcontrolExecutable, QStringList() << "-o" << "json");
+
+    if (!process.waitForStarted() || !process.waitForFinished()) {
+        return QJsonObject(); // Return empty object on failure
+    }
+
+    QByteArray output = process.readAllStandardOutput();
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(output);
+
+    return jsonDoc.object();
 }
 
 void HeadsetControlQt::handleHeadsetInfo(const QJsonObject &headsetInfo)
@@ -169,7 +197,7 @@ void HeadsetControlQt::reflectWindowState(QWindow::Visibility visibility)
         trayIcon->contextMenu()->actions().first()->setText(tr("Show"));
     }
     else {
-        worker->requestWork();
+        fetchHeadsetInfo();
         trayIcon->contextMenu()->actions().first()->setText(tr("Hide"));
     }
 }
@@ -191,48 +219,7 @@ void HeadsetControlQt::updateTrayChargingAnimation()
 
 void HeadsetControlQt::updateHeadsetInfo()
 {
-    QProcess process;
-    process.start(headsetcontrolExecutable, QStringList() << "-o" << "json");
-
-    if (!process.waitForStarted()) {
-        noDeviceFound();
-        return;
-    }
-
-    if (!process.waitForFinished()) {
-        noDeviceFound();
-        return;
-    }
-
-    QByteArray output = process.readAllStandardOutput();
-
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(output);
-    if (jsonDoc.isNull()) {
-        return;
-    }
-
-    QJsonObject jsonObj = jsonDoc.object();
-
-    if (jsonObj.contains("devices")) {
-        QJsonArray devicesArray = jsonObj["devices"].toArray();
-        if (devicesArray.size() > 0) {
-            QJsonObject headsetInfo = devicesArray.first().toObject();
-            updateUIWithHeadsetInfo(headsetInfo);
-            if (settings.value("led_low_battery", false).toBool()) {
-                manageLEDBasedOnBattery(headsetInfo);
-            }
-            if (settings.value("notification_low_battery", false).toBool()) {
-                sendNotificationBasedOnBattery(headsetInfo);
-            }
-            if (settings.value("sound_low_battery", false).toBool()) {
-                sendSoundNotificationBasedOnBattery(headsetInfo);
-            }
-        } else {
-            noDeviceFound();
-        }
-    } else {
-        noDeviceFound();
-    }
+    fetchHeadsetInfo();
 }
 
 void HeadsetControlQt::manageLEDBasedOnBattery(const QJsonObject &headsetInfo)
@@ -243,10 +230,8 @@ void HeadsetControlQt::manageLEDBasedOnBattery(const QJsonObject &headsetInfo)
     bool available = (batteryStatus == "BATTERY_AVAILABLE");
 
     if (batteryLevel < settings.value("low_battery_threshold", 20).toInt() && !ledDisabled && available) {
-        //ui->ledBox->setChecked(false);
         ledDisabled = true;
     } else if (batteryLevel >= settings.value("low_battery_threshold", 20).toInt() + 5 && ledDisabled && available) {
-        //ui->ledBox->setChecked(true);
         ledDisabled = false;
     }
 }
@@ -364,7 +349,7 @@ void HeadsetControlQt::noDeviceFound()
     trayIcon->setIcon(QIcon(iconPath));
     setNoDevice(true);
 
-    // Reset ChatMix if no device found
+// Reset ChatMix if no device found
 #ifdef __linux__
     if (chatMixSetupRan) {
         fetchTimer->setInterval(60000);

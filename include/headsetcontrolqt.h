@@ -1,7 +1,6 @@
 #ifndef HEADSETCONTROLQT_H
 #define HEADSETCONTROLQT_H
 
-#include "worker.h"
 #include "hideventmonitor.h"
 #include <QWindow>
 #include <QSystemTrayIcon>
@@ -9,10 +8,12 @@
 #include <QAction>
 #include <QTimer>
 #include <QCloseEvent>
-#include <QThread>
 #include <QSettings>
 #include <QQmlApplicationEngine>
 #include <QProperty>
+#include <QFuture>
+#include <QFutureWatcher>
+#include <QJsonObject>
 
 class HeadsetControlQt : public QWidget
 {
@@ -131,6 +132,7 @@ private slots:
     void handleHeadsetInfo(const QJsonObject &headsetInfo);
     void reflectWindowState(QWindow::Visibility visibility);
     void updateTrayChargingAnimation();
+    void fetchHeadsetInfo();
 
 private:
     // Property members
@@ -154,6 +156,7 @@ private:
     void updateUIWithHeadsetInfo(const QJsonObject &headsetInfo);
     void noDeviceFound();
     void updateTrayMenu();
+    QJsonObject getHeadsetInfoSync();
 
     // ChatMix related methods
     void checkAndSetupChatMixOnStartup();
@@ -180,11 +183,12 @@ private:
     QMenu *trayMenu;
     QAction *exitAction;
     QAction *showAction;
-    QThread workerThread;
-    Worker *worker;
     QWindow *qmlWindow;
     HIDEventMonitor *usbMonitor;
     int currentChargingFrame{20};
+
+    // QFuture members
+    QFutureWatcher<QJsonObject> *headsetWatcher;
 
     // ChatMix related members
     bool chatMixSetupRan;

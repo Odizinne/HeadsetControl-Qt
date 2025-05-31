@@ -23,20 +23,18 @@ find_package(Qt6 REQUIRED COMPONENTS
 qt_standard_project_setup(REQUIRES 6.9)
 set(SOURCES
     src/shortcutmanager.cpp
-    src/worker.cpp
+    src/headsetcontrolchecker.cpp
     src/headsetcontrolqt.cpp
     src/main.cpp
     src/utils.cpp
     src/hideventmonitor.cpp
-    src/headsetcontrolchecker.cpp
 )
 set(HEADERS
     include/shortcutmanager.h
     include/headsetcontrolqt.h
     include/utils.h
-    include/worker.h
-    include/hideventmonitor.h
     include/headsetcontrolchecker.h
+    include/hideventmonitor.h
 )
 qt_add_executable(HeadsetControl-Qt WIN32 MACOSX_BUNDLE
     ${SOURCES}
