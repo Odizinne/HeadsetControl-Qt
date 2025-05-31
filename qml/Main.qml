@@ -48,6 +48,7 @@ ApplicationWindow {
                     font.pixelSize: 20
                     font.bold: true
                     Layout.fillWidth: true
+                    elide: Text.ElideRight
                 }
 
                 Label {

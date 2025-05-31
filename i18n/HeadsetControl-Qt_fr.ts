@@ -116,103 +116,103 @@ Souhaitez-vous le télécharger et l&apos;installer maintenant ?</translation>
 <context>
     <name>Main</name>
     <message>
-        <location filename="../qml/Main.qml" line="85"/>
+        <location filename="../qml/Main.qml" line="86"/>
         <source>No supported headset found.</source>
         <translation>Aucun casque détecté.</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="144"/>
+        <location filename="../qml/Main.qml" line="145"/>
         <source>Disable lights</source>
         <translation>Désactiver les LEDs</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="160"/>
+        <location filename="../qml/Main.qml" line="161"/>
         <source>Send notification</source>
         <translation>Envoyer une notification</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="177"/>
+        <location filename="../qml/Main.qml" line="178"/>
         <source>Beep</source>
         <translation>Bip audio</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="221"/>
+        <location filename="../qml/Main.qml" line="222"/>
         <source>Sidetone</source>
         <translation>Retour voix</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="245"/>
+        <location filename="../qml/Main.qml" line="246"/>
         <source>Enable chatmix</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="289"/>
+        <location filename="../qml/Main.qml" line="290"/>
         <source>Lights</source>
         <translation>LEDs</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="125"/>
+        <location filename="../qml/Main.qml" line="126"/>
         <source>Low battery threshold</source>
         <translation>Niveau batterie faible</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="199"/>
+        <location filename="../qml/Main.qml" line="200"/>
         <source>Headset settings</source>
         <translation>Paramètres du casque</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="245"/>
+        <location filename="../qml/Main.qml" line="246"/>
         <source>Chatmix</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="308"/>
+        <location filename="../qml/Main.qml" line="309"/>
         <source>Actions on low battery</source>
         <translation>Action quand batterie faible</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="313"/>
+        <location filename="../qml/Main.qml" line="314"/>
         <source>Configure</source>
         <translation>Configurer</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="324"/>
+        <location filename="../qml/Main.qml" line="325"/>
         <source>Application settings</source>
         <translation>Paramètres de l&apos;application</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="344"/>
+        <location filename="../qml/Main.qml" line="345"/>
         <source>Dark mode</source>
         <translation>Thème sombre</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="360"/>
+        <location filename="../qml/Main.qml" line="361"/>
         <source>Icon theme</source>
         <translation>Thème d&apos;icones</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="366"/>
-        <location filename="../qml/Main.qml" line="388"/>
+        <location filename="../qml/Main.qml" line="367"/>
+        <location filename="../qml/Main.qml" line="389"/>
         <source>System</source>
         <translation>Système</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="366"/>
+        <location filename="../qml/Main.qml" line="367"/>
         <source>Dark</source>
         <translation>Sombre</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="366"/>
+        <location filename="../qml/Main.qml" line="367"/>
         <source>Light</source>
         <translation>Clair</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="382"/>
+        <location filename="../qml/Main.qml" line="383"/>
         <source>Language</source>
         <translation>Langage</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="403"/>
+        <location filename="../qml/Main.qml" line="404"/>
         <source>Run at startup</source>
         <translation>Lancer au démarrage</translation>
     </message>
