@@ -151,15 +151,9 @@ void HeadsetControlQt::handleHeadsetInfo(const QJsonObject &headsetInfo)
             }
         } else {
             noDeviceFound();
-            if (!initialFetchDone) {
-                initialFetchDone = true;
-            }
         }
     } else {
         noDeviceFound();
-        if (!initialFetchDone) {
-            initialFetchDone = true;
-        }
     }
 }
 
