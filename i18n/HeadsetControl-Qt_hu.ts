@@ -4,56 +4,56 @@
 <context>
     <name>HeadsetControlQt</name>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="399"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="393"/>
         <source>HeadsetControl-Qt</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="180"/>
-        <location filename="../src/headsetcontrolqt.cpp" line="197"/>
-        <location filename="../src/headsetcontrolqt.cpp" line="457"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="174"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="191"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="451"/>
         <source>Show</source>
         <translation>Mutat</translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="181"/>
-        <location filename="../src/headsetcontrolqt.cpp" line="459"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="175"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="453"/>
         <source>Exit</source>
         <translation>Kilépés</translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="248"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="242"/>
         <source>Low battery</source>
         <translation>Alacsony akkumulátor szint</translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="248"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="242"/>
         <source>%1 has %2% battery left.</source>
         <translation>%1 akku töltöttség %2%.</translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="305"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="299"/>
         <source>%1: Charging</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: Töltődik</translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="315"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="309"/>
         <source>No headset connected</source>
         <translation>Nincs csatlakoztatva fejhallgató</translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="346"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="340"/>
         <source>No Device Found</source>
         <translation>Eszköz nem található</translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="201"/>
-        <location filename="../src/headsetcontrolqt.cpp" line="455"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="195"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="449"/>
         <source>Hide</source>
         <translation>Elrejt</translation>
     </message>
     <message>
-        <location filename="../src/headsetcontrolqt.cpp" line="399"/>
+        <location filename="../src/headsetcontrolqt.cpp" line="393"/>
         <source>The application is still running in the background.</source>
         <translation>Az alkalmazás továbbra is fut a háttérben.</translation>
     </message>
@@ -63,53 +63,54 @@
     <message>
         <location filename="../qml/HeadsetcontrolPrompt.qml" line="8"/>
         <source>HeadsetControl missing</source>
-        <translation type="unfinished"></translation>
+        <translation>HeadsetControl hiányzik</translation>
     </message>
     <message>
         <location filename="../qml/HeadsetcontrolPrompt.qml" line="34"/>
         <source>Downloading HeadsetControl...</source>
-        <translation type="unfinished"></translation>
+        <translation>HeadsetControl letöltése...</translation>
     </message>
     <message>
         <location filename="../qml/HeadsetcontrolPrompt.qml" line="45"/>
         <source>Downloading... </source>
-        <translation type="unfinished"></translation>
+        <translation>Letöltés... </translation>
     </message>
     <message>
         <location filename="../qml/HeadsetcontrolPrompt.qml" line="50"/>
         <source>Extracting files...</source>
-        <translation type="unfinished"></translation>
+        <translation>Fájlok kicsomagolása...</translation>
     </message>
     <message>
         <location filename="../qml/HeadsetcontrolPrompt.qml" line="59"/>
         <source>Error: </source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba: </translation>
     </message>
     <message>
         <location filename="../qml/HeadsetcontrolPrompt.qml" line="85"/>
         <source>HeadsetControl is not installed</source>
-        <translation type="unfinished"></translation>
+        <translation>HeadsetControl nincs telepítve</translation>
     </message>
     <message>
         <location filename="../qml/HeadsetcontrolPrompt.qml" line="85"/>
         <source>Installing HeadsetControl...</source>
-        <translation type="unfinished"></translation>
+        <translation>HeadsetControl telepítése...</translation>
     </message>
     <message>
         <location filename="../qml/HeadsetcontrolPrompt.qml" line="93"/>
         <source>HeadsetControl is required to monitor and control your headset.
 Would you like to download and install it now?</source>
-        <translation type="unfinished"></translation>
+        <translation>A HeadsetControl alkalmazás szükséges a fejhallgató állapotának lekérdezéséhez és módosításához.
+Szeretné most letölteni és telepíteni?</translation>
     </message>
     <message>
         <location filename="../qml/HeadsetcontrolPrompt.qml" line="123"/>
         <source>Download</source>
-        <translation type="unfinished"></translation>
+        <translation>Letöltés</translation>
     </message>
     <message>
         <location filename="../qml/HeadsetcontrolPrompt.qml" line="132"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Mégse</translation>
     </message>
 </context>
 <context>
@@ -117,103 +118,103 @@ Would you like to download and install it now?</source>
     <message>
         <location filename="../qml/Main.qml" line="86"/>
         <source>No supported headset found.</source>
-        <translation type="unfinished">Nem található támogatott fejhallgató.</translation>
+        <translation>Nem található támogatott fejhallgató.</translation>
     </message>
     <message>
         <location filename="../qml/Main.qml" line="145"/>
         <source>Disable lights</source>
-        <translation type="unfinished"></translation>
+        <translation>Fények letiltása</translation>
     </message>
     <message>
         <location filename="../qml/Main.qml" line="161"/>
         <source>Send notification</source>
-        <translation type="unfinished"></translation>
+        <translation>Értesítés küldése</translation>
     </message>
     <message>
         <location filename="../qml/Main.qml" line="178"/>
         <source>Beep</source>
-        <translation type="unfinished"></translation>
+        <translation>Sípolás</translation>
     </message>
     <message>
         <location filename="../qml/Main.qml" line="222"/>
         <source>Sidetone</source>
-        <translation type="unfinished"></translation>
+        <translation>Mikrofon hang visszacsatolás</translation>
     </message>
     <message>
         <location filename="../qml/Main.qml" line="246"/>
         <source>Enable chatmix</source>
-        <translation type="unfinished"></translation>
+        <translation>Chatmix engedélyezése</translation>
     </message>
     <message>
         <location filename="../qml/Main.qml" line="290"/>
         <source>Lights</source>
-        <translation type="unfinished">Fények</translation>
+        <translation>Fények</translation>
     </message>
     <message>
         <location filename="../qml/Main.qml" line="126"/>
         <source>Low battery threshold</source>
-        <translation type="unfinished">Alacsony akku határérték</translation>
+        <translation>Alacsony akku határérték</translation>
     </message>
     <message>
         <location filename="../qml/Main.qml" line="200"/>
         <source>Headset settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Fejhallgató beállítások</translation>
     </message>
     <message>
         <location filename="../qml/Main.qml" line="246"/>
         <source>Chatmix</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Chatmix</translation>
     </message>
     <message>
         <location filename="../qml/Main.qml" line="309"/>
         <source>Actions on low battery</source>
-        <translation type="unfinished"></translation>
+        <translation>Teendők alacsony akku szintnél</translation>
     </message>
     <message>
         <location filename="../qml/Main.qml" line="314"/>
         <source>Configure</source>
-        <translation type="unfinished"></translation>
+        <translation>Konfiguráció</translation>
     </message>
     <message>
         <location filename="../qml/Main.qml" line="325"/>
         <source>Application settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Alkalmazás beállítások</translation>
     </message>
     <message>
         <location filename="../qml/Main.qml" line="345"/>
         <source>Dark mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Sötét mód</translation>
     </message>
     <message>
         <location filename="../qml/Main.qml" line="361"/>
         <source>Icon theme</source>
-        <translation type="unfinished">Ikon stílus</translation>
+        <translation>Ikon stílus</translation>
     </message>
     <message>
         <location filename="../qml/Main.qml" line="367"/>
         <location filename="../qml/Main.qml" line="389"/>
         <source>System</source>
-        <translation type="unfinished">Rendszer</translation>
+        <translation>Rendszer</translation>
     </message>
     <message>
         <location filename="../qml/Main.qml" line="367"/>
         <source>Dark</source>
-        <translation type="unfinished">Sötét</translation>
+        <translation>Sötét</translation>
     </message>
     <message>
         <location filename="../qml/Main.qml" line="367"/>
         <source>Light</source>
-        <translation type="unfinished">Világos</translation>
+        <translation>Világos</translation>
     </message>
     <message>
         <location filename="../qml/Main.qml" line="383"/>
         <source>Language</source>
-        <translation type="unfinished">Nyelv</translation>
+        <translation>Nyelv</translation>
     </message>
     <message>
         <location filename="../qml/Main.qml" line="404"/>
         <source>Run at startup</source>
-        <translation type="unfinished">Indítás bejelentkezéskor</translation>
+        <translation>Indítás bejelentkezéskor</translation>
     </message>
 </context>
 </TS>
